@@ -7,8 +7,15 @@ export default class UserController {
             const user = await UserService.register(req.body);
 
             //Autentica o novo usuário
-            await AuthService.createUserToken(user, req, res);
-            
+            const token = await AuthService.createUserToken(user);
+
+            //retorna o token no response
+            res.status(200).json({
+                message: "Você está autenticado!",
+                token : token,
+                userId: user.id
+            });
+
         }catch(err){
             res.status(400).json({ error: err.message });
         }
@@ -24,7 +31,20 @@ export default class UserController {
         }
     }
 
-    static async loginUser(){
-        
+    static async loginUser(req, res){
+        try{
+            //Realiza o login do usuário e retorna o Usuário e o token de autenticação
+            const {user, token} = await AuthService.login(req.body);
+
+            //retorna o token no response
+            res.status(200).json({
+                message: "Você está autenticado!",
+                token : token,
+                userId: user.id
+            });
+
+        }catch(err){
+            res.status(422).json({message : err.message})
+        }
     }
 }

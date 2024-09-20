@@ -47,4 +47,14 @@ export default class UserModel {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
+
+    static validateLoginData(userData){
+        if(!userData.userIdentification){
+            throw new Error('O campo de usuário ou e-mail é obrigatório!');
+        }
+
+        if(!userData.password){
+            throw new Error('O campo de senha é obrigatório!');
+        }
+    }
 }
