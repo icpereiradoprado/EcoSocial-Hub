@@ -3,7 +3,7 @@ import pg from 'pg'
 import dotenv from 'dotenv';
 
 
-const { Pool } = pg
+const { Pool } = pg;
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();
 

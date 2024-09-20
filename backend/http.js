@@ -19,4 +19,4 @@ app.use(cors({credentials: true, origin: 'http://localhost:5173'}));
 app.use(express.static('public'));
 
 
-export {serverHttp, io, app}
+export { serverHttp, io, app }
