@@ -8,7 +8,6 @@ export default class UserModel {
 
     static validate(userData){
         //Validations
-        //TODO: Implementar validação de caracteres.
         if(!userData.name){
             throw new Error('O nome é obrigatório!')
         }
@@ -17,7 +16,6 @@ export default class UserModel {
             throw new Error('O nome deve ter no mínimo 3 caracteres!')
         }
 
-        //TODO: Implementar validação de e-mail
         if(!userData.email){
             throw new Error('O email é obrigatório!');
         }
