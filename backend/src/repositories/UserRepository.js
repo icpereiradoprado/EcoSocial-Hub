@@ -91,4 +91,20 @@ export default class UserRepository{
 
         return result.rows[0];
     }
+
+    /**
+     * Busca um usuário pelo id
+     * @param {Number} id Id do usuário
+     * @param {string} email E-mail do usuário
+     * @returns UserModel
+     */
+    static async findById(id){
+        const query = `SELECT ID, NAME, EMAIL, PHONE_NUMBER AS phoneNumber, PROFILE_PICTURE as profilePicture FROM ${TABLE_NAME} WHERE ID = $1`;
+        const values = [id];
+
+        const result = await pool.query(query, values);
+
+        return result.rows[0];
+    }
+
 }

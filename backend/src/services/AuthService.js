@@ -16,7 +16,7 @@ export default class AuthService{
         const token = jwt.sign({
             name: user.name,
             id: user.id
-        }, "nossosecret");
+        }, process.env.SECRET);
 
         return token;
     }
@@ -72,6 +72,19 @@ export default class AuthService{
         if(!checkPassword){
             throw new Error('Senha inválida!');
         }
+    }
+
+    /**
+     * Extrai o token obtido através do header da requisição
+     * @param {string} authorization 
+     * @returns 
+     */
+    static getToken(authorization){
+        //Divide a string por um espaço e pega o segundo item do array
+        //exemplo do formato de authorization: Bearer sda3wbGciOi...
+        const token = authorization.split(' ')[1];// exeplo de valor obtido: sda3wbGciOi...
+
+        return token;
     }
 
 }

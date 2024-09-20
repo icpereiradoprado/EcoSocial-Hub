@@ -1,5 +1,7 @@
+import UserRepository from "../repositories/UserRepository.js";
 import AuthService from "../services/AuthService.js";
 import UserService from "../services/UserService.js";
+import jwt from "jsonwebtoken";
 
 export default class UserController {
 
@@ -71,9 +73,12 @@ export default class UserController {
      */
     static async checkUser(req, res){
         let currentUser = null;
+        const { authorization } = req.headers;
+        if(authorization){
+            const token = AuthService.getToken(authorization);
+            const decoded = jwt.verify(token, process.env.SECRET);
 
-        if(req.header.autorization){
-
+            currentUser = await UserRepository.findById(decoded.id)
         }
 
         res.status(200).send(currentUser);
