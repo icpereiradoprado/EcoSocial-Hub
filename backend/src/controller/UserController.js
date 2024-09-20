@@ -1,10 +1,14 @@
+import AuthService from "../services/AuthService.js";
 import UserService from "../services/UserService.js";
 
 export default class UserController {
     static async registerUser(req, res){
         try{
             const user = await UserService.register(req.body);
-            res.status(201).json(user);
+
+            //Autentica o novo usuário
+            await AuthService.createUserToken(user, req, res);
+            
         }catch(err){
             res.status(400).json({ error: err.message });
         }
@@ -18,5 +22,9 @@ export default class UserController {
         }catch(err){
             res.status(400).json({error : err.message});
         }
+    }
+
+    static async loginUser(){
+        
     }
 }
