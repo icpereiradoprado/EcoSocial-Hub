@@ -2,6 +2,12 @@ import AuthService from "../services/AuthService.js";
 import UserService from "../services/UserService.js";
 
 export default class UserController {
+
+    /**
+     * Controlador para registrar um novo usuário 
+     * @param {*} req Requisição
+     * @param {*} res Resposta
+     */
     static async registerUser(req, res){
         try{
             const user = await UserService.register(req.body);
@@ -21,6 +27,11 @@ export default class UserController {
         }
     }
 
+    /**
+     * Controlador para deletar um usuário
+     * @param {*} req Requisição
+     * @param {*} res Response
+     */
     static async deleteUser(req, res){
         //TODO: Criar uma validação para verificar se o usuário é um administrador ou o próprio usuário
         try{
@@ -31,6 +42,11 @@ export default class UserController {
         }
     }
 
+    /**
+     * Controlador para realizar o login de um usuário
+     * @param {*} req Requisição
+     * @param {*} res Response
+     */
     static async loginUser(req, res){
         try{
             //Realiza o login do usuário e retorna o Usuário e o token de autenticação
@@ -46,5 +62,20 @@ export default class UserController {
         }catch(err){
             res.status(422).json({message : err.message})
         }
+    }
+
+    /**
+     * Controlador para validar o usuário logado
+     * @param {*} req 
+     * @param {*} res 
+     */
+    static async checkUser(req, res){
+        let currentUser = null;
+
+        if(req.header.autorization){
+
+        }
+
+        res.status(200).send(currentUser);
     }
 }
