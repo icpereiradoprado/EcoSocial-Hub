@@ -1,4 +1,3 @@
-import UserRepository from "../repositories/UserRepository.js";
 import AuthService from "../services/AuthService.js";
 import UserService from "../services/UserService.js";
 import jwt from "jsonwebtoken";
@@ -7,7 +6,7 @@ export default class UserController {
 
     /**
      * Controlador para registrar um novo usuário 
-     * @param {*} req Requisição
+     * @param {*} req Request
      * @param {*} res Resposta
      */
     static async registerUser(req, res){
@@ -31,7 +30,7 @@ export default class UserController {
 
     /**
      * Controlador para deletar um usuário
-     * @param {*} req Requisição
+     * @param {*} req Request
      * @param {*} res Response
      */
     static async deleteUser(req, res){
@@ -46,7 +45,7 @@ export default class UserController {
 
     /**
      * Controlador para realizar o login de um usuário
-     * @param {*} req Requisição
+     * @param {*} req Request
      * @param {*} res Response
      */
     static async loginUser(req, res){
@@ -68,8 +67,8 @@ export default class UserController {
 
     /**
      * Controlador para validar o usuário logado
-     * @param {*} req 
-     * @param {*} res 
+     * @param {*} req Request
+     * @param {*} res Resposta
      */
     static async checkUser(req, res){
         let currentUser = null;
@@ -78,9 +77,24 @@ export default class UserController {
             const token = AuthService.getToken(authorization);
             const decoded = jwt.verify(token, process.env.SECRET);
 
-            currentUser = await UserRepository.findById(decoded.id)
+            currentUser = await UserService.getUserById(decoded.id);
         }
 
         res.status(200).send(currentUser);
+    }
+
+    /**
+     * Controlador para retornar um usuário
+     * @param {*} req Request
+     * @param {*} res Response
+     */
+    static async getUserById(req, res){
+        const { id } = req.params;
+        try{
+            const user = await UserService.getUserById(id);
+            res.status(200).json(user);
+        }catch(err){
+            res.status(422).json({ message : err.message});
+        }
     }
 }

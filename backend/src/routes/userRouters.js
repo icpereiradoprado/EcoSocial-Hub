@@ -6,6 +6,7 @@ const router = Router();
 //Rotas para Usuário
 //GET
 router.get('/checkuser', UserController.checkUser);
+router.get('/:id', UserController.getUserById);
 //POST
 router.post('/register', UserController.registerUser);
 router.post('/login', UserController.loginUser);

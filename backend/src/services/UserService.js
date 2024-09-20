@@ -41,4 +41,17 @@ export default class UserService{
 
         return 'Usuário removido com sucesso!';
     }
+
+    /**
+     * Serviço que irá buscar um usuário pelo id
+     * @param {Number} id Id do usuário
+     * @returns UserModel
+     */
+    static async getUserById(id){
+        const user = await UserRepository.findById(id);
+        if(!user){
+            throw new Error('Usuário não encontrado!');
+        }
+        return user;
+    }
 }
