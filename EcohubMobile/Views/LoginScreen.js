@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput , Pressable, Image, Alert, Button} from 'react-native';
 
@@ -20,7 +19,6 @@ const LoginScreen = () => {
       });
   
       const data = await response.json();
-      console.log(data);
   
       if (response.ok) {
         Alert.alert('Sucesso', data.message);
@@ -30,24 +28,7 @@ const LoginScreen = () => {
     } catch (error) {
       console.log("Erro:", error);
     }
-    /* try{
-      console.log('try')
-      //Faz a requisção para api de Login | rota users/login
-      const response = await axios.post('http://192.168.15.11:5000/users/login', {
-         userOrEmail,
-         password
-      })
-      if(response.status === 200){
-        Alert.alert('Sucesso', response.data.message);
-      }else{
-        console.log(response.status)
-      }
-    }catch(err){
-      if(err.response){
-        const { data } = err.response;
-        Alert.alert('Erro', data.message);
-      }
-    } */
+  
   }
   return (
     <View style={styles.container}>
