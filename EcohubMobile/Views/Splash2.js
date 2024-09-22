@@ -8,7 +8,7 @@ const Splash = () => {
   useEffect(() => {
     // Após 3 segundos, navega para a próxima tela
     setTimeout(() => {
-      navigation.replace('Home'); // 'Home' é o nome da sua próxima tela
+      navigation.replace('LoginScreen'); // 'Home' é o nome da sua próxima tela
     }, 3000);
   }, []);
 

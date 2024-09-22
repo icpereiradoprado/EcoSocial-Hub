@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Splash from './Views/Splash2';  // A tela de splash que você criou
-import Home from './Views/Home';      // A próxima tela (exemplo)
+import LoginScreen from './Views/LoginScreen';// A próxima tela (exemplo)
 
 
 const Stack = createStackNavigator();
@@ -12,7 +12,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={Splash} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
