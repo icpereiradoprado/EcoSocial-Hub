@@ -97,4 +97,11 @@ export default class UserController {
             res.status(422).json({ message : err.message});
         }
     }
+
+    static async editUser(req, res){
+        res.status(200).json({
+            message : 'Deu certo update!',
+        })
+        return
+    }
 }

@@ -75,16 +75,42 @@ export default class AuthService{
     }
 
     /**
-     * Extrai o token obtido através do header da requisição
+     * Extrai o token obtido através do header da requisição e retorna o token
      * @param {string} authorization 
-     * @returns 
+     * @returns Token
      */
     static getToken(authorization){
+        if(!authorization){
+            return null;
+        }
         //Divide a string por um espaço e pega o segundo item do array
         //exemplo do formato de authorization: Bearer sda3wbGciOi...
         const token = authorization.split(' ')[1];// exeplo de valor obtido: sda3wbGciOi...
 
         return token;
+    }
+
+    /**
+     * Middleware para validar o token
+     * @param {*} req Request
+     * @param {*} res Response
+     * @param {*} next função que faz parte da assinatura dos middlewares
+     */
+    static async checkToken(req, res, next){
+        const { authorization } = req.headers;
+        const token = AuthService.getToken(authorization);
+
+        if(!token){
+            res.status(401).json({ message: 'Acesso Negado!' });
+        }
+
+        try{
+            const verified = jwt.verify(token, process.env.SECRET);
+            req.user = verified
+            next(); // Caso o token exista, o next permite continuar com o middleware
+        }catch(err){
+            res.status(400).json({ message: 'Token inválido!' });
+        }
     }
 
 }
