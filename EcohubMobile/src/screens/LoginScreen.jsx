@@ -8,11 +8,18 @@ import Logo from '../components/Logo';
 import { useNavigation } from "@react-navigation/native";
 import { PasswordInput } from '../components/PasswordInput';
 
+/**
+ * Tela de Login
+ * @returns Tela de Login
+ */
 const LoginScreen = () => {
 	const navigation = useNavigation();
 	const [userIdentification, setUserIdentification] = useState('');
 	const [password, setPassword] = useState('');
 
+	/**
+	 * Handler para executar a API de login
+	 */
 	const handleLogin = async () => {
 		try {
 			const response = await fetch(`http://192.168.187.7:5000/users/login`, {
@@ -38,6 +45,9 @@ const LoginScreen = () => {
 		}
 	};
 
+	/**
+	 * Handle para navegar para a tela de cadastro
+	 */
   	const handleNavigateToRegisterScreen = () => {
 		navigation.navigate("RegisterScreen");
 	};
@@ -78,7 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0', // Cor de fundo da tela Home
+    backgroundColor: '#f0f0f0',
 	padding: 30
   },
   

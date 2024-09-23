@@ -8,15 +8,22 @@ import { Button } from '../components/Button';
 import { ButtonLink } from '../components/ButtonLink';
 import { PasswordInput } from '../components/PasswordInput';
 
+/**
+ * Tela de cadastro de Usuário
+ * @returns Tela de cadastro de Usuário
+ */
 export default function RegisterScreen(){
-    const navigation = useNavigation();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [city, setCity] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+	const navigation = useNavigation();
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [phoneNumber, setPhoneNumber] = useState('');
+	const [city, setCity] = useState('');
+	const [password, setPassword] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
   
+	/**
+	 * Handler para executar a API de cadastro de um novo usuário
+	 */
     const handleRegister = async () => {
       try {
         const response = await fetch(`http://192.168.187.7:5000/users/register`, {
@@ -38,6 +45,7 @@ export default function RegisterScreen(){
     
         if (response.ok) {
           Alert.alert('Sucesso', data.message);
+          resetInputs();
         } else {
             console.log(data);
           Alert.alert('Erro', data.message);
@@ -48,6 +56,21 @@ export default function RegisterScreen(){
     
     }
 
+    /**
+     * Método para limpar os inputs
+     */
+    const resetInputs = () =>{
+        setName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setCity('');
+        setPhoneNumber('');
+    }
+
+	/**
+	 * Handler para voltar à tela anterior
+	 */
     const handleGoBack = ()=>{
         navigation.goBack();
     }
