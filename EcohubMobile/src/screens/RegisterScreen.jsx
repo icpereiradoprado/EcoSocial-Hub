@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../components/Logo';
@@ -13,7 +13,8 @@ import { PasswordInput } from '../components/PasswordInput';
  * @returns Tela de cadastro de Usuário
  */
 export default function RegisterScreen(){
-	const navigation = useNavigation();
+    const navigation = useNavigation();
+    const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phoneNumber, setPhoneNumber] = useState('');
@@ -25,34 +26,37 @@ export default function RegisterScreen(){
 	 * Handler para executar a API de cadastro de um novo usuário
 	 */
     const handleRegister = async () => {
-      try {
-        const response = await fetch(`http://192.168.187.7:5000/users/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            phone_number : phoneNumber,
-            city,
-            password,
-            confirm_password : confirmPassword
-          }),
-        });
-    
-        const data = await response.json();
-    
-        if (response.ok) {
-          Alert.alert('Sucesso', data.message);
-          resetInputs();
-        } else {
-            console.log(data);
-          Alert.alert('Erro', data.message);
+        setLoading(true);
+        try {
+            const response = await fetch(`http://192.168.187.7:5000/users/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                phone_number : phoneNumber,
+                city,
+                password,
+                confirm_password : confirmPassword
+            }),
+            });
+        
+            const data = await response.json();
+        
+            if (response.ok) {
+                resetInputs();
+                Alert.alert('Sucesso', data.message);
+            } else {
+                resetInputs();
+                Alert.alert('Erro', data.message);
+            }
+        }catch (error) {
+            console.log("Erro:", error);
+        }finally{
+            setLoading(false);
         }
-      } catch (error) {
-        console.log("Erro:", error);
-      }
     
     }
 
@@ -131,7 +135,7 @@ export default function RegisterScreen(){
                     onChangeText={setConfirmPassword}
                 />
 
-                <Button onPress={handleRegister} buttonText="Cadastrar"/>
+                <Button onPress={handleRegister} loading={loading} loadingText='Cadastrando...' buttonText='Cadastrar'/>
 
                 <ButtonLink onPress={handleGoBack} linkText="Clique aqui" additionalText="Já possui uma conta?"/>
           </View>

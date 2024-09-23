@@ -14,6 +14,7 @@ import { PasswordInput } from '../components/PasswordInput';
  */
 const LoginScreen = () => {
 	const navigation = useNavigation();
+	const [loading, setLoading] = useState(false);
 	const [userIdentification, setUserIdentification] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -21,7 +22,11 @@ const LoginScreen = () => {
 	 * Handler para executar a API de login
 	 */
 	const handleLogin = async () => {
+		setLoading(true);
 		try {
+			setTimeout(()=>{
+				
+			},2000)
 			const response = await fetch(`http://192.168.187.7:5000/users/login`, {
 				method: 'POST',
 				headers: {
@@ -36,21 +41,34 @@ const LoginScreen = () => {
 			const data = await response.json();
 		
 			if (response.ok) {
+				resetInputs();
+				navigation.navigate("RenderImageTest");
 				Alert.alert('Sucesso', data.message);
 			} else {
+				resetInputs();
 				Alert.alert('Erro', data.message);
 			}
-		} catch (error) {
+		}catch(error){
 			console.log("Erro:", error);
+		}finally{
+			setLoading(false);
 		}
 	};
 
 	/**
-	 * Handle para navegar para a tela de cadastro
+	 * Handler para navegar para a tela de cadastro
 	 */
   	const handleNavigateToRegisterScreen = () => {
 		navigation.navigate("RegisterScreen");
 	};
+
+	/**
+	 * Handler para limpar os inputs
+	 */
+	const resetInputs = () => {
+		setUserIdentification('');
+		setPassword('');
+	}
 
 	return (
 		<View style={styles.container}>
@@ -73,6 +91,8 @@ const LoginScreen = () => {
 			/>
 
 			<Button 
+				loading={loading}
+				loadingText='Logando...'
 				onPress={handleLogin}
 				buttonText="Entrar"
 			/>
