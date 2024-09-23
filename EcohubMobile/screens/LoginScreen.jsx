@@ -6,6 +6,7 @@ import { Input } from '../components/Input';
 import { Title } from '../components/Title';
 import Logo from '../components/Logo';
 import { useNavigation } from "@react-navigation/native";
+import { PasswordInput } from '../components/PasswordInput';
 
 const LoginScreen = () => {
 	const navigation = useNavigation();
@@ -54,11 +55,10 @@ const LoginScreen = () => {
 				placeholder="Usuário ou e-mail"
 			/>
 
-			<Input 
+			<PasswordInput 
 				name="password"
 				value={password}
-				onChangeText={setPassword} 
-				secureTextEntry
+				onChangeText={setPassword}
 				placeholder="Senha"
 			/>
 

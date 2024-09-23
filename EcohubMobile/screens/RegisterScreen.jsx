@@ -6,6 +6,7 @@ import { Title } from '../components/Title';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { ButtonLink } from '../components/ButtonLink';
+import { PasswordInput } from '../components/PasswordInput';
 
 export default function RegisterScreen(){
     const navigation = useNavigation();
@@ -92,19 +93,17 @@ export default function RegisterScreen(){
                     onChangeText={setCity}
                     autoCapitalize="none"
                 />
-                <Input 
+                <PasswordInput 
                     name="password"
                     style={styles.input}
                     placeholder="Senha"
-                    secureTextEntry= {true}
                     value={password}
                     onChangeText={setPassword}
                 />
-                <Input 
+                <PasswordInput 
                     name="confirm_password"
                     style={styles.input}
                     placeholder="Confirmar senha"
-                    secureTextEntry= {true}
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                 />
