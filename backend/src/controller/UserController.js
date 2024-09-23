@@ -24,7 +24,7 @@ export default class UserController {
             });
 
         }catch(err){
-            res.status(400).json({ error: err.message });
+            res.status(400).json({ message : err.message });
         }
     }
 
@@ -39,7 +39,7 @@ export default class UserController {
             const message = await UserService.delete(req.params);
             res.status(200).json({ message });
         }catch(err){
-            res.status(400).json({error : err.message});
+            res.status(400).json({ message : err.message});
         }
     }
 
@@ -61,7 +61,7 @@ export default class UserController {
             });
 
         }catch(err){
-            res.status(422).json({message : err.message})
+            res.status(422).json({ message : err.message})
         }
     }
 
