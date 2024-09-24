@@ -6,6 +6,7 @@ import { CommunityTest } from '../screens/CommunityScreen';
 import { PlacesTest } from '../screens/PlacesScreen';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BottomFabBar } from 'rn-wave-bottom-bar';
+import { base, colors } from '../css/base';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,10 +16,10 @@ export default function MainTabNavigator(){
             initialRouteName='HomeTest'
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: 'green',
-                tabBarActiveBackgroundColor: 'gray',
+                tabBarActiveTintColor: colors.green_default,
+                tabBarActiveBackgroundColor: colors.green_default,
                 tabBarLabelStyle: {
-                    color: 'white',
+                    color: colors.gray_default,
                     fontSize: 13
                 }
 
@@ -29,7 +30,7 @@ export default function MainTabNavigator(){
                     mode='default'
                     isRtl={false}
                     focusedButtonStyle={{
-                        shadowColor: '#000',
+                        shadowColor: colors.gray_default,
                         shadowOffset: {
                             width: 0,
                             height: 7,
@@ -53,7 +54,7 @@ export default function MainTabNavigator(){
                 name='HomeTest'
                 component={HomeTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='home' size={25} color='black'/>,
+                    tabBarIcon: () => <MaterialIcons name='home' size={25} color={colors.gray_default}/>,
                     tabBarLabel: 'Home'
                 }}
             />
@@ -61,7 +62,7 @@ export default function MainTabNavigator(){
                 name='CommunityTest'
                 component={CommunityTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='people-alt' size={25} color='black'/>,
+                    tabBarIcon: () => <MaterialIcons name='people-alt' size={25} color={colors.gray_default}/>,
                     tabBarLabel: 'Comunidade'
                 }}
             />
@@ -69,7 +70,7 @@ export default function MainTabNavigator(){
                 name='PlacesTest'
                 component={PlacesTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='location-on' size={25} color='black'/>,
+                    tabBarIcon: () => <MaterialIcons name='location-on' size={25} color={colors.gray_default}/>,
                     tabBarLabel: 'Descartes'
                 }}
             />
@@ -77,7 +78,7 @@ export default function MainTabNavigator(){
                 name='SettingsTest'
                 component={SettingsTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='settings' size={25} color='black'/>,
+                    tabBarIcon: () => <MaterialIcons name='settings' size={25} color={colors.gray_default}/>,
                     tabBarLabel: 'Configurações'
                 }}
             />

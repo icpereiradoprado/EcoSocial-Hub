@@ -47,7 +47,7 @@ export default function RegisterScreen(){
         
             if (response.ok) {
                 resetInputs();
-                Alert.alert('Sucesso', data.message);
+                navigation.navigate('MainTabNavigator')
             } else {
                 resetInputs();
                 Alert.alert('Erro', data.message);

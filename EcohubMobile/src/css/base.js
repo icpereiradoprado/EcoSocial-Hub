@@ -52,3 +52,9 @@ export const base = StyleSheet.create({
     }
 
 });
+
+export const colors = {
+    green_default : '#AED581',
+    white_default : '#f0f0f0',
+    gray_default  : '#424242'
+}
