@@ -7,6 +7,11 @@ import { Title } from '../components/Title';
 import Logo from '../components/Logo';
 import { useNavigation } from "@react-navigation/native";
 import { PasswordInput } from '../components/PasswordInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//TODO: DELETAR ESTA VARIÁVEL APÓS OS TESTES
+const testing = false;
+
 
 /**
  * Tela de Login
@@ -18,6 +23,14 @@ const LoginScreen = () => {
 	const [userIdentification, setUserIdentification] = useState('');
 	const [password, setPassword] = useState('');
 
+	const saveToken = async (token) => {
+		try{
+			await AsyncStorage.setItem('jwtToken', token);
+		}catch(err){
+			console.error('Erro ao salvar token!', err);
+		}
+		
+	}
 	/**
 	 * Handler para executar a API de login
 	 */
@@ -41,6 +54,8 @@ const LoginScreen = () => {
 			const data = await response.json();
 		
 			if (response.ok) {
+				console.log(data);
+				await saveToken(data.token);
 				resetInputs();
 				navigation.navigate("MainTabNavigator");
 			} else {
@@ -92,7 +107,7 @@ const LoginScreen = () => {
 			<Button 
 				loading={loading}
 				loadingText='Logando...'
-				onPress={handleLogin}
+				onPress={testing ? ()=>{navigation.navigate("MainTabNavigator")} : handleLogin}
 				buttonText="Entrar"
 			/>
 

@@ -1,20 +1,203 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Alert } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { colors } from '../css/base';
+import { base, colors } from '../css/base';
 import { ProfilePicture } from '../components/ProfilePicture';
+import { Input } from '../components/Input';
+import { useCallback, useEffect, useState } from 'react';
+import { PasswordInput } from '../components/PasswordInput';
+import { Button } from '../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height } = Dimensions.get('window');
 export function SettingsTest(){
-    const handleEditProfilePicutre = () => {
-        Alert.alert('Editar foto', 'Escolha sua foto')
+    const id = 1;
+    const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [disabledButtonSave, setDisabledButtonSave] = useState(true);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [city, setCity] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const [originalName, setOriginalName] = useState('');
+    const [originalEmail, setOriginalEmail] = useState('');
+    const [originalPhoneNumber, setOriginalPhoneNumber] = useState('');
+    const [originalCity, setOriginalCity] = useState('');
+
+    const handleLogoutMessage = () => {
+        Alert.alert('Logout', 'Deseja sair?', [
+            {
+                text: 'Cancel',
+                style: 'cancel'
+            },
+            {
+                text: 'Sim',
+                onPress: handleLogout
+            }
+        ])
     }
+
+    const handleLogout = ()=>{
+        console.log('Logout..')
+    }
+
+    const getToken = async () => {
+        try {
+            const token = await AsyncStorage.getItem('jwtToken');
+            return token;
+        } catch (error) {
+            console.error('Erro ao obter o token:', error);
+            return null;
+        }
+    };
+
+    const fetchPreferences = useCallback(async () => {
+        try{
+            const response = await fetch(`http://192.168.187.7:5000/users/${id}`);
+            const data = await response.json();
+
+
+            if(!response.ok){
+                throw new Error(data.message);
+            }
+
+            
+
+            //Atualiza os campos com os dados recebidos:
+            setName(data.name || '');
+            setOriginalName(data.name || '');
+            setEmail(data.email || '');
+            setOriginalEmail(data.email || '');
+            setPhoneNumber(data.phonenumber || '');
+            setOriginalPhoneNumber(data.phonenumber || '');
+            setCity(data.city || '');
+            setOriginalCity(data.city || '');
+
+            setLoadingPreferencesData(false);
+            
+        }catch(err){
+            console.error('Erro ao buscar preferências:', err);
+        }
+    }, [id]);
+
+    useEffect(()=>{
+        fetchPreferences();
+    },[fetchPreferences]);
+
+    const handleChangePreferences = async () => {
+        if(name !== originalName || email !== originalEmail || phoneNumber !== originalPhoneNumber || city !== originalCity || (password && confirmPassword)){
+            setLoading(true);
+            const token = await getToken();
+            if(!token){
+                Alert.alert('Sessão expirada. Faça o login novamente!');
+            }
+            let body = {};
+            if(name !== originalName){
+                body.name = name;
+            }
+
+            if(email !== originalEmail){
+                body.email = email;
+            }
+            if(phoneNumber !== originalPhoneNumber){
+                console.log({phoneNumber, originalPhoneNumber})
+                body.phone_number = phoneNumber;
+            }
+            if(city !== originalCity){
+                body.city = city;
+            }
+
+            if(password && confirmPassword){
+                body.password = password;
+                body.confirm_password = confirmPassword;
+            }
+
+            try{
+                const response = await fetch(`http://192.168.187.7:5000/users/edit/${id}`,{
+                    method: 'PATCH',
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Alert.alert('Sucesso', data.message);
+                    fetchPreferences();
+                } else {
+                    Alert.alert('Erro', data.message);
+                }
+
+            }catch(err){
+                console.error('Erro ao atualizar o usuário:', err)
+            }finally{
+                setLoading(false);
+            }
+        }
+    }
+
     return(
-        <ScrollView style={{flex: 1, backgroundColor: 'red'}}>
+        <ScrollView style={{flex: 1 }}>
             <View style={style.container}>
-                <Text>
-                    Settings
-                </Text>
+                <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
                 <ProfilePicture />
+                <View style={{marginBottom: 40, marginTop: 10}}>
+                    <TouchableOpacity onPress={handleLogoutMessage}>
+                        <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
+                    </TouchableOpacity>
+                </View>
+                <Input
+                    name="name" 
+                    value={name}
+                    onChangeText={setName} 
+                    autoCapitalize="none"
+                    placeholder="Usuário"
+                    editable={!loadingPreferencesData}
+                />
+                <Input
+                    name="email" 
+                    value={email}
+                    onChangeText={setEmail} 
+                    autoCapitalize="none"
+                    placeholder="E-mail"
+                    inputMode="email"
+                    editable={!loadingPreferencesData}
+                />
+                <Input
+                    name="phone-number" 
+                    value={phoneNumber}
+                    onChangeText={setPhoneNumber} 
+                    autoCapitalize="none"
+                    placeholder="Celular"
+                    inputMode="numeric"
+                    editable={!loadingPreferencesData}
+                />
+                <Input
+                    name="city" 
+                    value={city}
+                    onChangeText={setCity} 
+                    autoCapitalize="none"
+                    placeholder="Cidade"
+                    editable={!loadingPreferencesData}
+                />
+                <PasswordInput
+                    name="password" 
+                    value={password}
+                    onChangeText={setPassword} 
+                    placeholder="Senha"
+                />
+                <PasswordInput
+                    name="confirm-password" 
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword} 
+                    placeholder="Confirmar senha"
+                />
+
+                <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangePreferences}/>
             </View>
         </ScrollView>
     )
@@ -25,7 +208,9 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white_default,
         alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: height
+        minHeight: height,
+        paddingTop: 10,
+        padding: 30,
+        paddingBottom: 70
     }
 })

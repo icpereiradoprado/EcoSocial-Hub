@@ -16,8 +16,8 @@ export default function MainTabNavigator(){
             initialRouteName='HomeTest'
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: color ="#aed581" ,
-                tabBarActiveBackgroundColor: color ="#aed581",
+                tabBarActiveTintColor: colors.green_dark,
+                tabBarActiveBackgroundColor: colors.green_dark,
                 tabBarLabelStyle: {
                     color: colors.black_default,
                     fontSize: 13

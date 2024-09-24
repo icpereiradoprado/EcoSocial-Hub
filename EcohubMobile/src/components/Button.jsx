@@ -12,7 +12,7 @@ import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
 export function Button({buttonText, loading, loadingText, ...props}){
     return(
         <>
-            <TouchableOpacity {...props} style={base.button}>
+            <TouchableOpacity {...props} style={[base.button, {opacity: loading && 0.2}]} disabled={loading}>
                 <Text style={base.buttonText}>{loading ? (loadingText || 'Carregando...') : buttonText}</Text>
             </TouchableOpacity>
             {loading && <ActivityIndicator size="small" color="#0000ff" />}
