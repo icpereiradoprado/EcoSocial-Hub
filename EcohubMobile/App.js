@@ -6,7 +6,7 @@ import { base, colors } from './src/css/base';
 const App = () => {
   return (
 	<>
-		<StatusBar barStyle="dark-content" backgroundColor={colors.white_default}/>
+		<StatusBar barStyle="dark-content" backgroundColor='#f0f0f2'/>
 		<RootStack />
 	</>
   );

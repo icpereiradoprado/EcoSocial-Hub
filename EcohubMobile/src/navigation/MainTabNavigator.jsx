@@ -16,10 +16,10 @@ export default function MainTabNavigator(){
             initialRouteName='HomeTest'
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: colors.green_default,
-                tabBarActiveBackgroundColor: colors.green_default,
+                tabBarActiveTintColor: color ="#aed581" ,
+                tabBarActiveBackgroundColor: color ="#aed581",
                 tabBarLabelStyle: {
-                    color: colors.gray_default,
+                    color: colors.black_default,
                     fontSize: 13
                 }
 
@@ -34,16 +34,19 @@ export default function MainTabNavigator(){
                         shadowOffset: {
                             width: 0,
                             height: 7,
+                            
                         },
                         shadowOpacity: 0.41,
                         shadowRadius: 9.11,
                         elevation: 14,
+                        
                     }}
                     bottomBarContainerStyle={{
                         position: 'absolute',
                         bottom: 0,
                         left: 0,
                         right: 0,
+                        
                     }}
                     {...props}
                 />
@@ -54,32 +57,33 @@ export default function MainTabNavigator(){
                 name='HomeTest'
                 component={HomeTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='home' size={25} color={colors.gray_default}/>,
-                    tabBarLabel: 'Home'
+                    tabBarIcon: () => <MaterialIcons name='home' size={25} color={colors.black_default}/>,
+                    tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
                 name='CommunityTest'
                 component={CommunityTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='people-alt' size={25} color={colors.gray_default}/>,
-                    tabBarLabel: 'Comunidade'
+                    tabBarIcon: () => <MaterialIcons name='people-alt' size={25} color={colors.black_default}/>,
+                    tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
                 name='PlacesTest'
                 component={PlacesTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='location-on' size={25} color={colors.gray_default}/>,
-                    tabBarLabel: 'Descartes'
+                    tabBarIcon: () => <MaterialIcons name='location-on' size={25} color={colors.black_default}/>,
+                    tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
                 name='SettingsTest'
                 component={SettingsTest}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='settings' size={25} color={colors.gray_default}/>,
-                    tabBarLabel: 'Configurações'
+                    tabBarIcon: () => <MaterialIcons name='settings' size={25} color={colors.black_default}/>,
+                    tabBarLabel: ''
+                   
                 }}
             />
         </Tab.Navigator>
