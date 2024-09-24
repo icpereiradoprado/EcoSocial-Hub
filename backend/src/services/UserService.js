@@ -54,4 +54,60 @@ export default class UserService{
         }
         return user;
     }
+
+    /**
+     * 
+     * @param {UserModel} userData 
+     * @param {*} userId 
+     */
+    static async edit(userData, userId){
+        const { name, email, phone_number: phoneNumber, city, password, confirm_password: confirmPassword, profile_picture: profilePicture } = userData;
+
+        if(name){
+            const user = await UserRepository.findByNameOrEmail(name);
+            if(user){
+                throw new Error('Nome de usuário já cadastrado!')
+            }
+        }
+        
+        if(email){
+            if(!UserModel.isValidEmail(email)){
+                throw new Error('E-mail inválido!');
+            }
+            const user = await UserRepository.findByNameOrEmail(null, email);
+
+            if(user){
+                throw new Error('E-mail já cadastrado!')
+            }
+        }
+
+        let passwordHash = null;
+        if(password && (password !== confirmPassword)){
+            throw new Error('As senhas não coincidem!');
+        }else if(password && (password === confirmPassword)){
+            //Cria uma senha criptografada
+            const salt = await bcrypt.genSalt(12);
+            passwordHash = await bcrypt.hash(userData.password, salt);
+
+            //Altera o valor da propriedade password para o valor criptografado
+            userData.password = passwordHash;
+            //Limpa o valor da propriedade confirm_password para que ela não seja passada dentro da QUERY
+            userData.confirm_password = undefined;
+        }else{
+            //Limpa o valor da propriedade password e confirm_password para que elas não sejam passadas dentro da QUERY
+            userData.password = undefined;
+            userData.confirm_password = undefined;
+        }
+
+        if (!Object.keys(userData).length) {
+            throw new Error('Nenhum dado para atualizar');
+        }
+
+        // Filtra os campos que não são undefined e monta os pares coluna = valor
+        const filteredUpdates = Object.entries(userData).filter(([key, value]) => value !== undefined);
+        const columns = filteredUpdates.map(([key]) => key);
+        const values = filteredUpdates.map(([_, value]) => value);
+
+        await UserRepository.update(columns, values, userId);
+    }
 }

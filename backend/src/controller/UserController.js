@@ -98,10 +98,25 @@ export default class UserController {
         }
     }
 
+    /**
+     * Controlador para editar as informações de um usuário
+     * @param {*} req Request
+     * @param {*} res Response
+     */
     static async editUser(req, res){
-        res.status(200).json({
-            message : 'Deu certo update!',
-        })
-        return
+        const { authorization } = req.headers;
+        try{
+            const user = await AuthService.getUserByToken(authorization);
+            
+            await UserService.edit(req.body, user.id);
+
+            res.status(200).json({
+                message : 'Informações atualizadas com sucesso!',
+            });
+        }catch(err){
+            res.status(500).json({
+                message: err.message
+            });
+        }
     }
 }

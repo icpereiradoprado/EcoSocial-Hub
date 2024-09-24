@@ -107,4 +107,24 @@ export default class UserRepository{
         return result.rows[0];
     }
 
+    static async update(columns, values, userId){
+        const client = await pool.connect();
+
+        try{
+            await client.query('BEGIN');
+            const setQuery = columns.map((col, idx) => `${col} = $${idx + 1}`).join(', ');
+
+            const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1}`;
+
+            await client.query(query, [...values, userId]);
+
+            await client.query('COMMIT');
+        }catch(err){
+            await client.query('ROLLBACK');
+            throw new Error(`Erro ao editar usuário: ${err.message}`);
+        }finally{
+            client.release();
+        }
+    }
+
 }

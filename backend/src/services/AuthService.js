@@ -106,11 +106,37 @@ export default class AuthService{
 
         try{
             const verified = jwt.verify(token, process.env.SECRET);
-            req.user = verified
+            req.user = verified;
             next(); // Caso o token exista, o next permite continuar com o middleware
         }catch(err){
             res.status(400).json({ message: 'Token inválido!' });
         }
+    }
+
+
+    /**
+     * Pega um usuário através do token de autenticação
+     * @param {*} authorization Autorização do Header da requisição
+     * @returns UserModel
+     */
+    static async getUserByToken(authorization){
+        const token = AuthService.getToken(authorization);
+
+        if(!token){
+            res.status(401).json({ message: 'Acesso Negado!' });
+        }
+
+        const decoded = jwt.verify(token, process.env.SECRET);
+
+        const userId = decoded.id;
+
+        const user = await UserRepository.findById(userId);
+
+        if(!user){
+            throw new Error('Usuário não encontrado!');
+        }
+
+        return user;
     }
 
 }
