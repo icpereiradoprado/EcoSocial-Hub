@@ -32,6 +32,11 @@ export default class UserModel {
             throw new Error('A senha é obrigatória!');
         }
 
+        if(userData.password.length < 2){
+            throw new Error('A senha deve ter no mínimo 2 caracteres');
+        }
+
+
         if(!userData.confirm_password){
             throw new Error('A confirmação da senha é obrigatória!');
         }

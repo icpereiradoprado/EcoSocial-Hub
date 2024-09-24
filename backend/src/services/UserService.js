@@ -72,7 +72,7 @@ export default class UserService{
             userData.name = undefined;
         }
         
-        if(email){
+        if(email && email.length > 0){
             if(!UserModel.isValidEmail(email)){
                 throw new Error('E-mail inválido!');
             }
@@ -84,7 +84,7 @@ export default class UserService{
         }
 
         let passwordHash = null;
-        if(password && (password !== confirmPassword)){
+        if(password && password.length > 1 && (password !== confirmPassword)){
             throw new Error('As senhas não coincidem!');
         }else if(password && (password === confirmPassword)){
             //Cria uma senha criptografada
