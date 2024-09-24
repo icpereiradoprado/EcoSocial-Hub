@@ -46,6 +46,9 @@ export const base = StyleSheet.create({
     },
     flexRow:{
         flexDirection: 'row',
+    },
+    bgColorDefault:{
+        backgroundColor: '#f0f0f0'
     }
 
 });

@@ -42,8 +42,8 @@ const LoginScreen = () => {
 		
 			if (response.ok) {
 				resetInputs();
-				navigation.navigate("RenderImageTest");
-				Alert.alert('Sucesso', data.message);
+				navigation.navigate("MainTabNavigator");
+				//Alert.alert('Sucesso', data.message);
 			} else {
 				resetInputs();
 				Alert.alert('Erro', data.message);
