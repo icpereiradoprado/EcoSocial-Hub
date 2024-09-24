@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { View, TouchableOpacity, Alert, Image, StyleSheet, Text, Pressable, Dimensions } from 'react-native';
 import { MaterialIcons }  from '@expo/vector-icons';
 import { colors } from '../css/base';
+
 const { height,  width } = Dimensions.get('window');
 
-export function ProfilePicture(props){
+/**
+ * Componente Imagem do Perfil do usuário
+ * @returns Componente Imagem do Perfil do usuário
+ */
+export function ProfilePicture(){
     const [modalVisible, setModalVisible] = useState(false);
     const handleEditProfilePicutre = () => {
         Alert.alert('Editar foto', 'Escolha sua foto')

@@ -7,6 +7,10 @@ import MainTabNavigator from './MainTabNavigator';
 
 const Stack = createStackNavigator();
 
+/**
+ * Componente de naveção
+ * @returns Componente de naveção
+ */
 export default function RootStack(){
    return(
         <NavigationContainer>

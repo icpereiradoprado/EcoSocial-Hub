@@ -23,9 +23,10 @@ const LoginScreen = () => {
 	const [userIdentification, setUserIdentification] = useState('');
 	const [password, setPassword] = useState('');
 
-	const saveToken = async (token) => {
+	const saveTokenAndUserId = async (token, userId) => {
 		try{
 			await AsyncStorage.setItem('jwtToken', token);
+			await AsyncStorage.setItem('userId', userId);
 		}catch(err){
 			console.error('Erro ao salvar token!', err);
 		}
@@ -54,8 +55,7 @@ const LoginScreen = () => {
 			const data = await response.json();
 		
 			if (response.ok) {
-				console.log(data);
-				await saveToken(data.token);
+				await saveTokenAndUserId(data.token, data.userId);
 				resetInputs();
 				navigation.navigate("MainTabNavigator");
 			} else {

@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height } = Dimensions.get('window');
 export function SettingsTest(){
-    const id = 1;
     const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [disabledButtonSave, setDisabledButtonSave] = useState(true);
@@ -42,12 +41,13 @@ export function SettingsTest(){
         console.log('Logout..')
     }
 
-    const getToken = async () => {
+    const getTokenAndUserId = async () => {
         try {
             const token = await AsyncStorage.getItem('jwtToken');
-            return token;
+            const userId = await AsyncStorage.getItem('userId');
+            return {token, userId};
         } catch (error) {
-            console.error('Erro ao obter o token:', error);
+            console.error('Erro ao obter o token ou userId:', error);
             return null;
         }
     };
@@ -79,7 +79,7 @@ export function SettingsTest(){
         }catch(err){
             console.error('Erro ao buscar preferências:', err);
         }
-    }, [id]);
+    }, [userId]);
 
     useEffect(()=>{
         fetchPreferences();
@@ -88,7 +88,7 @@ export function SettingsTest(){
     const handleChangePreferences = async () => {
         if(name !== originalName || email !== originalEmail || phoneNumber !== originalPhoneNumber || city !== originalCity || (password && confirmPassword)){
             setLoading(true);
-            const token = await getToken();
+            const {token, userId} = await getTokenAndUserId();
             if(!token){
                 Alert.alert('Sessão expirada. Faça o login novamente!');
             }
@@ -114,7 +114,7 @@ export function SettingsTest(){
             }
 
             try{
-                const response = await fetch(`http://192.168.187.7:5000/users/edit/${id}`,{
+                const response = await fetch(`http://192.168.187.7:5000/users/edit/${userId}`,{
                     method: 'PATCH',
                     headers:{
                         'Content-Type': 'application/json',
