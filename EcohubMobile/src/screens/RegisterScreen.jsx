@@ -7,12 +7,14 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { ButtonLink } from '../components/ButtonLink';
 import { PasswordInput } from '../components/PasswordInput';
+import Constants from 'expo-constants';
 
 /**
  * Tela de cadastro de Usuário
  * @returns Tela de cadastro de Usuário
  */
 export default function RegisterScreen(){
+    const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('');
@@ -28,7 +30,7 @@ export default function RegisterScreen(){
     const handleRegister = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://192.168.187.7:5000/users/register`, {
+            const response = await fetch(`${url}/users/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

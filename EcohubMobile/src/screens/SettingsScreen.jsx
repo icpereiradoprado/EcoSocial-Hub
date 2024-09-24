@@ -6,9 +6,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { PasswordInput } from '../components/PasswordInput';
 import { Button } from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 const { height } = Dimensions.get('window');
 export function SettingsTest(){
+    const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+    const [userId, setUserId] = useState(null);
     const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [disabledButtonSave, setDisabledButtonSave] = useState(true);
@@ -52,17 +55,27 @@ export function SettingsTest(){
         }
     };
 
+
     const fetchPreferences = useCallback(async () => {
         try{
-            const response = await fetch(`http://192.168.187.7:5000/users/${id}`);
+            setLoadingPreferencesData(false);
+
+            // Recupera o token e o userId
+            const { userId } = await getTokenAndUserId();
+
+            if (!userId || isNaN(userId)) {
+                console.error('User ID é inválido ou não definido.');
+                setLoadingPreferencesData(false);
+                return;
+            }
+
+            const response = await fetch(`${url}/users/${userId}`);
             const data = await response.json();
 
 
             if(!response.ok){
                 throw new Error(data.message);
             }
-
-            
 
             //Atualiza os campos com os dados recebidos:
             setName(data.name || '');
@@ -79,7 +92,7 @@ export function SettingsTest(){
         }catch(err){
             console.error('Erro ao buscar preferências:', err);
         }
-    }, [userId]);
+    }, []);
 
     useEffect(()=>{
         fetchPreferences();
@@ -114,7 +127,7 @@ export function SettingsTest(){
             }
 
             try{
-                const response = await fetch(`http://192.168.187.7:5000/users/edit/${userId}`,{
+                const response = await fetch(`${url}/users/edit/${userId}`,{
                     method: 'PATCH',
                     headers:{
                         'Content-Type': 'application/json',

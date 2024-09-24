@@ -8,6 +8,7 @@ import Logo from '../components/Logo';
 import { useNavigation } from "@react-navigation/native";
 import { PasswordInput } from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 //TODO: DELETAR ESTA VARIÁVEL APÓS OS TESTES
 const testing = false;
@@ -26,7 +27,7 @@ const LoginScreen = () => {
 	const saveTokenAndUserId = async (token, userId) => {
 		try{
 			await AsyncStorage.setItem('jwtToken', token);
-			await AsyncStorage.setItem('userId', userId);
+			await AsyncStorage.setItem('userId', userId.toString());
 		}catch(err){
 			console.error('Erro ao salvar token!', err);
 		}
@@ -38,10 +39,8 @@ const LoginScreen = () => {
 	const handleLogin = async () => {
 		setLoading(true);
 		try {
-			setTimeout(()=>{
-				
-			},2000)
-			const response = await fetch(`http://192.168.187.7:5000/users/login`, {
+			const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+			const response = await fetch(`${url}/users/login`, {
 				method: 'POST',
 				headers: {
 				'Content-Type': 'application/json',
