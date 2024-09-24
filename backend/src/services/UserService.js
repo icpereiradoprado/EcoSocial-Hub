@@ -63,11 +63,13 @@ export default class UserService{
     static async edit(userData, userId){
         const { name, email, phone_number: phoneNumber, city, password, confirm_password: confirmPassword, profile_picture: profilePicture } = userData;
 
-        if(name){
+        if(name && name.length >= 3){
             const user = await UserRepository.findByNameOrEmail(name);
             if(user){
-                throw new Error('Nome de usuário já cadastrado!')
+                throw new Error('Nome de usuário já cadastrado!');
             }
+        }else{
+            userData.name = undefined;
         }
         
         if(email){
@@ -107,6 +109,11 @@ export default class UserService{
         const filteredUpdates = Object.entries(userData).filter(([key, value]) => value !== undefined);
         const columns = filteredUpdates.map(([key]) => key);
         const values = filteredUpdates.map(([_, value]) => value);
+
+        if (!Object.keys(userData).length || (columns.length < 1 || values.length < 1)) {
+            throw new Error('Nenhum dado para atualizar');
+        }
+
 
         await UserRepository.update(columns, values, userId);
     }
