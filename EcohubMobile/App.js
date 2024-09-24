@@ -1,12 +1,12 @@
 import React from 'react';
 import { StatusBar } from 'react-native'
 import RootStack from './src/navigation/RootStack';
-import { base } from './src/css/base';
+import { base, colors } from './src/css/base';
 
 const App = () => {
   return (
 	<>
-		<StatusBar barStyle="dark-content" backgroundColor='#f0f0f0'/>
+		<StatusBar barStyle="dark-content" backgroundColor={colors.white_default}/>
 		<RootStack />
 	</>
   );
