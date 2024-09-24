@@ -11,12 +11,13 @@ const Stack = createStackNavigator();
 export default function RootStack(){
    return(
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
+            <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='MainTabNavigator'> 
                 <Stack.Screen name="MainTabNavigator" component={MainTabNavigator}/>
+                <Stack.Screen name="RenderImageTest" component={RenderImageTest}/>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-                <Stack.Screen name="RenderImageTest" component={RenderImageTest}/>
             </Stack.Navigator>
         </NavigationContainer>
    ) 
 }
+//alterado initialRouteName de loginscreen para maintab, assim n preciso do banco de dados para ver as views

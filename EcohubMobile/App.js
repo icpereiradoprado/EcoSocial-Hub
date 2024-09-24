@@ -6,7 +6,7 @@ import { base } from './src/css/base';
 const App = () => {
   return (
 	<>
-		<StatusBar barStyle="dark-content" backgroundColor='#f0f0f0'/>
+		<StatusBar barStyle="dark-content" backgroundColor='#f0f0f2'/>
 		<RootStack />
 	</>
   );
