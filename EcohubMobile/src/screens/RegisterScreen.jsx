@@ -7,6 +7,7 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { ButtonLink } from '../components/ButtonLink';
 import { PasswordInput } from '../components/PasswordInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
 /**
@@ -23,7 +24,16 @@ export default function RegisterScreen(){
 	const [city, setCity] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
-  
+    
+    const saveTokenAndUserId = async (token, userId) => {
+		try{
+			await AsyncStorage.setItem('jwtToken', token);
+			await AsyncStorage.setItem('userId', userId.toString());
+		}catch(err){
+			console.error('Erro ao salvar token!', err);
+		}
+		
+	}
 	/**
 	 * Handler para executar a API de cadastro de um novo usuário
 	 */
@@ -48,6 +58,7 @@ export default function RegisterScreen(){
             const data = await response.json();
         
             if (response.ok) {
+                await saveTokenAndUserId(data.token, data.userId);
                 resetInputs();
                 navigation.navigate('MainTabNavigator')
             } else {
