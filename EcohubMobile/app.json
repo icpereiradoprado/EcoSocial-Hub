@@ -6,6 +6,14 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/logo.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "extra":{
       "apiUrl": "http://192.168.15.11:5000"
     },

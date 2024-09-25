@@ -12,6 +12,7 @@ const { height } = Dimensions.get('window');
 export function SettingsTest(){
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userId, setUserId] = useState(null);
+    const [token, setToken] = useState(null);
     const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [disabledButtonSave, setDisabledButtonSave] = useState(true);
@@ -21,6 +22,7 @@ export function SettingsTest(){
     const [city, setCity] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [profilePicture, setProfilePicture] = useState(null);
 
     const [originalName, setOriginalName] = useState('');
     const [originalEmail, setOriginalEmail] = useState('');
@@ -61,13 +63,16 @@ export function SettingsTest(){
             setLoadingPreferencesData(false);
 
             // Recupera o token e o userId
-            const { userId } = await getTokenAndUserId();
+            const { token, userId } = await getTokenAndUserId();
 
             if (!userId || isNaN(userId)) {
                 console.error('User ID é inválido ou não definido.');
                 setLoadingPreferencesData(false);
                 return;
             }
+
+            setUserId(userId);
+            setToken(token);
 
             const response = await fetch(`${url}/users/${userId}`);
             const data = await response.json();
@@ -86,6 +91,7 @@ export function SettingsTest(){
             setOriginalPhoneNumber(data.phonenumber || '');
             setCity(data.city || '');
             setOriginalCity(data.city || '');
+            setProfilePicture(data.profile_picture || null);
 
             setLoadingPreferencesData(false);
             
@@ -114,7 +120,6 @@ export function SettingsTest(){
                 body.email = email;
             }
             if(phoneNumber !== originalPhoneNumber){
-                console.log({phoneNumber, originalPhoneNumber})
                 body.phone_number = phoneNumber;
             }
             if(city !== originalCity){
@@ -157,7 +162,7 @@ export function SettingsTest(){
         <ScrollView style={{flex: 1 }}>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture />
+                <ProfilePicture token={token} userId={userId} />
                 <View style={{marginBottom: 40, marginTop: 10}}>
                     <TouchableOpacity onPress={handleLogoutMessage}>
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
