@@ -146,6 +146,8 @@ export function SettingsTest(){
                 if (response.ok) {
                     Alert.alert('Sucesso', data.message);
                     fetchPreferences();
+                    setPassword('');
+                    setConfirmPassword('');
                 } else {
                     Alert.alert('Erro', data.message);
                 }
