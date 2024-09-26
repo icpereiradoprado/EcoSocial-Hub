@@ -13,7 +13,8 @@ const { height,  width } = Dimensions.get('window');
  * @param {number} userId id do usuário
  * @returns Componente Imagem do Perfil do usuário
  */
-export function ProfilePicture({token, userId}){
+export function ProfilePicture({token, userId, imageUri}){
+    //console.log('ProfilePictureComponent:', (imageUri ? imageUri : null))
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -30,34 +31,25 @@ export function ProfilePicture({token, userId}){
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
             quality: 1,
+            base64: true
         });
     
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setImage(result.assets[0].base64);
             
-            const response = await fetch(image);
-            const blob = await response.blob();
-
-            const reader = new FileReader();
-
-            reader.readAsDataURL(blob);
-            reader.onloadend = () => {
-                const base64String = reader.result.split(',')[1];
-                saveImage(base64String);
-            }
+            //console.log(result.assets[0].uri)
+            //TODO: Extrair o typ/extensão do arquivo para colocar na string abaixo, tornando a extensão dinâmica
+            saveImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
         }
     };
 
     const saveImage = async (base64String) => {
         try {
-            console.log('SAVE IMAGE');
-            const reqBody = { "profile_picture" : base64String }
+            const reqBody = { "profile_picture_text" : base64String }
 
-            
             if(token && userId){
                 const response = await fetch(`${url}/users/edit/${userId}`, {
                     method: 'PATCH',
@@ -87,7 +79,11 @@ export function ProfilePicture({token, userId}){
     return (
         <>
         <TouchableOpacity activeOpacity={0.9} onPress={handleShowModal}>
-            <Image style={styles.picture} source={require('../assets/images/perfil-teste.png')} />
+            <Image 
+                source={ imageUri ? {uri : imageUri} : require('../assets/images/perfil-teste.png')}
+                style={styles.picture}
+                key={imageUri}
+            />
             <TouchableOpacity activeOpacity={0.7} style={styles.editButton} onPress={pickImage}>
                 <MaterialIcons name='edit' size={20} color={colors.black_default} />
             </TouchableOpacity>
@@ -95,7 +91,11 @@ export function ProfilePicture({token, userId}){
 
         <View style={[styles.modal, {display: modalVisible ? 'flex' : 'none'}]}>
             <View style={[styles.modalBody]}>
-                <Image style={styles.img} source={require('../assets/images/perfil-teste.png')} />
+                <Image 
+                    source={ imageUri ? {uri : imageUri} : require('../assets/images/perfil-teste.png')}
+                    style={styles.img}
+                    key={imageUri}
+                />
                 <TouchableOpacity style={styles.btnClose} activeOpacity={0.7} onPress={handleShowModal}>
                     <MaterialIcons name="close" size={25} />
                 </TouchableOpacity>

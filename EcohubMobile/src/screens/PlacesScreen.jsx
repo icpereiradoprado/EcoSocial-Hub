@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-export function PlacesTest(){
+export function PlacesScreen(){
     return(
         <View>
             <Text>

@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-export function CommunityTest(){
+export function CommunityScreen(){
     return(
         <View>
             <Text>

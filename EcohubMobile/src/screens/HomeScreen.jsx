@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { base } from '../css/base';
-export function HomeTest(){
+export function HomeScreen(){
     return(
         <View style = {styles.container}>
             

@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
 const { height } = Dimensions.get('window');
-export function SettingsTest(){
+export function SettingsScreen(){
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userId, setUserId] = useState(null);
     const [token, setToken] = useState(null);
@@ -91,8 +91,8 @@ export function SettingsTest(){
             setOriginalPhoneNumber(data.phonenumber || '');
             setCity(data.city || '');
             setOriginalCity(data.city || '');
-            setProfilePicture(data.profile_picture || null);
-
+            setProfilePicture(data.profile_picture_text);
+            
             setLoadingPreferencesData(false);
             
         }catch(err){
@@ -164,7 +164,7 @@ export function SettingsTest(){
         <ScrollView style={{flex: 1 }}>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture token={token} userId={userId} />
+                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} />
                 <View style={{marginBottom: 40, marginTop: 10}}>
                     <TouchableOpacity onPress={handleLogoutMessage}>
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>

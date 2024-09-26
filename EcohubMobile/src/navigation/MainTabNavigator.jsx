@@ -1,9 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeTest } from '../screens/HomeScreen';
-import { SettingsTest } from '../screens/SettingsScreen';
-import { CommunityTest } from '../screens/CommunityScreen';
-import { PlacesTest } from '../screens/PlacesScreen';
+import { HomeScreen } from '../screens/HomeScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { CommunityScreen } from '../screens/CommunityScreen';
+import { PlacesScreen } from '../screens/PlacesScreen';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BottomFabBar } from 'rn-wave-bottom-bar';
 import { base, colors } from '../css/base';
@@ -58,32 +58,32 @@ export default function MainTabNavigator(){
             }}
         >
             <Tab.Screen 
-                name='HomeTest'
-                component={HomeTest}
+                name='HomeScreen'
+                component={HomeScreen}
                 options={{
                     tabBarIcon: () => <MaterialIcons name='home' size={25} color={colors.black_default}/>,
                     tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
-                name='CommunityTest'
-                component={CommunityTest}
+                name='CommunityScreen'
+                component={CommunityScreen}
                 options={{
                     tabBarIcon: () => <MaterialIcons name='people-alt' size={25} color={colors.black_default}/>,
                     tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
-                name='PlacesTest'
-                component={PlacesTest}
+                name='PlacesScreen'
+                component={PlacesScreen}
                 options={{
                     tabBarIcon: () => <MaterialIcons name='location-on' size={25} color={colors.black_default}/>,
                     tabBarLabel: ''
                 }}
             />
             <Tab.Screen 
-                name='SettingsTest'
-                component={SettingsTest}
+                name='SettingsScreen'
+                component={SettingsScreen}
                 options={{
                     tabBarIcon: () => <MaterialIcons name='settings' size={25} color={colors.black_default}/>,
                     tabBarLabel: ''
