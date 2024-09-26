@@ -52,6 +52,14 @@ export default class UserService{
         if(!user){
             throw new Error('Usuário não encontrado!');
         }
+
+        //Converte a imagem para base64
+        const imageBuffer = user.profile_picture;
+        if(imageBuffer){
+            const base64Image = imageBuffer.toString('base64');
+            user.profile_picture = base64Image;
+        }
+
         return user;
     }
 
@@ -61,7 +69,7 @@ export default class UserService{
      * @param {*} userId 
      */
     static async edit(userData, userId){
-        const { name, email, phone_number: phoneNumber, city, password, confirm_password: confirmPassword, profile_picture: profilePicture } = userData;
+        const { name, email, phone_number: phoneNumber, city, password, confirm_password: confirmPassword, profile_picture: profilePicture, profile_picture_text } = userData;
 
         if(name && name.length >= 3){
             const user = await UserRepository.findByNameOrEmail(name);

@@ -99,7 +99,7 @@ export default class UserRepository{
      * @returns UserModel
      */
     static async findById(id){
-        const query = `SELECT ID, NAME, EMAIL, CITY, PHONE_NUMBER AS phoneNumber, PROFILE_PICTURE as profilePicture FROM ${TABLE_NAME} WHERE ID = $1`;
+        const query = `SELECT ID, NAME, EMAIL, CITY, PHONE_NUMBER AS phoneNumber, PROFILE_PICTURE, PROFILE_PICTURE_TEXT FROM ${TABLE_NAME} WHERE ID = $1`;
         const values = [id];
 
         const result = await pool.query(query, values);
