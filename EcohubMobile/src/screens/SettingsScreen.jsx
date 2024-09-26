@@ -91,7 +91,7 @@ export function SettingsScreen(){
             setOriginalPhoneNumber(data.phonenumber || '');
             setCity(data.city || '');
             setOriginalCity(data.city || '');
-            setProfilePicture(data.profile_picture_text);
+            setProfilePicture(data.profile_picture);
             
             setLoadingPreferencesData(false);
             

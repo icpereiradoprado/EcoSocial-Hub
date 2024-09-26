@@ -38,17 +38,18 @@ export function ProfilePicture({token, userId, imageUri}){
         });
     
         if (!result.canceled) {
-            setImage(result.assets[0].base64);
+            setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
             
             //console.log(result.assets[0].uri)
-            //TODO: Extrair o typ/extensão do arquivo para colocar na string abaixo, tornando a extensão dinâmica
-            saveImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
+            //TODO: Extrair o type/extensão do arquivo para colocar na string abaixo, tornando a extensão dinâmica
+            //saveImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
+            saveImage(`${result.assets[0].base64}`);
         }
     };
 
     const saveImage = async (base64String) => {
         try {
-            const reqBody = { "profile_picture_text" : base64String }
+            const reqBody = { "profile_picture" : base64String }
 
             if(token && userId){
                 const response = await fetch(`${url}/users/edit/${userId}`, {
@@ -80,7 +81,7 @@ export function ProfilePicture({token, userId, imageUri}){
         <>
         <TouchableOpacity activeOpacity={0.9} onPress={handleShowModal}>
             <Image 
-                source={ imageUri ? {uri : imageUri} : require('../assets/images/perfil-teste.png')}
+                source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/perfil-teste.png')}
                 style={styles.picture}
                 key={imageUri}
             />
@@ -92,7 +93,7 @@ export function ProfilePicture({token, userId, imageUri}){
         <View style={[styles.modal, {display: modalVisible ? 'flex' : 'none'}]}>
             <View style={[styles.modalBody]}>
                 <Image 
-                    source={ imageUri ? {uri : imageUri} : require('../assets/images/perfil-teste.png')}
+                    source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/perfil-teste.png')}
                     style={styles.img}
                     key={imageUri}
                 />
