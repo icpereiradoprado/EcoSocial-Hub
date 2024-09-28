@@ -40,6 +40,7 @@ const LoginScreen = () => {
 		setLoading(true);
 		try {
 			const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+			console.log(url);
 			const response = await fetch(`${url}/users/login`, {
 				method: 'POST',
 				headers: {

@@ -164,7 +164,7 @@ export function SettingsScreen(){
         <ScrollView style={{flex: 1 }}>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} />
+                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name}/>
                 <View style={{marginBottom: 40, marginTop: 10}}>
                     <TouchableOpacity onPress={handleLogoutMessage}>
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>

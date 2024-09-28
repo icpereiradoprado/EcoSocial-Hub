@@ -11,9 +11,11 @@ const { height,  width } = Dimensions.get('window');
  * Componente Imagem do Perfil do usuário
  * @param {string} token token de autenticação
  * @param {number} userId id do usuário
+ * @param {imageUri} imageUri URI da imagem de perfil do usuário
+ * @param {name} name Nome do usuário
  * @returns Componente Imagem do Perfil do usuário
  */
-export function ProfilePicture({token, userId, imageUri}){
+export function ProfilePicture({token, userId, imageUri, name}){
     //console.log('ProfilePictureComponent:', (imageUri ? imageUri : null))
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
 
@@ -76,12 +78,54 @@ export function ProfilePicture({token, userId, imageUri}){
         }
     };
 
+    // Função para pegar a primeira letra do nome
+    const getInitialLetter = (name) => {
+        return name ? name.charAt(0).toUpperCase() : '';
+    };
+
+
+    // Carrega a imagem com base na inicial do nome
+    const getInitialImage = (initialLetter) => {
+        switch (initialLetter) {
+            case 'A': return require('../assets/images/profile_pictures/A.png');
+            case 'B': return require('../assets/images/profile_pictures/B.png');
+            case 'C': return require('../assets/images/profile_pictures/C.png');
+            case 'D': return require('../assets/images/profile_pictures/D.png');
+            case 'E': return require('../assets/images/profile_pictures/E.png');
+            case 'F': return require('../assets/images/profile_pictures/F.png');
+            case 'G': return require('../assets/images/profile_pictures/G.png');
+            case 'H': return require('../assets/images/profile_pictures/H.png');
+            case 'I': return require('../assets/images/profile_pictures/I.png');
+            case 'J': return require('../assets/images/profile_pictures/J.png');
+            case 'K': return require('../assets/images/profile_pictures/K.png');
+            case 'L': return require('../assets/images/profile_pictures/L.png');
+            case 'M': return require('../assets/images/profile_pictures/M.png');
+            case 'N': return require('../assets/images/profile_pictures/N.png');
+            case 'O': return require('../assets/images/profile_pictures/O.png');
+            case 'P': return require('../assets/images/profile_pictures/P.png');
+            case 'Q': return require('../assets/images/profile_pictures/Q.png');
+            case 'R': return require('../assets/images/profile_pictures/R.png');
+            case 'S': return require('../assets/images/profile_pictures/S.png');
+            case 'T': return require('../assets/images/profile_pictures/T.png');
+            case 'U': return require('../assets/images/profile_pictures/U.png');
+            case 'V': return require('../assets/images/profile_pictures/V.png');
+            case 'W': return require('../assets/images/profile_pictures/W.png');
+            case 'X': return require('../assets/images/profile_pictures/X.png');
+            case 'Y': return require('../assets/images/profile_pictures/Y.png');
+            case 'Z': return require('../assets/images/profile_pictures/Z.png');
+            default: return require('../assets/images/profile_pictures/perfil-default.png')
+        }
+    };
+
+    const initialLetter = getInitialLetter(name);
+    const initialImage = getInitialImage(initialLetter);
+
     
     return (
         <>
         <TouchableOpacity activeOpacity={0.9} onPress={handleShowModal}>
             <Image 
-                source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/perfil-teste.png')}
+                source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : initialImage }
                 style={styles.picture}
                 key={imageUri}
             />
@@ -93,7 +137,7 @@ export function ProfilePicture({token, userId, imageUri}){
         <View style={[styles.modal, {display: modalVisible ? 'flex' : 'none'}]}>
             <View style={[styles.modalBody]}>
                 <Image 
-                    source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/perfil-teste.png')}
+                    source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/profile_pictures/perfil-default.png')}
                     style={styles.img}
                     key={imageUri}
                 />
