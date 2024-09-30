@@ -15,7 +15,8 @@ export default class AuthService{
         //Cria o token
         const token = jwt.sign({
             name: user.name,
-            id: user.id
+            id: user.id,
+            isAdmin: user.is_admin
         }, process.env.SECRET);
 
         return token;
@@ -123,7 +124,7 @@ export default class AuthService{
         const token = AuthService.getToken(authorization);
 
         if(!token){
-            res.status(401).json({ message: 'Acesso Negado!' });
+            throw new Error('Acesso Negado!');
         }
 
         const decoded = jwt.verify(token, process.env.SECRET);
