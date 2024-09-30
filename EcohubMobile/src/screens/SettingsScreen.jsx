@@ -10,9 +10,15 @@ import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
 
 const { height } = Dimensions.get('window');
+
+/**
+ * Tela de Configurações do usuário
+ * @returns Tela de Configurações do usuário
+ */
 export function SettingsScreen(){
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const navigator = useNavigation();
+    const [scrollEnabled, setScrollEnabled] = useState(true);
     const [userId, setUserId] = useState(null);
     const [token, setToken] = useState(null);
     const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
@@ -31,6 +37,9 @@ export function SettingsScreen(){
     const [originalPhoneNumber, setOriginalPhoneNumber] = useState('');
     const [originalCity, setOriginalCity] = useState('');
 
+    /**
+     * Método handler para exibir a mensage de confirmação de Logout
+     */
     const handleLogoutMessage = () => {
         Alert.alert('Logout', 'Deseja sair?', [
             {
@@ -44,6 +53,9 @@ export function SettingsScreen(){
         ])
     }
 
+    /**
+     * Método handler para efetuar o Logout
+     */
     const handleLogout = () => {
         try {
             AsyncStorage.removeItem('jwtToken');
@@ -57,6 +69,10 @@ export function SettingsScreen(){
         
     }
 
+    /**
+     * Obtem o `token` e o `userId` armazenados no Storage
+     * @returns `token` e `userId`
+     */
     const getTokenAndUserId = async () => {
         try {
             const token = await AsyncStorage.getItem('jwtToken');
@@ -69,6 +85,9 @@ export function SettingsScreen(){
     };
 
 
+    /**
+     * Obtem os dados do usuário através da API
+     */
     const fetchPreferences = useCallback(async () => {
         try{
             setLoadingPreferencesData(false);
@@ -115,7 +134,10 @@ export function SettingsScreen(){
         fetchPreferences();
     },[fetchPreferences]);
 
-    const handleChangePreferences = async () => {
+    /**
+     * Método handler para alterar os dados do usuário
+     */
+    const handleChangeUserData = async () => {
         if(name !== originalName || email !== originalEmail || phoneNumber !== originalPhoneNumber || city !== originalCity || (password && confirmPassword)){
             setLoading(true);
             const {token, userId} = await getTokenAndUserId();
@@ -172,10 +194,10 @@ export function SettingsScreen(){
     }
 
     return(
-        <ScrollView style={{flex: 1 }}>
+        <ScrollView style={{flex: 1 }} scrollEnabled={scrollEnabled}>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture}/>
+                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture} setScrollEnabled={setScrollEnabled}/>
                 <View style={{marginBottom: 40, marginTop: 10}}>
                     <TouchableOpacity onPress={handleLogoutMessage}>
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
@@ -228,7 +250,7 @@ export function SettingsScreen(){
                     placeholder="Confirmar senha"
                 />
 
-                <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangePreferences}/>
+                <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangeUserData}/>
             </View>
         </ScrollView>
     )
