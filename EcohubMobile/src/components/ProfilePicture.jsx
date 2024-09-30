@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { View, TouchableOpacity, Alert, Image, StyleSheet, Text, Pressable, Dimensions } from 'react-native';
 import { MaterialIcons }  from '@expo/vector-icons';
 import { colors } from '../css/base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height,  width } = Dimensions.get('window');
 
@@ -15,13 +16,12 @@ const { height,  width } = Dimensions.get('window');
  * @param {name} name Nome do usuário
  * @returns Componente Imagem do Perfil do usuário
  */
-export function ProfilePicture({token, userId, imageUri, name}){
-    //console.log('ProfilePictureComponent:', (imageUri ? imageUri : null))
+export function ProfilePicture({token, userId, imageUri, setImageUri, name}){
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
 
     const [modalVisible, setModalVisible] = useState(false);
     const [image, setImage] = useState(null);
-
+    const [initialImage, setInitialImage] = useState(null);
     const handleEditProfilePicutre = () => {
         Alert.alert('Editar foto', 'Escolha sua foto')
     }
@@ -65,6 +65,12 @@ export function ProfilePicture({token, userId, imageUri, name}){
             
                 const data = await response.json();
                 if(!response.ok){
+                    setImage(null);
+                    try {
+                        await AsyncStorage.removeItem('profile_picture_removed');
+                    } catch (err) {
+                        console.error('Erro ao criar armazenar dado em cache:', err)
+                    }
                     Alert.alert('Erro ao salvar a imagem!', data.message);
                 }else{
                     Alert.alert('Sucesso!', 'Imagem alterada!');
@@ -87,40 +93,84 @@ export function ProfilePicture({token, userId, imageUri, name}){
     // Carrega a imagem com base na inicial do nome
     const getInitialImage = (initialLetter) => {
         switch (initialLetter) {
-            case 'A': return require('../assets/images/profile_pictures/A.png');
-            case 'B': return require('../assets/images/profile_pictures/B.png');
-            case 'C': return require('../assets/images/profile_pictures/C.png');
-            case 'D': return require('../assets/images/profile_pictures/D.png');
-            case 'E': return require('../assets/images/profile_pictures/E.png');
-            case 'F': return require('../assets/images/profile_pictures/F.png');
-            case 'G': return require('../assets/images/profile_pictures/G.png');
-            case 'H': return require('../assets/images/profile_pictures/H.png');
-            case 'I': return require('../assets/images/profile_pictures/I.png');
-            case 'J': return require('../assets/images/profile_pictures/J.png');
-            case 'K': return require('../assets/images/profile_pictures/K.png');
-            case 'L': return require('../assets/images/profile_pictures/L.png');
-            case 'M': return require('../assets/images/profile_pictures/M.png');
-            case 'N': return require('../assets/images/profile_pictures/N.png');
-            case 'O': return require('../assets/images/profile_pictures/O.png');
-            case 'P': return require('../assets/images/profile_pictures/P.png');
-            case 'Q': return require('../assets/images/profile_pictures/Q.png');
-            case 'R': return require('../assets/images/profile_pictures/R.png');
-            case 'S': return require('../assets/images/profile_pictures/S.png');
-            case 'T': return require('../assets/images/profile_pictures/T.png');
-            case 'U': return require('../assets/images/profile_pictures/U.png');
-            case 'V': return require('../assets/images/profile_pictures/V.png');
-            case 'W': return require('../assets/images/profile_pictures/W.png');
-            case 'X': return require('../assets/images/profile_pictures/X.png');
-            case 'Y': return require('../assets/images/profile_pictures/Y.png');
-            case 'Z': return require('../assets/images/profile_pictures/Z.png');
-            default: return require('../assets/images/profile_pictures/perfil-default.png')
+            case 'A': setInitialImage(require('../assets/images/profile_pictures/A.png')); break;
+            case 'B': setInitialImage(require('../assets/images/profile_pictures/B.png')); break;
+            case 'C': setInitialImage(require('../assets/images/profile_pictures/C.png')); break;
+            case 'D': setInitialImage(require('../assets/images/profile_pictures/D.png')); break;
+            case 'E': setInitialImage(require('../assets/images/profile_pictures/E.png')); break;
+            case 'F': setInitialImage(require('../assets/images/profile_pictures/F.png')); break;
+            case 'G': setInitialImage(require('../assets/images/profile_pictures/G.png')); break;
+            case 'H': setInitialImage(require('../assets/images/profile_pictures/H.png')); break;
+            case 'I': setInitialImage(require('../assets/images/profile_pictures/I.png')); break;
+            case 'J': setInitialImage(require('../assets/images/profile_pictures/J.png')); break;
+            case 'K': setInitialImage(require('../assets/images/profile_pictures/K.png')); break;
+            case 'L': setInitialImage(require('../assets/images/profile_pictures/L.png')); break;
+            case 'M': setInitialImage(require('../assets/images/profile_pictures/M.png')); break;
+            case 'N': setInitialImage(require('../assets/images/profile_pictures/N.png')); break;
+            case 'O': setInitialImage(require('../assets/images/profile_pictures/O.png')); break;
+            case 'P': setInitialImage(require('../assets/images/profile_pictures/P.png')); break;
+            case 'Q': setInitialImage(require('../assets/images/profile_pictures/Q.png')); break;
+            case 'R': setInitialImage(require('../assets/images/profile_pictures/R.png')); break;
+            case 'S': setInitialImage(require('../assets/images/profile_pictures/S.png')); break;
+            case 'T': setInitialImage(require('../assets/images/profile_pictures/T.png')); break;
+            case 'U': setInitialImage(require('../assets/images/profile_pictures/U.png')); break;
+            case 'V': setInitialImage(require('../assets/images/profile_pictures/V.png')); break;
+            case 'W': setInitialImage(require('../assets/images/profile_pictures/W.png')); break;
+            case 'X': setInitialImage(require('../assets/images/profile_pictures/X.png')); break;
+            case 'Y': setInitialImage(require('../assets/images/profile_pictures/Y.png')); break;
+            case 'Z': setInitialImage(require('../assets/images/profile_pictures/Z.png')); break;
+            default : setInitialImage(require('../assets/images/profile_pictures/perfil-default.png'))
         }
-    };
+    }; 
 
-    const initialLetter = getInitialLetter(name);
-    const initialImage = getInitialImage(initialLetter);
+    const handleDeletePictureMessage = () =>{
+        Alert.alert('Remover foto', 'Você realmente deseja remover a foto do perfil? ',[{
+            text: 'Não',
+            style: 'cancel'
+        },{
+            text: 'Sim',
+            onPress: handleDeletePicture
+        }])
+    }
 
+    const handleDeletePicture = async () => {
+        try {
+            const profile_picture_removed = await AsyncStorage.getItem('profile_picture_removed');
+            console.log(profile_picture_removed);
+            if(profile_picture_removed !== 'true'){
+                if(token && userId && imageUri){
+                    const response = await fetch(`${url}/users/edit/${useId}`,{
+                        method: 'PATCH',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({"profile_picture" : null})
+                    });
     
+                    if(response.ok){
+                        setImageUri(null);
+                        setImage(null);
+                        setInitialImage(null);
+                        try {
+                            await AsyncStorage.setItem('profile_picture_removed', 'true');
+                        } catch (err) {
+                            console.error('Erro ao criar armazenar dado em cache:', err)
+                        }
+                        Alert.alert('Sucesso', 'Imagem removida com sucesso!');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Erro ao deletar a imagem:', err)
+        }
+    }
+
+    useEffect(()=>{
+        const initialLetter = getInitialLetter(name);
+        getInitialImage(initialLetter);
+    }, [name])
+
     return (
         <>
         <TouchableOpacity activeOpacity={0.9} onPress={handleShowModal}>
@@ -130,14 +180,14 @@ export function ProfilePicture({token, userId, imageUri, name}){
                 key={imageUri}
             />
             <TouchableOpacity activeOpacity={0.7} style={styles.editButton} onPress={pickImage}>
-                <MaterialIcons name='edit' size={20} color={colors.black_default} />
+                <MaterialIcons name='photo-camera' size={20} color={colors.black_default} />
             </TouchableOpacity>
         </TouchableOpacity>
 
         <View style={[styles.modal, {display: modalVisible ? 'flex' : 'none'}]}>
             <View style={[styles.modalBody]}>
                 <Image 
-                    source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : require('../assets/images/profile_pictures/perfil-default.png')}
+                    source={image ? {uri : image} : imageUri ? {uri : `data:image/jpeg;base64,${imageUri}`} : initialImage }
                     style={styles.img}
                     key={imageUri}
                 />
@@ -145,6 +195,12 @@ export function ProfilePicture({token, userId, imageUri, name}){
                     <MaterialIcons name="close" size={25} />
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity activeOpacity={0.7} onPress={handleDeletePictureMessage}>
+                <View style={{alignItems: 'center', flexDirection: 'row', marginTop: 10}}>
+                    <Text style={{color: '#F5392B', textDecorationLine: 'underline'}}>Remover foto</Text>
+                    <MaterialIcons name='delete' size={20} color='#F5392B'/>
+                </View>
+            </TouchableOpacity>
         </View>
 
         </>

@@ -7,10 +7,12 @@ import { PasswordInput } from '../components/PasswordInput';
 import { Button } from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { useNavigation } from '@react-navigation/native';
 
 const { height } = Dimensions.get('window');
 export function SettingsScreen(){
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+    const navigator = useNavigation();
     const [userId, setUserId] = useState(null);
     const [token, setToken] = useState(null);
     const [loadingPreferencesData, setLoadingPreferencesData] = useState(false);
@@ -32,7 +34,7 @@ export function SettingsScreen(){
     const handleLogoutMessage = () => {
         Alert.alert('Logout', 'Deseja sair?', [
             {
-                text: 'Cancel',
+                text: 'Não',
                 style: 'cancel'
             },
             {
@@ -42,8 +44,17 @@ export function SettingsScreen(){
         ])
     }
 
-    const handleLogout = ()=>{
-        console.log('Logout..')
+    const handleLogout = () => {
+        try {
+            AsyncStorage.removeItem('jwtToken');
+            navigator.reset({
+                index: 0,
+                routes: [{name: 'LoginScreen'}]
+            });
+        } catch (err) {
+            console.error('Erro ao fazer logout:', err)
+        }
+        
     }
 
     const getTokenAndUserId = async () => {
@@ -164,7 +175,7 @@ export function SettingsScreen(){
         <ScrollView style={{flex: 1 }}>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name}/>
+                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture}/>
                 <View style={{marginBottom: 40, marginTop: 10}}>
                     <TouchableOpacity onPress={handleLogoutMessage}>
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
