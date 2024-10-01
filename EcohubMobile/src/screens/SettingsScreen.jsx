@@ -8,6 +8,7 @@ import { Button } from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
+import Loading from '../components/Loading';
 
 const { height } = Dimensions.get('window');
 
@@ -90,7 +91,7 @@ export function SettingsScreen(){
      */
     const fetchPreferences = useCallback(async () => {
         try{
-            setLoadingPreferencesData(false);
+            setLoadingPreferencesData(true);
 
             // Recupera o token e o userId
             const { token, userId } = await getTokenAndUserId();
@@ -133,6 +134,14 @@ export function SettingsScreen(){
     useEffect(()=>{
         fetchPreferences();
     },[fetchPreferences]);
+
+    useEffect(()=>{
+        if(loadingPreferencesData){
+            setScrollEnabled(false);
+        }else{
+            setScrollEnabled(true); 
+        }
+    }, [loadingPreferencesData]);
 
     /**
      * Método handler para alterar os dados do usuário
@@ -195,6 +204,7 @@ export function SettingsScreen(){
 
     return(
         <ScrollView style={{flex: 1 }} scrollEnabled={scrollEnabled}>
+            <Loading isLoading={loadingPreferencesData} loadingText='Carregando dados do usuário...'/>
             <View style={style.container}>
                 <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
                 <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture} setScrollEnabled={setScrollEnabled}/>

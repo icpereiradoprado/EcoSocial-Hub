@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../css/base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
+import Loading from './Loading';
 
 const { height, width } = Dimensions.get('window');
 
@@ -24,6 +25,8 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
     const [modalVisibleOptionPicture, setModalVisibleOptionPicture] = useState(false);
     const [image, setImage] = useState(null);
     const [initialImage, setInitialImage] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('');
 
     /**
      * Método handler para exibir o modal de exibição da imagem
@@ -79,6 +82,8 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
      * @param {string} base64String Imagem em base64
      */
     const handleSaveImage = async (base64String) => {
+        setIsLoading(true);
+        setLoadingText('Salvando a imagem...');
         try {
             const reqBody = { "profile_picture": base64String }
 
@@ -94,7 +99,8 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
 
                 const data = await response.json();
                 if (response.ok) {
-                    Alert.alert('Sucesso!', 'Imagem alterada!');
+                    setIsLoading(false);
+                    //Alert.alert('Sucesso!', 'Imagem alterada!');
                     setImageUri(base64String);
                 } else {
                     Alert.alert('Erro ao salvar a imagem!', data.message);
@@ -172,9 +178,10 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
      * Método handler para deletar a imagem de perfil
      */
     const handleDeletePicture = async () => {
+        setIsLoading(true);
+        setLoadingText('Deletando a imagem...');
         try {
             if (token && userId && imageUri) {
-                console.log('remover imagem');
                 const response = await fetch(`${url}/users/edit/${useId}`, {
                     method: 'PATCH',
                     headers: {
@@ -187,7 +194,7 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
                 if (response.ok) {
                     setImageUri(null);
                     setImage(null);
-                    Alert.alert('Sucesso', 'Imagem removida com sucesso!');
+                    setIsLoading(false);
                 }
             }
         } catch (err) {
@@ -201,17 +208,18 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
         getInitialImage(initialLetter);
     }, [name]);
 
-    /**UseEffect usado para alterar o estado do scroll da tela de acordo a mudança de estado de `modalVisible` e `modalVisibleOptionPicture` */
+    /**UseEffect usado para alterar o estado do scroll da tela de acordo a mudança de estado de `modalVisible`, `modalVisibleOptionPicture` ou `isLoading` */
     useEffect(() => {
-        if(modalVisible || modalVisibleOptionPicture){
+        if(modalVisible || modalVisibleOptionPicture || isLoading){
             setScrollEnabled(false);
         }else{
             setScrollEnabled(true);
         }
-    }, [modalVisible, modalVisibleOptionPicture]);
+    }, [modalVisible, modalVisibleOptionPicture, isLoading]);
 
     return (
         <>
+            <Loading isLoading={isLoading} loadingText={loadingText} />
             <TouchableOpacity activeOpacity={0.9} onPress={handleShowModal}>
                 {/** IMAGEM COM DIMENSÕES MENORES */}
                 <Image
