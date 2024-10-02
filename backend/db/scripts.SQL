@@ -1,0 +1,177 @@
+--SCRIPT DE CRIAÇÃO DO BANCO v1.0
+
+-- [DATABASE]
+
+CREATE DATABASE ECOSOCIALHUB;
+
+-- ===========================================================================
+-- [USER_ACCOUNT]
+-- ID                   | ID DO USUÁRIO
+-- NAME                 | NOME DO USUÁRIO
+-- EMAIL                | EMAIL DO USUÁRIO
+-- PASSWORD             | SENHA DO USUÁRIO
+-- IS_ADMIN             | ADMIN? [0]:NÃO [1]:SIM
+-- PHONE_NUMBER         | NÚMERO DE TELEFONE DO USUÁRIO
+-- ===========================================================================
+CREATE TABLE USER_ACCOUNT
+(
+	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+  , NAME                 VARCHAR(255)                            NOT NULL
+  , EMAIL                VARCHAR(255) 						         NULL
+  , PASSWORD             VARCHAR(255)							 NOT NULL
+  , IS_ADMIN             NUMERIC(1)				      DEFAULT 0  NOT NULL
+  , PHONE_NUMBER         VARCHAR(15)                                 NULL
+  , PROFILE_PICTURE      BYTEA                                       NULL
+  , PROFILE_PICTURE_EXT  VARCHAR(10)                                 NULL
+  , CITY                 VARCHAR(255)                            NOT NULL
+);
+
+-- ===========================================================================
+-- [POST]
+-- ID                   | ID DO POST
+-- TITLE                | TITULO DO POST
+-- CONTENT              | CONTEÚDO DO COMENTÁRIO
+-- USER_ID              | ID DO USUÁRIO QUE CRIOU O POST
+-- INACTIVE             | STATUS DO POST [0]:ATIVO [1]:INATIVO
+-- UPVOTES              | VOTOS POSITIVOS
+-- DOWNVOTES            | VOTOS NEGATIVOS
+-- SCORE                | SCORE DO POST
+-- COMMENT_COUNT        | NÚMERO DE COMENTÁRIOS
+-- LAST_ACTIVITY_AT     | DATA DA ÚLTIMA ATIVIDADE NO POST (UPVOTES, DOWNVOTES, COMMENT)
+-- CREATE_DATE          | DATA DE CRIAÇÃO DO POST
+-- UPDATE_DATE          | DATA DE ATUALIZAÇÃO DO POST
+-- ===========================================================================
+CREATE TABLE POST
+(
+	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+  , TITLE                VARCHAR(255)                               NOT NULL
+  , CONTENT              TEXT                   				    NOT NULL
+  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)        NOT NULL
+  , INACTIVE             NUMERIC(1)			       DEFAULT 0        NOT NULL
+  , UPVOTES              INTEGER                      DEFAULT 0         NULL             
+  , DOWNVOTES            INTEGER                      DEFAULT 0         NULL
+  , SCORE                INTEGER GENERATED ALWAYS AS (((UPVOTES - DOWNVOTES) / (CASE WHEN (UPDATE_DATE::DATE - CREATE_DATE::DATE) = 0 THEN 1 ELSE (UPDATE_DATE::DATE - CREATE_DATE::DATE) END))) STORED
+  , COMMENT_COUNT        INTEGER                      DEFAULT 0     NOT NULL
+  , LAST_ACTIVITY_AT     TIMESTAMP(3)                 DEFAULT NOW() NOT NULL
+  , CREATE_DATE          TIMESTAMP(3)                 DEFAULT NOW() NOT NULL
+  , UPDATE_DATE          TIMESTAMP(3)                                   NULL
+  , POST_PICTURE         BYTEA                                          NULL
+  , POST_PICTURE_EXT     VARCHAR(10)                                    NULL
+);
+
+-- ===========================================================================
+-- [COMMENT]
+-- ID                   | ID DO COMENTÁRIO
+-- POST_ID              | ID DO POST
+-- USER_ID              | ID DO USUÁRIO
+-- CONTENT              | CONTEÚDO DO COMENTÁRIO     
+-- CREATE_DATE          | DATA DE CRIAÇÃO DO COMENTÁRIO
+-- UPDATE_DATE          | DATA DE ATUALIZAÇÃO DO COMENTÁRIO
+-- ===========================================================================
+CREATE TABLE COMMENT
+(
+	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+  , POST_ID              INTEGER REFERENCES POST(ID)             NOT NULL
+  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
+  , CONTENT              VARCHAR(255)                            NOT NULL
+  , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
+  , UPDATE_DATE          TIMESTAMP(3)                                NULL
+);
+
+-- ===========================================================================
+-- [EDUCATIONAL_CONTENT]
+-- ID                   | ID DO CONTEÚDO EDUCACIONAL
+-- TITLE                | TITULO
+-- CONTENT              | CONTEUDO
+-- CREATE_DATE          | DATA DE CRIAÇÃO DO CONTEUDO EDUCACIONAL     
+-- USER_ID              | ID DO USUÁRIO CRIADOR
+-- TAG                  | TAGS             
+-- ===========================================================================
+CREATE TABLE EDUCATIONAL_CONTENT
+(
+	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+  , TITLE                VARCHAR(255)                            NOT NULL
+  , CONTENT              VARCHAR(900)                            NOT NULL
+  , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW()     NULL
+  , UPDATE_DATE          TIMESTAMP(3)                                NULL
+  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
+  , TAG                  TEXT                                        NULL
+  , EDUCATION_PICTURE    BYTEA                                       NULL
+  , POST_PICTURE_EXT     VARCHAR(10)                                 NULL
+  
+  ,NULL
+);
+
+-- ===========================================================================
+-- [RECYCLING_CENTER]
+-- ID                   | ID DO CENTRO DE RECICLAGEM
+-- NAME                 | NOME DO CENTRO DE RECICLAGEM
+-- STREET               | RUA
+-- NUMBER               | NÚMERO     
+-- COMPLEMENT           | COMPLEMENTO
+-- POSTAL_CODE          | CEP 
+-- STATE                | ESTADO
+-- CITY                 | CIDADE
+-- OPENING_HOUR         | HORÁRIO DE FUNCIONAMENTO
+-- PHONE_NUMBER         | NÚMERO DE TELEFONE
+-- ===========================================================================
+CREATE TABLE RECYCLING_CENTER
+(
+	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+  , NAME                 VARCHAR(255)                            NOT NULL
+  , STREET               VARCHAR(255)                            NOT NULL
+  , NUMBER               VARCHAR(10)                                 NULL
+  , COMPLEMENT           VARCHAR(50)                                 NULL
+  , POSTAL_CODE          CHAR(8)                                     NULL
+  , STATE                CHAR(2)                                 NOT NULL
+  , CITY                 VARCHAR(50)                             NOT NULL
+  , OPENING_HOUR         VARCHAR(50)                             NOT NULL
+  , PHONE_NUMBER         VARCHAR(15)                                 NULL
+  , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
+  , UPDATE_DATE          TIMESTAMP(3)                                NULL
+);
+
+-- [SCRIPT DE UPDATE DO BANCO]
+
+ALTER TABLE POST DROP COLUMN SCORE; ALTER TABLE POST ADD COLUMN SCORE INTEGER GENERATED ALWAYS AS (((UPVOTES - DOWNVOTES) / (CASE WHEN (UPDATE_DATE::DATE - CREATE_DATE::DATE) = 0 THEN 1 ELSE (UPDATE_DATE::DATE - CREATE_DATE::DATE) END))) STORED;
+ALTER TABLE USER_ACCOUNT ADD COLUMN PROFILE_PICTURE BYTEA NULL;
+ALTER TABLE USER_ACCOUNT ADD COLUMN CITY VARCHAR(255) NULL;
+ALTER TABLE USER_ACCOUNT ADD COLUMN PROFILE_PICTURE_EXT VARCHAR(10) NULL;
+ALTER TABLE POST ADD COLUMN POST_PICTURE BYTEA NULL;
+ALTER TABLE POST ADD COLUMN POST_PICTURE_EXT VARCHAR(10) NULL;
+ALTER TABLE EDUCATION_CONTENT ADD COLUMN CONTENT_PICTURE VARCHAR(10) NULL;
+ALTER TABLE EDUCATION_CONTENT ADD COLUMN CONTENT_PICTURE_EXT VARCHAR(10) NULL;
+ALTER TABLE RECYCLING_CENTER  ADD COLUMN CREATE_DATE TIMESTAMP(3) DEFAULT NOW() NOT NULL;
+ALTER TABLE RECYCLING_CENTER  ADD COLUMN UPDATE_DATE TIMESTAMP(3) NULL;
+ALTER TABLE EDUCATIONAL_CONTENT ALTER COLUMN CREATE_DATE SET DEFAULT NOW();
+ALTER TABLE EDUCATIONAL_CONTENT ALTER COLUMN CREATE_DATE SET NOT NULL;
+ALTER TABLE POST ALTER COLUMN UPDATE_DATE DROP DEFAULT;
+ALTER TABLE POST ALTER COLUMN UPDATE_DATE SET NULL;
+ALTER TABLE COMMENT ALTER COLUMN CREATE_DATE SET DEFAULT NOW();
+ALTER TABLE COMMENT ALTER COLUMN CREATE_DATE SET NOT NULL;
+ALTER TABLE RECYCLING_CENTER ALTER COLUMN CREATE_DATE SET DEFAULT NOW();
+ALTER TABLE RECYCLING_CENTER ALTER COLUMN CREATE_DATE SET NOT NULL;
+
+-- [FUNCTIONS]
+
+-- ===========================================================================
+-- [FN_COMMENT_HIERARCHY]
+--  RETORNA A HIERARQUIA DOS COMENTÁRIOS DE UM POST
+-- SAMPLES:
+-- SELECT * FROM FN_COMMENT_HIERARCHY(2);
+-- ===========================================================================
+CREATE OR REPLACE FUNCTION FN_COMMENT_HIERARCHY(P_POSTID INTEGER)
+RETURNS TABLE(ID INTEGER, CONTENT VARCHAR(255), PARENT INTEGER, LEVEL INTEGER, PATH  TEXT) AS $$
+BEGIN
+  RETURN QUERY
+  WITH RECURSIVE COMMENTHIERARCHY AS (
+      -- SELECIONA OS COMENTÁRIOS QUE SÃO PAIS (PARENT IS NULL)
+      SELECT C.ID, C.CONTENT, C.PARENT, 0 AS LEVEL, CAST(C.ID AS TEXT) AS PATH FROM COMMENT C WHERE C.PARENT IS NULL AND POST_ID = P_POSTID
+      UNION ALL
+      -- SELECIONA OS COMENTÁRIOS FILHOS, ASSOCIANDO-OS AOS SEUS PAIS
+      SELECT C.ID, C.CONTENT, C.PARENT, CH.LEVEL + 1 AS LEVEL, CONCAT(CH.PATH, '-', C.ID) AS PATH
+  	  FROM COMMENT C INNER JOIN COMMENTHIERARCHY CH ON C.PARENT = CH.ID
+  )
+  SELECT C.ID, C.CONTENT, C.PARENT, C.LEVEL, C.PATH FROM COMMENTHIERARCHY C ORDER BY PATH;
+END; $$ LANGUAGE PLPGSQL;
+
