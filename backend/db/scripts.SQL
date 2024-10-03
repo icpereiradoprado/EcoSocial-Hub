@@ -98,8 +98,6 @@ CREATE TABLE EDUCATIONAL_CONTENT
   , TAG                  TEXT                                        NULL
   , EDUCATION_PICTURE    BYTEA                                       NULL
   , POST_PICTURE_EXT     VARCHAR(10)                                 NULL
-  
-  ,NULL
 );
 
 -- ===========================================================================
