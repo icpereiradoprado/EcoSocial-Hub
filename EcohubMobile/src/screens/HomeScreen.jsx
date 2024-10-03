@@ -1,17 +1,41 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { base } from '../css/base';
+import { View, Text, StyleSheet, Image, useWindowDimensions, ScrollView } from 'react-native';
+import { base, colors } from '../css/base';
+import EducationalContent from '../components/EducationalContent';
+
+const DATA = [
+    {
+        id: 1,
+        title: "teste",
+        content: "lorem ipsum dolor aset!",
+        content_picture: null,
+        tag: "first;second;third",
+        create_date: null,
+        update_date: null
+    },
+    {
+        id: 2,
+        title: "Lorem ipsum",
+        content: "lorem ipsum dolor aset teste descript!",
+        content_picture: null,
+        tag: "first;second",
+        create_date: null,
+        update_date: null
+    },
+    {
+        id: 3,
+        title: "Lorem ipsum",
+        content: "lorem ipsum dolor aset teste descript!",
+        content_picture: null,
+        tag: "first;second",
+        create_date: null,
+        update_date: null
+    }
+]
 export function HomeScreen(){
+    const { width, height } = useWindowDimensions();
     return(
         <View style = {styles.container}>
-            
-            <Text style={styles.div}> 
-                <Text style={base.title}>
-                Eco News 
-                </Text>
-                <Image source={require('../assets/images/news.png')} style = {styles.logo} />
-
-            </Text>
-
+            <EducationalContent educationalContents={DATA}/>
         </View>
     )
 }
