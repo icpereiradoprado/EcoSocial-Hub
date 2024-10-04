@@ -29,7 +29,10 @@ export default class EducationalContentRepository{
     }
 
     static async findAll(){
-        const query = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_DATE, UPDATE_DATE FROM ${TABLE_NAME}`;
+        const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, EC.CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+                        FROM ${TABLE_NAME} EC
+                        INNER JOIN USER_ACCOUNT UA
+                        ON UA.ID = EC.USER_ID`;
         
         const result = await pool.query(query);
 
