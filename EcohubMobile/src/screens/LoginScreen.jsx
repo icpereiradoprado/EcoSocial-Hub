@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import io from 'socket.io-client';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Button } from '../components/Button';
 import { ButtonLink } from '../components/ButtonLink';
@@ -9,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { PasswordInput } from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { connectSocket } from '../helpers/socket';
 
 /**
  * Tela de Login
@@ -39,11 +41,11 @@ const LoginScreen = () => {
 			const response = await fetch(`${url}/users/login`, {
 				method: 'POST',
 				headers: {
-				'Content-Type': 'application/json',
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-				userIdentification,
-				password,
+					userIdentification,
+					password,
 				}),
 			});
 		
@@ -51,6 +53,8 @@ const LoginScreen = () => {
 		
 			if (response.ok) {
 				await saveTokenAndUserId(data.token, data.userId, data.isAdmin);
+				connectSocket(data.token);
+
 				resetInputs();
 				navigation.navigate("MainTabNavigator");
 			} else {

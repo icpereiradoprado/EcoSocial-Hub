@@ -23,7 +23,8 @@
     "react-native-reanimated": "~3.10.1",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "15.2.0",
-    "rn-wave-bottom-bar": "^2.2.36"
+    "rn-wave-bottom-bar": "^2.2.36",
+    "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

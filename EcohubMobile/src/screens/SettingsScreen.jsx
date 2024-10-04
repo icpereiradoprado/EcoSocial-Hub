@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../components/Loading';
+import { getSocket } from '../helpers/socket';
 
 const { height } = Dimensions.get('window');
 
@@ -57,9 +58,13 @@ export function SettingsScreen(){
     /**
      * Método handler para efetuar o Logout
      */
-    const handleLogout = () => {
+    const handleLogout = async () => {
         try {
-            AsyncStorage.removeItem('jwtToken');
+            await AsyncStorage.removeItem('jwtToken');
+            const socket = getSocket();
+            console.log('disconnect', socket.id);
+            socket.disconnect();
+            
             navigator.reset({
                 index: 0,
                 routes: [{name: 'LoginScreen'}]

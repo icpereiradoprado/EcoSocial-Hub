@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, Image, Button, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import Constants from 'expo-constants'
 
-const Post = ({ userImage, userName, postDescription, postImage, postTitle, date }) => {
-  const { height, width } = useWindowDimensions();
+const Post = ({ userImage, userName, postDescription, postImage, postTitle, date, user_id: userId }) => {
+    const { height, width } = useWindowDimensions();
+    const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+
+    const fetchUserImage = async () => {
+        const response = await fetch(`${url}/users/${userId}`);
+
+        if(response.ok){
+            const data = await response.json();
+            setUserPicture(data.profile_picture);
+        }
+    }
+
+    useFocusEffect(
+        useCallback(()=>{
+            fetchUserImage();
+        }, [])
+    );
   
   return (
     <View style={styles.postContainer}>

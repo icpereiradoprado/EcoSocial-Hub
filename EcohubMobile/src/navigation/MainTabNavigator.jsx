@@ -22,7 +22,7 @@ export default function MainTabNavigator(){
                 headerShown: false,
                 tabBarActiveTintColor: colors.green_dark,
                 tabBarActiveBackgroundColor: colors.green_dark,
-                backgroundColor: 'transparent', 
+                backgroundColor: 'transparent',
                 tabBarLabelStyle: {
                     color: colors.black_default,
                     fontSize: 13

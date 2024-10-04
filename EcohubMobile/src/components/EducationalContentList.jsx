@@ -26,6 +26,8 @@ export default function EducationalContentList({educationalContents }) {
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <HomeHeader />}
             ListHeaderComponentStyle={styles.headerComponent}
+            ListFooterComponent={()=> <View></View>}
+            ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}
             style={{width: width}}
         />
     )
@@ -47,12 +49,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 14
-        /* flexDirection: 'row',
-        flexWrap: 'wrap',
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        padding: 30, */
     }
     
   });

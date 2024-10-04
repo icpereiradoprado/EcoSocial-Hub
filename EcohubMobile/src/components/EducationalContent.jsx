@@ -10,6 +10,7 @@ const { height, width } = Dimensions.get('window');
 const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
+    const postImage = null;
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
 
@@ -26,29 +27,23 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
     );
     return (
         <View style={styles.postContainer}>
-            <View style={{paddingHorizontal: 16}}>
-                {/*HEADER DO POST*/}
-                <View style={styles.postHeader}>
-                    <View style={styles.postUserIdentificationContainer}>
-                        <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.image}/>
-                        <View style={styles.postUserIdentification}>
-                            <Text style={styles.postUserName}>{username} </Text>
-                            <Text style={styles.postUserRole}>Administrador</Text>
-                            <Text style={styles.postDate}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
-                        </View>
-                    </View>
-                    <TouchableOpacity>
-                        <Entypo name="dots-three-horizontal" size={25} />
-                    </TouchableOpacity>
-                </View>
-                {/*DESCRIPT DO POST*/}
+            {/* Informações do usuário */}
+            <View style={styles.userInfo}>
+                <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.userImage} />
                 <View>
-                    <Text>{title}</Text>
-                    <Text>{content}</Text>
+                    <Text style={styles.userName}>{username}</Text>
+                    <Text style={styles.postUserRole}>Administrador</Text>
                 </View>
             </View>
-            {/*IMAGEM DO CONTEÚDO*/}
-            <Image source={{uri: 'x'}}alt="Erro ao carregar a imagem" style={styles.postImage}/>
+
+            {/* Descrição do post */}
+            <Text style={styles.postTitle}>{title}</Text>
+            <Text style={styles.postDescription}>{content}</Text>
+
+            {/* Imagem postada */}
+            {postImage ? <Image source={{ uri: postImage }} style={[styles.postImage,{width: width-50, height: height-250}]} /> : null}
+            <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
+
         </View>
     )
 }
@@ -56,6 +51,62 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
 export default EducationalContent;
 
 const styles = StyleSheet.create({
+    postContainer: {
+        padding: 16,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        marginBottom: 16,
+        elevation: 3, // Sombra para Android
+        shadowColor: '#000', // Sombra para iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+
+    },
+    userInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    userImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 12,
+    },
+    userName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    postTitle:{
+        fontWeight: 'bold',
+        fontSize:20,
+    },
+    postDescription: {
+        fontSize: 14,
+        color: '#333',
+        marginBottom: 8,
+    },
+    postImage: {
+        borderRadius: 8,
+        marginBottom: 12,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    button: {
+        padding: 10,
+        backgroundColor: '#ddd',
+        borderRadius: 4,
+    },
+    buttonText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+});
+
+/* const styles = StyleSheet.create({
     postContainer:{
         backgroundColor: '#FFBDBD',
         width: width,
@@ -103,4 +154,4 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
 
-});
+}); */
