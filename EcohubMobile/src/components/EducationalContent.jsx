@@ -32,7 +32,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
                     <View style={styles.postUserIdentificationContainer}>
                         <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.image}/>
                         <View style={styles.postUserIdentification}>
-                            <Text style={styles.postUserName}>{username}</Text>
+                            <Text style={styles.postUserName}>{username} </Text>
                             <Text style={styles.postUserRole}>Administrador</Text>
                             <Text style={styles.postDate}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
                         </View>

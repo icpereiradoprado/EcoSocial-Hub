@@ -22,6 +22,7 @@ export default function MainTabNavigator(){
                 headerShown: false,
                 tabBarActiveTintColor: colors.green_dark,
                 tabBarActiveBackgroundColor: colors.green_dark,
+                backgroundColor: 'transparent', 
                 tabBarLabelStyle: {
                     color: colors.black_default,
                     fontSize: 13
@@ -34,10 +35,11 @@ export default function MainTabNavigator(){
                     mode='default'
                     isRtl={false}
                     focusedButtonStyle={{
-                        shadowColor: colors.gray_default,
+                        shadowColor: colors.black_default,
                         shadowOffset: {
                             width: 0,
                             height: 7,
+                            backgroundColor: 'transparent'
                             
                         },
                         shadowOpacity: 0.41,
