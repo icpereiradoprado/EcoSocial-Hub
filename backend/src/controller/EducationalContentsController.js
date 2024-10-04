@@ -1,6 +1,7 @@
 import AuthService from '../services/AuthService.js'
 import EducationalContentService from '../services/EducationalContentService.js'
 import jwt from 'jsonwebtoken'
+import { io } from '../../http.js';
 
 export default class EducationalContentsController{
 
@@ -17,6 +18,7 @@ export default class EducationalContentsController{
 
             if(Number(decoded.isAdmin) && Number(decoded.isAdmin) === 1){
                 const content = await EducationalContentService.register(req.body);
+                io.emit('educationalcontentcreate', content);
                 res.status(201).json({
                     message : 'Conteúdo criado com sucesso!',
                     id: content.id,
