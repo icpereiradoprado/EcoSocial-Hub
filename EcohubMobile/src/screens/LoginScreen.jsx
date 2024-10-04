@@ -10,10 +10,6 @@ import { PasswordInput } from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
-//TODO: DELETAR ESTA VARIÁVEL APÓS OS TESTES
-const testing = false;
-
-
 /**
  * Tela de Login
  * @returns Tela de Login
@@ -24,7 +20,7 @@ const LoginScreen = () => {
 	const [userIdentification, setUserIdentification] = useState('');
 	const [password, setPassword] = useState('');
 
-	const saveTokenAndUserId = async (token, userId) => {
+	const saveTokenAndUserId = async (token, userId, isAdmin) => {
 		try{
 			await AsyncStorage.setItem('jwtToken', token);
 			await AsyncStorage.setItem('userId', userId.toString());
@@ -54,7 +50,7 @@ const LoginScreen = () => {
 			const data = await response.json();
 		
 			if (response.ok) {
-				await saveTokenAndUserId(data.token, data.userId);
+				await saveTokenAndUserId(data.token, data.userId, data.isAdmin);
 				resetInputs();
 				navigation.navigate("MainTabNavigator");
 			} else {
@@ -106,7 +102,7 @@ const LoginScreen = () => {
 			<Button 
 				loading={loading}
 				loadingText='Logando...'
-				onPress={testing ? ()=>{navigation.navigate("MainTabNavigator")} : handleLogin}
+				onPress={handleLogin}
 				buttonText="Entrar"
 			/>
 

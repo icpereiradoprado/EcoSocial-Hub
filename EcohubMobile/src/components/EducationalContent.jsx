@@ -1,20 +1,40 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList} from "react-native";
-import { Entypo, AntDesign } from '@expo/vector-icons';
+import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'react-native'
+import { Entypo } from '@expo/vector-icons'
+import { format } from 'date-fns'
+import Constants from 'expo-constants'
+import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('window');
 
-export default function EducationalContent({educationalContents, userData }) {
-    const EducationalContentItem = ({id, title, content}) => (
+const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId }) => {
+    const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+    const [userPicture, setUserPicture] = useState(null);
+    const fetchUserImage = async () => {
+        const response = await fetch(`${url}/users/${userId}`);
+
+        if(response.ok){
+            const data = await response.json();
+            setUserPicture(data.profile_picture);
+        }
+    }
+
+    useFocusEffect(
+        useCallback(()=>{
+            fetchUserImage();
+        }, [])
+    );
+    return (
         <View style={styles.postContainer}>
-            <View style={{paddingHorizontal: 25}}>
+            <View style={{paddingHorizontal: 16}}>
                 {/*HEADER DO POST*/}
                 <View style={styles.postHeader}>
                     <View style={styles.postUserIdentificationContainer}>
-                        <Image source={{ uri: 'x' }} style={styles.image}/>
+                        <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.image}/>
                         <View style={styles.postUserIdentification}>
-                            <Text style={styles.postUserName}>Nome do usuário</Text>
-                            <Text style={styles.postUserRole}>Admin | Morador</Text>
-                            <Text style={styles.postDate}>02/10/2024</Text>
+                            <Text style={styles.postUserName}>{username}</Text>
+                            <Text style={styles.postUserRole}>Administrador</Text>
+                            <Text style={styles.postDate}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
                         </View>
                     </View>
                     <TouchableOpacity>
@@ -23,45 +43,23 @@ export default function EducationalContent({educationalContents, userData }) {
                 </View>
                 {/*DESCRIPT DO POST*/}
                 <View>
-                    <Text>DESCRIÇÃO DO CONTEÚDO EDUCACIONAL</Text>
+                    <Text>{title}</Text>
+                    <Text>{content}</Text>
                 </View>
             </View>
             {/*IMAGEM DO CONTEÚDO*/}
             <Image source={{uri: 'x'}}alt="Erro ao carregar a imagem" style={styles.postImage}/>
-            {/*FOOTER DO CONTEÚDO*/}
-            <View>
-                {/*COMETÁRIOS*/}
-                <Text style={styles.comments}>0 Comentários</Text>
-                {/*ACÇÕES FOOTER */}
-                <View style={styles.footerActions}>
-                        <TouchableOpacity>
-                            <AntDesign name="like2" size={25}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <AntDesign name="dislike2" size={25}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <AntDesign name="message1" size={25}/>
-                        </TouchableOpacity>
-                </View>
-            </View>
         </View>
     )
-    return (
-        <FlatList 
-            data={educationalContents}
-            renderItem={({item}) => <EducationalContentItem title={item.title}/>}
-            keyExtractor={item => item.id}
-            style={{width: width}}
-        />
-    )
 }
+
+export default EducationalContent;
 
 const styles = StyleSheet.create({
     postContainer:{
         backgroundColor: '#FFBDBD',
         width: width,
-        marginBottom: 24
+        marginBottom: 24,
     },
     image:{
         width: 65,
@@ -74,7 +72,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     postUserIdentificationContainer:{
-        flexDirection: 'row'
+        flexDirection: 'row',
+        gap: 12
     },
     postUserIdentification: {
         gap: 4
@@ -105,4 +104,3 @@ const styles = StyleSheet.create({
     },
 
 });
-

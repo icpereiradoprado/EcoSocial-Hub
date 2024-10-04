@@ -17,7 +17,7 @@ const Tab = createBottomTabNavigator();
 export default function MainTabNavigator(){
     return(
         <Tab.Navigator
-            initialRouteName='HomeTest'
+            initialRouteName='HomeScreen'
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: colors.green_dark,
@@ -42,14 +42,14 @@ export default function MainTabNavigator(){
                         },
                         shadowOpacity: 0.41,
                         shadowRadius: 9.11,
-                        elevation: 14,
-                        
+                        elevation: 14
                     }}
                     bottomBarContainerStyle={{
                         position: 'absolute',
                         bottom: 0,
                         left: 0,
                         right: 0,
+                        backgroundColor: 'transparent'
                         
                     }}
                     {...props}

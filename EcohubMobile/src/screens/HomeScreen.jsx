@@ -1,41 +1,37 @@
-import { View, Text, StyleSheet, Image, useWindowDimensions, ScrollView } from 'react-native';
-import { base, colors } from '../css/base';
-import EducationalContent from '../components/EducationalContent';
+import { View, StyleSheet } from 'react-native';
+import EducationalContentList from '../components/EducationalContentList';
+import { useEffect, useState } from 'react';
+import Constants from 'expo-constants';
+import { getTokenAndUserId } from '../helpers/Auth';
 
-const DATA = [
-    {
-        id: 1,
-        title: "teste",
-        content: "lorem ipsum dolor aset!",
-        content_picture: null,
-        tag: "first;second;third",
-        create_date: null,
-        update_date: null
-    },
-    {
-        id: 2,
-        title: "Lorem ipsum",
-        content: "lorem ipsum dolor aset teste descript!",
-        content_picture: null,
-        tag: "first;second",
-        create_date: null,
-        update_date: null
-    },
-    {
-        id: 3,
-        title: "Lorem ipsum",
-        content: "lorem ipsum dolor aset teste descript!",
-        content_picture: null,
-        tag: "first;second",
-        create_date: null,
-        update_date: null
-    }
-]
+
 export function HomeScreen(){
-    const { width, height } = useWindowDimensions();
+    const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+    const [educationalContentData, setEducationalContentData] = useState(null);
+
+    const fetchEducationalContents = async () => {
+        const { token, userId } = await getTokenAndUserId();
+        const response = await fetch(`${url}/educationalcontents`,{
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if(response.ok){
+            const data = await response.json();
+            setEducationalContentData(data);
+        }else{
+            console.error('Não foi possível carregar os conteúdos educacionais!')
+        }
+    }
+    useEffect(()=>{
+        fetchEducationalContents();
+    }, []);
     return(
         <View style = {styles.container}>
-            <EducationalContent educationalContents={DATA}/>
+            <EducationalContentList educationalContents={educationalContentData}/>
         </View>
     )
 }
@@ -44,7 +40,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       backgroundColor: '#f0f0f0',
-      padding: 30,
+      paddingBottom: 64,
     },
     logo:{
         width:50,
