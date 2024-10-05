@@ -22,6 +22,7 @@ export default function EducationalContentList({educationalContents }) {
                 create_date={item.create_date}
                 username={item.username} 
                 user_id={item.user_id}
+                content_picture={item.content_picture}
             />}
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <HomeHeader />}
