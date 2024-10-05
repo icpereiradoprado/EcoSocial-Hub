@@ -32,8 +32,29 @@ export default class EducationalContentsController{
         }
     }
 
-    static async deleteEducationalContent(){
+    static async deleteEducationalContent(req, res){
+        try {
+            const { authorization } = req.headers;
+            const token = AuthService.getToken(authorization);
+            if(!token){
+                throw new Error('Acesso Negado!');
+            }
 
+            const decoded = jwt.verify(token, process.env.SECRET);
+
+            if(Number(decoded.isAdmin) && Number(decoded.isAdmin) === 1){
+                await EducationalContentService.delete(req.params);
+                io.emit('educationalcontentdeleted', req.params.id);
+                res.status(201).json({
+                    message : 'Conteúdo deletado com sucesso!',
+                    id: req.params.id
+                });
+            }else{
+                throw Error('Acesso Negado! Você precisa ser um administrador para executar esta ação!');
+            }
+        } catch (err) {
+            res.status(400).json({ message : err.message});
+        }
     }
 
     static async getAllEducationalContent(req, res){

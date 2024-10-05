@@ -96,8 +96,8 @@ CREATE TABLE EDUCATIONAL_CONTENT
   , UPDATE_DATE          TIMESTAMP(3)                                NULL
   , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
   , TAG                  TEXT                                        NULL
-  , EDUCATION_PICTURE    BYTEA                                       NULL
-  , POST_PICTURE_EXT     VARCHAR(10)                                 NULL
+  , CONTENT_PICTURE      BYTEA                                       NULL
+  , CONTENT_PICTURE_EXT  VARCHAR(10)                              NULL
 );
 
 -- ===========================================================================

@@ -24,8 +24,32 @@ export default class EducationalContentRepository{
         }
     }
 
-    static async remove(){
+    static async remove(id){
+        const queryToFindOne = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_dATE, UPDATE_DATE FROM ${TABLE_NAME} WHERE ID = $1`;
+        const values = [id];
+        const client = await pool.connect();
 
+        const findOneResult = await client.query(queryToFindOne, values);
+        const find = findOneResult.rows[0];
+
+        if(find){
+            try{
+                await client.query('BEGIN');
+                const query = `DELETE FROM ${TABLE_NAME} WHERE ID = $1`;
+                const values = [id];
+                await client.query(query, values);
+
+                await client.query('COMMIT');
+
+            }catch(err){
+                await client.query('ROLLBACK');
+                console.error('Não foi possível deletar o conteúdo! ', err.message);
+            }finally{
+                client.release();
+            }
+        }else{
+            throw new Error('O conteúdo não existe!');
+        }
     }
 
     static async findAll(){
@@ -42,6 +66,17 @@ export default class EducationalContentRepository{
     }
 
     static async update(){
+
+    }
+
+    static async findById(id){
+        const query = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_dATE, UPDATE_DATE
+        FROM ${TABLE_NAME} WHERE ID = $1`;
+        const values = [id];
+        
+        const result = await pool.query(query, values);
+
+        return 
 
     }
 

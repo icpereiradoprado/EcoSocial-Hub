@@ -10,5 +10,6 @@ router.get('/', AuthService.checkToken, EducationalContentsController.getAllEduc
 
 //Rotas POST
 router.post('/register', AuthService.checkToken, EducationalContentsController.registerEducationalContent);
+router.delete('/delete/:id', AuthService.checkToken, EducationalContentsController.deleteEducationalContent);
 
 export { router };

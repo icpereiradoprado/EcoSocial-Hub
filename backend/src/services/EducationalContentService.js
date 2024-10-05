@@ -24,8 +24,17 @@ export default class EducationalContentService{
         }
     }
 
-    static async delete(){
+    static async delete(contentData){
+        try{
+            const { id } = contentData;
+            if(!id || id < 0){
+               throw new Error("ID do coteúdo inválido");
+            }
 
+            await EducationalContentRepository.remove(id);
+        }catch(err){
+            throw new Error(`Não foi possível deletar o conteúdo: ${err.message}`);
+        }
     }
 
     static async getAll(){
