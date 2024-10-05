@@ -8,9 +8,9 @@ export default class EducationalContentRepository{
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
-            const { title, content, tag, userId } = contentData;
-            const query = `INSERT INTO ${TABLE_NAME} (TITLE, CONTENT, TAG, USER_ID) VALUES($1, $2, $3, $4) RETURNING *`;
-            const values = [title, content, tag, userId];
+            const { title, content, tag, userId, content_picture } = contentData;
+            const query = `INSERT INTO ${TABLE_NAME} (TITLE, CONTENT, TAG, USER_ID, CONTENT_PICTURE) VALUES($1, $2, $3, $4, $5) RETURNING *`;
+            const values = [title, content, tag, userId, content_picture];
             const result = await client.query(query, values);
             await client.query('COMMIT');
 
@@ -53,7 +53,7 @@ export default class EducationalContentRepository{
     }
 
     static async findAll(){
-        const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, EC.CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+        const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
                         FROM ${TABLE_NAME} EC
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = EC.USER_ID

@@ -7,10 +7,9 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('window');
 
-const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId }) => {
+const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId, content_picture:contentPicutre }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
-    const postImage = null;
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
 
@@ -41,7 +40,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
             <Text style={styles.postDescription}>{content}</Text>
 
             {/* Imagem postada */}
-            {postImage ? <Image source={{ uri: postImage }} style={[styles.postImage,{width: width-50, height: height-250}]} /> : null}
+            {contentPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicutre}` }} style={[styles.postImage,{width: width-50, height: height-250}]} /> : null}
             <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
 
         </View>
