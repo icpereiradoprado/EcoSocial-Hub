@@ -26,6 +26,7 @@ const LoginScreen = () => {
 		try{
 			await AsyncStorage.setItem('jwtToken', token);
 			await AsyncStorage.setItem('userId', userId.toString());
+			await AsyncStorage.setItem('isAdmin', isAdmin.toString());
 		}catch(err){
 			console.error('Erro ao salvar token!', err);
 		}
