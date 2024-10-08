@@ -17,9 +17,9 @@ CREATE TABLE USER_ACCOUNT
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
   , NAME                 VARCHAR(255)                            NOT NULL
-  , EMAIL                VARCHAR(255) 						         NULL
-  , PASSWORD             VARCHAR(255)							 NOT NULL
-  , IS_ADMIN             NUMERIC(1)				      DEFAULT 0  NOT NULL
+  , EMAIL                VARCHAR(255) 						          NULL
+  , PASSWORD             VARCHAR(255)				              NOT NULL
+  , IS_ADMIN             NUMERIC(1)				   DEFAULT 0  NOT NULL
   , PHONE_NUMBER         VARCHAR(15)                                 NULL
   , PROFILE_PICTURE      BYTEA                                       NULL
   , PROFILE_PICTURE_EXT  VARCHAR(10)                                 NULL
@@ -45,9 +45,9 @@ CREATE TABLE POST
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
   , TITLE                VARCHAR(255)                               NOT NULL
-  , CONTENT              TEXT                   				    NOT NULL
+  , CONTENT              TEXT                   				     NOT NULL
   , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)        NOT NULL
-  , INACTIVE             NUMERIC(1)			       DEFAULT 0        NOT NULL
+  , INACTIVE             NUMERIC(1)			       DEFAULT 0     NOT NULL
   , UPVOTES              INTEGER                      DEFAULT 0         NULL             
   , DOWNVOTES            INTEGER                      DEFAULT 0         NULL
   , SCORE                INTEGER GENERATED ALWAYS AS (((UPVOTES - DOWNVOTES) / (CASE WHEN (UPDATE_DATE::DATE - CREATE_DATE::DATE) = 0 THEN 1 ELSE (UPDATE_DATE::DATE - CREATE_DATE::DATE) END))) STORED
@@ -97,7 +97,7 @@ CREATE TABLE EDUCATIONAL_CONTENT
   , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
   , TAG                  TEXT                                        NULL
   , CONTENT_PICTURE      BYTEA                                       NULL
-  , CONTENT_PICTURE_EXT  VARCHAR(10)                              NULL
+  , CONTENT_PICTURE_EXT  VARCHAR(10)                                 NULL
 );
 
 -- ===========================================================================
@@ -127,6 +127,21 @@ CREATE TABLE RECYCLING_CENTER
   , PHONE_NUMBER         VARCHAR(15)                                 NULL
   , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
   , UPDATE_DATE          TIMESTAMP(3)                                NULL
+);
+
+-- ===========================================================================
+-- [RECYCLING_CENTER]
+-- ID                   | ID
+-- POST_ID              | ID DO POST
+-- USER_ID              | ID DO USER
+-- TYPE                 | [1]:UPVOTE [2]:DOWNVOTE     
+-- ===========================================================================
+CREATE TABLE VOTE
+(
+    ID                     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY 
+  , POST_ID                INTEGER REFERENCES POST(ID)             NOT NULL
+  , USER_ID                INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
+  , TYPE                   INTEGER                                 NOT NULL
 );
 
 -- [SCRIPT DE UPDATE DO BANCO]
@@ -173,3 +188,42 @@ BEGIN
   SELECT C.ID, C.CONTENT, C.PARENT, C.LEVEL, C.PATH FROM COMMENTHIERARCHY C ORDER BY PATH;
 END; $$ LANGUAGE PLPGSQL;
 
+-- [TRIGGERS]
+
+CREATE FUNCTION TR_VOTE() RETURNS TRIGGER AS $$
+DECLARE
+  V_ACTION INTEGER := (CASE TG_OP WHEN 'INSERT' THEN 1 WHEN 'DELETE' THEN 2 WHEN 'UPDATE' THEN 3 ELSE 0 END);
+BEGIN
+  -- INSERT
+  IF V_ACTION = 1 THEN
+    IF NEW.TYPE = 1 THEN
+      UPDATE POST SET UPVOTES = (UPVOTES + 1);
+    ELSIF NEW.TYPE = 2 THEN
+      UPDATE POST SET DOWNVOTES = (DOWNVOTES + 1);
+    END IF;
+  -- DELETE
+  ELSIF V_ACTION = 2 THEN
+    IF OLD.TYPE = 1 THEN
+      UPDATE POST SET UPVOTES = (UPVOTES - 1);
+    ELSIF OLD.TYPE = 2 THEN
+      UPDATE POST SET DOWNVOTES = (DOWNVOTES - 1); 
+    END IF;
+  -- UPDATE
+  ELSIF V_ACTION = 3 THEN
+    IF NEW.TYPE = 1 THEN
+      UPDATE POST SET DOWNVOTES = (DOWNVOTES - 1);
+      UPDATE POST SET UPVOTES = (UPVOTES + 1);
+    ELSIF NEW.TYPE = 2 THEN
+      UPDATE POST SET UPVOTES = (UPVOTES - 1);
+      UPDATE POST SET DOWNVOTES = (DOWNVOTES + 1);
+    END IF;
+  END IF;
+  IF V_ACTION IN (1,3) THEN
+    RETURN NEW;
+  ELSE
+    RETURN OLD;
+  END IF;
+END; $$ LANGUAGE PLPGSQL
+;
+CREATE OR REPLACE TRIGGER TR_VOTE_ARIDU AFTER INSERT OR DELETE OR UPDATE ON VOTE FOR EACH ROW EXECUTE FUNCTION TR_VOTE()
+;
