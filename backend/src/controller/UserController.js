@@ -57,7 +57,8 @@ export default class UserController {
             res.status(200).json({
                 message: "Você está autenticado!",
                 token : token,
-                userId: user.id
+                userId: user.id,
+                isAdmin: user.is_admin
             });
 
         }catch(err){
