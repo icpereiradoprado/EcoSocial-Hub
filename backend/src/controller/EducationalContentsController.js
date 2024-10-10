@@ -66,7 +66,29 @@ export default class EducationalContentsController{
         }
     }
 
-    static async editEducationalContent(){
+    static async editEducationalContent(req, res){
+        const { authorization } = req.headers;
+        try{
+            const token = AuthService.getToken(authorization);
+            if(!token){
+                throw new Error('Acesso Negado!');
+            }
 
+            const decoded = jwt.verify(token, process.env.SECRET);
+
+            if(Number(decoded.isAdmin) && Number(decoded.isAdmin) === 1){
+                const user = await AuthService.getUserByToken(authorization);
+                const updatedContent  = await EducationalContentService.edit(req.body, req.params.id, user.id);
+                io.emit('educationalcontentedit', updatedContent);
+                res.status(200).json(updatedContent);
+            }else{
+                throw Error('Acesso Negado! Você precisa ser um administrador para executar esta ação!');
+            }
+            
+        }catch(err){
+            res.status(500).json({
+                message: err.message
+            });
+        }
     }
 }

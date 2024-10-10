@@ -12,4 +12,7 @@ router.get('/', AuthService.checkToken, EducationalContentsController.getAllEduc
 router.post('/register', AuthService.checkToken, EducationalContentsController.registerEducationalContent);
 router.delete('/delete/:id', AuthService.checkToken, EducationalContentsController.deleteEducationalContent);
 
+//Rotas PATCH
+router.patch('/edit/:id', AuthService.checkToken, EducationalContentsController.editEducationalContent);
+
 export { router };

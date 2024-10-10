@@ -25,7 +25,7 @@ export default class EducationalContentRepository{
     }
 
     static async remove(id){
-        const queryToFindOne = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_dATE, UPDATE_DATE FROM ${TABLE_NAME} WHERE ID = $1`;
+        const queryToFindOne = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_DATE, UPDATE_DATE FROM ${TABLE_NAME} WHERE ID = $1`;
         const values = [id];
         const client = await pool.connect();
 
@@ -65,19 +65,35 @@ export default class EducationalContentRepository{
 
     }
 
-    static async update(){
+    static async update(columns, values, contentId, userId){
+        const client = await pool.connect();
+        try {
+            const queryToFindOne = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_DATE, UPDATE_DATE FROM ${TABLE_NAME} WHERE ID = $1 AND USER_ID = $2`;
+            const valuesToFindOne = [contentId, userId];
 
-    }
+            const findOneResult = await client.query(queryToFindOne, valuesToFindOne);
+            const find = findOneResult.rows[0];
 
-    static async findById(id){
-        const query = `SELECT ID, TITLE, CONTENT, CONTENT_PICTURE, TAG, CREATE_dATE, UPDATE_DATE
-        FROM ${TABLE_NAME} WHERE ID = $1`;
-        const values = [id];
-        
-        const result = await pool.query(query, values);
+            if(find){
+                const setQuery = columns.map((col, idx) => `${col} = $${idx + 1}`).join(', ');
 
-        return 
+                const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1} RETURNING ID, TITLE, CONTENT, USER_ID, TAG, ENCODE(CONTENT_PICTURE,'escape') as CONTENT_PICTURE, CREATE_DATE, UPDATE_DATE`;
 
+                const result = await client.query(query, [...values, contentId]);
+
+                await client.query('COMMIT');
+
+                return result.rows[0];
+            }else{
+                throw new Error(`O conteúdo não existe ou você não tem permissão para editá-lo!`);
+            }
+
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw new Error(err.message);
+        }finally{
+            client.release();
+        }
     }
 
 }

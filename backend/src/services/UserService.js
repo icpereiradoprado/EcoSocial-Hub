@@ -62,7 +62,7 @@ export default class UserService{
      * @param {*} userId 
      */
     static async edit(userData, userId){
-        const { name, email, phone_number: phoneNumber, city, password, confirm_password: confirmPassword, profile_picture: profilePicture } = userData;
+        const { name, email, password, confirm_password: confirmPassword } = userData;
 
         if(name && name.length >= 3){
             const user = await UserRepository.findByNameOrEmail(name);
