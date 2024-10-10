@@ -1,6 +1,7 @@
 import { app, serverHttp } from "./http.js"
 import { router as userRouters } from "./src/routes/userRouters.js"
 import { router as educationalContentsRouter } from './src/routes/educationalContentsRouters.js'
+import { router as recyclingCenterRouters} from './src/routes/recyclingCenterRouters.js'
 //import { router as postRouters } from "./routes/PostRouters.js"
 
 //Routas para usuários
@@ -8,6 +9,9 @@ app.use('/users', userRouters);
 
 //Rotas para conteúdos educacionais
 app.use('/educationalcontents', educationalContentsRouter);
+
+//Rotas para conteúdos educacionais
+app.use('/recyclingcenters', recyclingCenterRouters);
 
 
 //Routas para posts
