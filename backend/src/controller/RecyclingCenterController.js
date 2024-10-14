@@ -1,4 +1,6 @@
-import RecyclingCenterService from "../services/RecyclingCenterService";
+import AuthService from "../services/AuthService.js";
+import RecyclingCenterService from "../services/RecyclingCenterService.js";
+import jwt from 'jsonwebtoken';
 
 export default class RecyclingCenterController{
     static async registerRecyclingCenter(req, res){
