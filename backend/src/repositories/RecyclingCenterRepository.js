@@ -1,3 +1,4 @@
+
 import pool from "../../db/conn.js";
 
 const TABLE_NAME = 'RECYCLING_CENTER';
@@ -36,9 +37,51 @@ export default class RecyclingCenterRepository{
         }
     }
 
-    static async remove(){}
+    static async remove(id){
+        const queryToFindOne = `SELECT ID, NAME, STREET, NUMBER, COMPLEMENT, 
+            POSTAL_CODE, STATE, CITY, OPENING_HOUR, PHONE_NUMBER, CREATE_DATE, UPDATE_DATE 
+            FROM ${TABLE_NAME} WHERE ID = $1`;
+        const values = [id];
+        const client = await pool.connect();
 
-    static async findAll(){}
+        const findOneResult = await client.query(queryToFindOne, values);
+        const find = findOneResult.rows[0];
+
+        if(find){
+            try{
+                await client.query('BEGIN');
+                const query = `DELETE FROM ${TABLE_NAME} WHERE ID = $1`;
+                const values = [id];
+                await client.query(query, values);
+
+                await client.query('COMMIT');
+
+            }catch(err){
+                await client.query('ROLLBACK');
+                console.error('Não foi possível deletar o ponto de colteta e descarte! ', err.message);
+            }finally{
+                client.release();
+            }
+        }else{
+            throw new Error('O ponto de coleta e descarte não existe!');
+        }
+    }
+
+    static async findAll(userId){
+        const query = `SELECT RC.ID, RC.NAME, RC.STREET, RC.NUMBER, RC.COMPLEMENT, RC.POSTAL_CODE, RC.STATE,
+                        RC.CITY, RC.OPENING_HOUR, RC.PHONE_NUMBER
+                        FROM ${TABLE_NAME} RC
+                        INNER JOIN USER_ACCOUNT UA
+                        ON UA.CITY = RC.CITY
+                        WHERE UA.ID = $1
+                        ORDER BY RC.NAME`;
+        
+        const values = [userId];
+        
+        const result = await pool.query(query, values);
+
+        return result.rows;
+    }
 
     static async update(){}
 }

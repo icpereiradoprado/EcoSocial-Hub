@@ -1,6 +1,7 @@
 import AuthService from "../services/AuthService.js";
 import RecyclingCenterService from "../services/RecyclingCenterService.js";
 import jwt from 'jsonwebtoken';
+import { io } from '../../http.js';
 
 export default class RecyclingCenterController{
     static async registerRecyclingCenter(req, res){
@@ -30,9 +31,39 @@ export default class RecyclingCenterController{
         }
     }
 
-    static async deleteRecyclingCenter(req, res){}
+    static async deleteRecyclingCenter(req, res){
+        try {
+            const { authorization } = req.headers;
+            const token = AuthService.getToken(authorization);
+            if(!token){
+                throw new Error('Acesso Negado!');
+            }
 
-    static async getAllRecyclingCenter(req, res){}
+            const decoded = jwt.verify(token, process.env.SECRET);
+
+            if(Number(decoded.isAdmin) && Number(decoded.isAdmin) === 1){
+                await RecyclingCenterService.delete(req.params);
+                io.emit('recyclingcenterdeleted', req.params.id);
+                res.status(201).json({
+                    message : 'Ponto de coleta e descarte deletado com sucesso!',
+                    id: req.params.id
+                });
+            }else{
+                throw Error('Acesso Negado! Você precisa ser um administrador para executar esta ação!');
+            }
+        } catch (err) {
+            res.status(400).json({ message : err.message});
+        }
+    }
+
+    static async getAllRecyclingCenter(req, res){
+        try {
+            const contents = await RecyclingCenterService.getAll(req.params);
+            res.status(200).json(contents);
+        } catch (err) {
+            res.status(422).json({ message: err.message});
+        }
+    }
 
     static async editRecyclingCenter(req, res){}
 }

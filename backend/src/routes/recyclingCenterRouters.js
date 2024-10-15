@@ -6,7 +6,7 @@ import AuthService from '../services/AuthService.js';
 const router = Router();
 
 //Rotas GET
-router.get('/', AuthService.checkToken, RecyclingCenterController.getAllRecyclingCenter);
+router.get('/:userId', AuthService.checkToken, RecyclingCenterController.getAllRecyclingCenter);
 
 //Rotas POST
 router.post('/register', AuthService.checkToken, RecyclingCenterController.registerRecyclingCenter);

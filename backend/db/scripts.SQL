@@ -119,7 +119,7 @@ CREATE TABLE RECYCLING_CENTER
   , NAME                 VARCHAR(255)                            NOT NULL
   , STREET               VARCHAR(255)                            NOT NULL
   , NUMBER               VARCHAR(10)                                 NULL
-  , COMPLEMENT           VARCHAR(50)                                 NULL
+  , COMPLEMENT           VARCHAR(255)                                NULL
   , POSTAL_CODE          CHAR(8)                                     NULL
   , STATE                CHAR(2)                                 NOT NULL
   , CITY                 VARCHAR(50)                             NOT NULL

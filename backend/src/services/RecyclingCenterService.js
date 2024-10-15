@@ -27,9 +27,30 @@ export default class RecyclingCenterService{
         
     }
 
-    static async delete(){}
+    static async delete(recyclingCenterData){
+        try{
+            const { id } = recyclingCenterData;
+            if(!id || id < 0){
+               throw new Error("ID do coteúdo inválido");
+            }
 
-    static async getAll(){}
+            await RecyclingCenterRepository.remove(id);
+        }catch(err){
+            throw new Error(`Não foi possível deletar o ponto de coleta e descarte: ${err.message}`);
+        }
+    }
+
+    static async getAll(recyclingCenterData){
+        try{
+            const { userId } = recyclingCenterData;
+            const contents = await RecyclingCenterRepository.findAll(userId);
+            
+            return contents;
+            
+        }catch(err){
+            throw new Error(`Não foi possivel carregar os pontos de coleta e descarte: ${err.message}`);
+        }
+    }
 
     static async edit(){}
 }
