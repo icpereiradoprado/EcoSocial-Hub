@@ -4,6 +4,9 @@
 
 CREATE DATABASE ECOSOCIALHUB;
 
+-- EXTENSÃO PARA REMOÇÃO DOS ACENTOS
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 -- ===========================================================================
 -- [USER_ACCOUNT]
 -- ID                   | ID DO USUÁRIO
@@ -127,6 +130,7 @@ CREATE TABLE RECYCLING_CENTER
   , PHONE_NUMBER         VARCHAR(15)                                 NULL
   , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
   , UPDATE_DATE          TIMESTAMP(3)                                NULL
+  , UNIQUE ()
 );
 
 -- ===========================================================================

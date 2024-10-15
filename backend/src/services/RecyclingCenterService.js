@@ -52,5 +52,46 @@ export default class RecyclingCenterService{
         }
     }
 
-    static async edit(){}
+    static async edit(recyclingCenterData, id){
+        try{
+            const { 
+                name, 
+                street, 
+                number, 
+                complement, 
+                postal_code: postalCode, 
+                state, 
+                city, 
+                opening_hour: openingHOur, 
+                phone_number: phoneNumber 
+            } = recyclingCenterData;
+
+
+            if(name){
+                RecyclingCenterModel.validateName(name);
+            }
+            
+            RecyclingCenterModel.validateAddress(street, number, postalCode, state, city);
+    
+            if (!Object.keys(recyclingCenterData).length) {
+                throw new Error('Nenhum dado para atualizar');
+            }
+    
+            // Filtra os campos que não são undefined e monta os pares coluna = valor
+            const filteredUpdates = Object.entries(recyclingCenterData).filter(([key, value]) => value !== undefined);
+            const columns = filteredUpdates.map(([key]) => key);
+            const values = filteredUpdates.map(([_, value]) => value);
+    
+            if (!Object.keys(recyclingCenterData).length || (columns.length < 1 || values.length < 1)) {
+                throw new Error('Nenhum dado para atualizar');
+            }else{
+                //Caso exista algum valor atualiza a coluna `update_date`
+                recyclingCenterData.update_date = new Date().toISOString();
+            }
+    
+            return await RecyclingCenterRepository.update(columns, values, id);
+        }catch(err){
+            throw new Error(`Erro ao editar o ponto de coleta e descarte: ${err.message}`);
+        }
+    }
 }

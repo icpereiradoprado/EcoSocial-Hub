@@ -72,7 +72,7 @@ export default class RecyclingCenterRepository{
                         RC.CITY, RC.OPENING_HOUR, RC.PHONE_NUMBER
                         FROM ${TABLE_NAME} RC
                         INNER JOIN USER_ACCOUNT UA
-                        ON UA.CITY = RC.CITY
+                        ON UPPER(unaccent(UA.CITY)) = UPPER(unaccent(RC.CITY))
                         WHERE UA.ID = $1
                         ORDER BY RC.NAME`;
         
@@ -83,5 +83,37 @@ export default class RecyclingCenterRepository{
         return result.rows;
     }
 
-    static async update(){}
+    static async update(columns, values, id){
+        const client = await pool.connect();
+        try {
+            const queryToFindOne = `SELECT ID, NAME, STREET, NUMBER, 
+                COMPLEMENT, POSTAL_CODE, STATE, CITY, 
+                OPENING_HOUR, PHONE_NUMBER, CREATE_DATE, UPDATE_DATE FROM ${TABLE_NAME} WHERE ID = $1`;
+            const valuesToFindOne = [id];
+
+            const findOneResult = await client.query(queryToFindOne, valuesToFindOne);
+            const find = findOneResult.rows[0];
+
+            if(find){
+                const setQuery = columns.map((col, idx) => `${col} = $${idx + 1}`).join(', ');
+
+                const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1} 
+                RETURNING ID, NAME, STREET, NUMBER, COMPLEMENT, POSTAL_CODE, STATE, CITY, OPENING_HOUR, PHONE_NUMBER`;
+
+                const result = await client.query(query, [...values, id]);
+
+                await client.query('COMMIT');
+
+                return result.rows[0];
+            }else{
+                throw new Error(`O ponto de coleta e descarte não existe!`);
+            }
+
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw new Error(err.message);
+        }finally{
+            client.release();
+        }
+    }
 }
