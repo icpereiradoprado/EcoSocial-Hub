@@ -1,20 +1,24 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button} from "react-native";
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
 
 const { height, width } = Dimensions.get('window');
 
-export default function EducationalContentList({educationalContents }) {
+export default function EducationalContentList({educationalContents, setModalVisible }) {
     const HomeHeader = () => (
-        <View style={styles.div}>
-            <Text style={base.title}>Eco News</Text>
-            <Image source={require('../assets/images/news.png')} style = {styles.logo} />
+        <View style={[styles.div, {flexDirection: 'column'}]}>
+            <View style={{flexDirection: 'row'}}>
+                <Text style={base.title}>Eco News</Text>
+                <Image source={require('../assets/images/news.png')} style = {styles.logo} />
+            </View>
+            <Button onPress={()=> setModalVisible(true) } title="Criar conteúdo educacional"/>
         </View>
     );
     return (
         <FlatList 
             data={educationalContents}
+            ListEmptyComponent={() => <View style={{alignItems: 'center', marginTop: 40}}><Text>Não há nenhum conteúdo postado!</Text></View>}
             renderItem={({item}) => <EducationalContent 
                 id={item.id}
                 title={item.title}
@@ -29,7 +33,7 @@ export default function EducationalContentList({educationalContents }) {
             ListHeaderComponentStyle={styles.headerComponent}
             ListFooterComponent={()=> <View></View>}
             ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}
-            style={{width: width}}
+            style={{width: width, paddingHorizontal: 10}}
         />
     )
 }

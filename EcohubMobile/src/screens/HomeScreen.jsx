@@ -1,20 +1,26 @@
-import { View, StyleSheet, Image , Text, useWindowDimensions} from 'react-native';
+import * as React from 'react';
+import { View, StyleSheet, Image , Text, useWindowDimensions, ActivityIndicator } from 'react-native';
 import EducationalContentList from '../components/EducationalContentList';
 import { useEffect, useState } from 'react';
 import Constants from 'expo-constants';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { getSocket } from '../helpers/socket';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native';
-import Post from '../components/Post'; // Supondo que o componente esteja nesse arquivo
-import { base } from '../css/base';
+import { Snackbar } from 'react-native-paper';
+import EducationalContentFormModal from '../components/EducationalContentFormModal';
 
 export function HomeScreen(){
     const { height, width } = useWindowDimensions();
-
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
+
+	const [loading, setLoading] = useState(false);
     const [educationalContentData, setEducationalContentData] = useState(null);
+	const [visible, setVisible] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
+	
+	const onDismissSnackBar = () => setVisible(false);
+
     const fetchEducationalContents = async () => {
+		setLoading(true);
         const { token, userId } = await getTokenAndUserId();
         const response = await fetch(`${url}/educationalcontents`,{
             method: 'GET',
@@ -26,13 +32,12 @@ export function HomeScreen(){
         if(response.ok){
             const data = await response.json();
             setEducationalContentData(data);
+			setLoading(false);
         }else{
             console.error('Não foi possível carregar os conteúdos educacionais!')
         }
     }
     useEffect(()=>{
-		let socketIo;
-
 		const listenEvent = async () => {
 			await fetchEducationalContents();
 			const socketIo = getSocket();
@@ -40,19 +45,39 @@ export function HomeScreen(){
 			socketIo.on('educationalcontentcreate', (newContent)=>{
 				setEducationalContentData((prevEducationContents) => [newContent, ...prevEducationContents]);
 			});
+
+			socketIo.on('educationalcontentdeleted', (contentId) => {
+				setEducationalContentData((prevEducationContents) => {
+					if (!prevEducationContents) {
+						return prevEducationContents;
+					}
+					const contents = prevEducationContents.filter((content) => content.id != contentId);
+					setVisible(true);
+					return contents;
+				});
+			});
 		}
 		listenEvent();
 
-		return () => {
-			/* if(socketIo){
-				socketIo.off('educationalcontentcreate');
-			} */
-		}
+		return () => {}
 		
     }, []);
+
     return(
         <View style = {styles.container}>
-            <EducationalContentList educationalContents={educationalContentData}/>
+			{!loading ? (
+				<>
+					<EducationalContentList educationalContents={educationalContentData} setModalVisible={setModalVisible}/>
+					<EducationalContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
+						Conteúdo educacional deletado com sucesso!
+					</Snackbar>
+				</>
+			) : (
+				<View>
+					<ActivityIndicator size="large" />
+				</View>
+			)}
         </View>
     )
 	/* return(

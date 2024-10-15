@@ -1,38 +1,98 @@
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'react-native'
-import { Entypo } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { format } from 'date-fns'
 import Constants from 'expo-constants'
 import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import { colors } from '../css/base';
+import { getTokenAndUserId } from '../helpers/Auth';
+import { Alert } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 
 const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId, content_picture:contentPicutre }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
+    const [selectEducationalContent, setSelectEducationalContent] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(0);
+    const [userToken, setUserToken] = useState(null);
+
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
 
         if(response.ok){
+            
             const data = await response.json();
             setUserPicture(data.profile_picture);
         }
     }
 
+    const showEditTooltip = (id) => {
+        if(selectEducationalContent === id){
+            setSelectEducationalContent(null);
+        }else{
+            setSelectEducationalContent(id);
+        }
+        
+    }
+    const handleDeleteContent = async (id) => {
+        try {
+            await fetch(`${url}/educationalcontents/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+        } catch (err) {
+            console.error(`Erro ao deletar conteúdo: ${err.message}`);
+        }
+    }
+    const handleDeleteContentMesssage = (title, id) => {
+        Alert.alert('Deletar conteúdo educativo', `Você realmente deseja deltar o conteúdo '${title}'?`,[
+            { text: 'Não', style: 'cancel'},
+            { text: 'Sim', style: 'default', onPress: () => handleDeleteContent(id) }
+        ])
+    }
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const { userId: loggedUserId, isAdmin, token } = await getTokenAndUserId();
+            setIsAdmin(isAdmin);
+            setUserToken(token);
+        }
+        getUserInfo();
+    }, []);
+
     useFocusEffect(
         useCallback(()=>{
             fetchUserImage();
-        }, [])
+        },[])
     );
     return (
         <View style={styles.postContainer}>
             {/* Informações do usuário */}
             <View style={styles.userInfo}>
-                <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.userImage} />
-                <View>
-                    <Text style={styles.userName}>{username}</Text>
-                    <Text style={styles.postUserRole}>Administrador</Text>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.userImage} />
+                    <View>
+                        <Text style={styles.userName}>{username}</Text>
+                        <Text style={styles.postUserRole}>Administrador</Text>
+                    </View>
                 </View>
+                {(isAdmin == 1) && (
+                    <TouchableOpacity onPress={() => showEditTooltip(id) }>
+                        <MaterialIcons name='more-vert' size={25}/>
+                    </TouchableOpacity>
+                )}
+                {selectEducationalContent === id && (
+                    <View style={styles.editTooltip}>
+                        <TouchableOpacity>
+                            <Text style={styles.buttonTooltip}>Editar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDeleteContentMesssage(title, id)}>
+                            <Text style={[styles.buttonTooltip, {color: 'red'}]}>Deletar</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
 
             {/* Descrição do post */}
@@ -40,7 +100,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
             <Text style={styles.postDescription}>{content}</Text>
 
             {/* Imagem postada */}
-            {contentPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicutre}` }} style={[styles.postImage,{width: width-50, height: height-250}]} /> : null}
+            {contentPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicutre}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
             <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
 
         </View>
@@ -55,8 +115,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         marginBottom: 16,
-        elevation: 3, // Sombra para Android
-        shadowColor: '#000', // Sombra para iOS
+        elevation: 3,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
@@ -64,8 +124,9 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginBottom: 8,
+        justifyContent: 'space-between'
     },
     userImage: {
         width: 50,
@@ -103,54 +164,23 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
+    editTooltip:{
+        width: 150,
+        position: 'absolute',
+        borderRadius: 12,
+        backgroundColor: 'white',
+        right: 5,
+        top: 25,
+        padding: 12,
+        zIndex: 1,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    },
+    buttonTooltip:{
+        padding: 4,
+        fontWeight: '700'
+    }
 });
-
-/* const styles = StyleSheet.create({
-    postContainer:{
-        backgroundColor: '#FFBDBD',
-        width: width,
-        marginBottom: 24,
-    },
-    image:{
-        width: 65,
-        height: 65,
-        backgroundColor: 'gray'
-    },
-    postHeader:{
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between'
-    },
-    postUserIdentificationContainer:{
-        flexDirection: 'row',
-        gap: 12
-    },
-    postUserIdentification: {
-        gap: 4
-    },
-    postUserName:{
-        fontSize: 18,
-        fontWeight: 'bold',
-        //COLOCAR UM OVERFLOW PARA ACRESTAR ... QUANDO O NOME FOR MUITO GRANDE
-    },
-    postUserRole:{
-        fontSize: 14,
-    },
-    postDate:{
-        fontSize: 12
-    },
-    postImage:{
-        width: width,
-        height: height - 350,
-        backgroundColor: 'gray'
-    },
-    footerActions:{
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
-    comments:{
-        textAlign: 'right',
-        fontSize: 12
-    },
-
-}); */
