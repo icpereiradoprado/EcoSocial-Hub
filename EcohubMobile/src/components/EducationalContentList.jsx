@@ -8,13 +8,23 @@ const { height, width } = Dimensions.get('window');
 
 export default function EducationalContentList({educationalContents, setModalVisible, setMode }) {
     const HomeHeader = () => (
-        <View style={[styles.div, {flexDirection: 'column'}]}>
-            <View style={{flexDirection: 'row'}}>
-                <Text style={base.title}>Eco News</Text>
-                <Image source={require('../assets/images/news.png')} style = {styles.logo} />
+        <View>
+            {/* Sticky header at the top */}
+            <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12, width: '100%'}]}>
+                <View style={[base.flexRow]}>
+                    <Text style={[base.title,{paddingTop:13}]}>Eco News</Text>
+                    <Image source={require('../assets/images/news.png')} style = {styles.logo} />
+                </View>
+                <TouchableOpacity style={styles.criarContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
+                    <Image
+                        source={require('../assets/images/criar.png')}// URL ou caminho local da imagem
+                        style={styles.logoBtn}
+                    />
+                    <Text>+</Text>
+                </TouchableOpacity>
             </View>
-            <Button onPress={()=> {setModalVisible(true); setMode(Mode.create)} } title="Criar conteúdo educacional"/>
         </View>
+        
     );
     return (
         <FlatList 
@@ -42,12 +52,11 @@ export default function EducationalContentList({educationalContents, setModalVis
 }
 
 const styles = StyleSheet.create({
-    headerComponent:{
-        width: width,
+    headerComponent: {
         flex: 1,
         alignItems: 'center',
         backgroundColor: colors.white_default,
-        paddingVertical: 10 
+        paddingVertical: 20,
     },
     logo:{
         width:50,
@@ -57,7 +66,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 14,
-        marginBottom: 10
+        marginBottom: 10,
+    },
+    logoBtn: {
+        width: 30,
+        height: 30,
+    },
+    criarContent:{
+        flexDirection: 'row',
     }
-    
-  });
+});
