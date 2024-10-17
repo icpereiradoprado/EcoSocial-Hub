@@ -45,7 +45,8 @@ export const base = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: '#424242',
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     title: {
         fontSize: 24,
