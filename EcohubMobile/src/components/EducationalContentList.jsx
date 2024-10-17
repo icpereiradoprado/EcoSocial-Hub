@@ -8,15 +8,31 @@ const { height, width } = Dimensions.get('window');
 
 export default function EducationalContentList({educationalContents, setModalVisible, setMode }) {
     const HomeHeader = () => (
-        <View style={[styles.div, {flexDirection: 'column'}]}>
-            <View style={{flexDirection: 'row'}}>
-                <Text style={base.title}>Eco News</Text>
-                <Image source={require('../assets/images/news.png')} style = {styles.logo} />
-            </View>
-            <Button onPress={()=> {setModalVisible(true); setMode(Mode.create)} } title="Criar conteúdo educacional"/>
+        <View >
+          
         </View>
+        
     );
     return (
+        <View style={styles.container}>
+        {/* Sticky header at the top */}
+        <View style={[styles.div, {flexDirection: 'column'}]}>
+          <View style={[styles.stickyView]}>
+            <Text> </Text>
+                <Text style={[base.title,{paddingTop:13}]}>Eco News</Text>
+                <Image source={require('../assets/images/news.png')} style = {styles.logo} />
+                <Text style={base.title}>                          </Text>
+                <TouchableOpacity style={styles.criarContent}  onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
+                    <Image
+                    source={require('../assets/images/criar.png')}// URL ou caminho local da imagem
+                    style={styles.logoBtn}
+                    />
+                    <Text>+</Text>
+                </TouchableOpacity>
+               
+            </View>
+            
+        </View>
         <FlatList 
             data={educationalContents}
             ListEmptyComponent={() => <View style={{alignItems: 'center', marginTop: 40}}><Text>Não há nenhum conteúdo postado!</Text></View>}
@@ -38,6 +54,7 @@ export default function EducationalContentList({educationalContents, setModalVis
             ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}
             style={{width: width, paddingHorizontal: 10}}
         />
+         </View>
     )
 }
 
@@ -47,7 +64,20 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: colors.white_default,
-        paddingVertical: 10 
+        paddingVertical: 20 
+    },
+    stickyView: {
+        position: 'absolute', // Para manter a barra fixa no topo
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 60,
+        backgroundColor: colors.white_default,
+        flexDirection: 'row', // Alinha os filhos em uma linha
+        justifyContent: 'space-between', // Distribui os itens ao longo da linha
+        alignItems: 'center', // Alinha verticalmente os itens no centro
+        paddingHorizontal: 10, // Adiciona um espaçamento horizontal nas bordas
+        zIndex: 10, // Garante que a barra fique acima do conteúdo
     },
     logo:{
         width:50,
@@ -58,6 +88,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 14,
         marginBottom: 10
+    },
+    logoBtn: {
+        width: 30,
+        height: 30,
+        
+    },
+    criarContent:{
+        flexDirection: 'row',
+
     }
-    
+   
   });
