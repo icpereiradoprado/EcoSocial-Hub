@@ -7,10 +7,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../css/base';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { Alert } from 'react-native';
+import { Mode } from '../helpers/Enums';
 
 const { height, width } = Dimensions.get('window');
 
-const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId, content_picture:contentPicutre }) => {
+const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId, content_picture:contentPicutre, setModalVisible, setMode }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectEducationalContent, setSelectEducationalContent] = useState(null);
@@ -85,7 +86,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
                 )}
                 {selectEducationalContent === id && (
                     <View style={styles.editTooltip}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update)}}>
                             <Text style={styles.buttonTooltip}>Editar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => handleDeleteContentMesssage(title, id)}>

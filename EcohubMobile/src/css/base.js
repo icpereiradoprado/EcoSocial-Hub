@@ -3,19 +3,28 @@ import { StyleSheet } from "react-native";
 export const base = StyleSheet.create({
     input : {
         height: 40,
-        margin: 12,
+        marginVertical: 12,
         borderWidth: 1,
         padding: 10,
-        width:'100%',
+        //width:'100%',
         textAlign:'left',
         borderRadius: 10,
+    },
+    textArea: {
+        marginVertical: 12,
+        borderWidth: 1,
+        padding: 10,
+        textAlign:'left',
+        borderRadius: 10,
+        height: 130,
+        textAlignVertical: 'top'
     },
     passwordInput:{
         height: 40,
         margin: 12,
         borderWidth: 1,
         padding: 10,
-        width:'100%',
+        //width:'100%',
         textAlign:'left',
         borderRadius: 10,
         alignItems: 'center',

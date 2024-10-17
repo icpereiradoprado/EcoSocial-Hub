@@ -218,52 +218,54 @@ export function SettingsScreen(){
                         <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
                     </TouchableOpacity>
                 </View>
-                <Input
-                    name="name" 
-                    value={name}
-                    onChangeText={setName} 
-                    autoCapitalize="none"
-                    placeholder="Usuário"
-                    editable={!loadingPreferencesData}
-                />
-                <Input
-                    name="email" 
-                    value={email}
-                    onChangeText={setEmail} 
-                    autoCapitalize="none"
-                    placeholder="E-mail"
-                    inputMode="email"
-                    editable={!loadingPreferencesData}
-                />
-                <Input
-                    name="phone-number" 
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber} 
-                    autoCapitalize="none"
-                    placeholder="Celular"
-                    inputMode="numeric"
-                    editable={!loadingPreferencesData}
-                />
-                <Input
-                    name="city" 
-                    value={city}
-                    onChangeText={setCity} 
-                    autoCapitalize="none"
-                    placeholder="Cidade"
-                    editable={!loadingPreferencesData}
-                />
-                <PasswordInput
-                    name="password" 
-                    value={password}
-                    onChangeText={setPassword} 
-                    placeholder="Senha"
-                />
-                <PasswordInput
-                    name="confirm-password" 
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword} 
-                    placeholder="Confirmar senha"
-                />
+                <View style={{width: '100%'}}>
+                    <Input
+                        name="name"
+                        value={name}
+                        onChangeText={setName}
+                        autoCapitalize="none"
+                        placeholder="Usuário"
+                        editable={!loadingPreferencesData}
+                    />
+                    <Input
+                        name="email" 
+                        value={email}
+                        onChangeText={setEmail} 
+                        autoCapitalize="none"
+                        placeholder="E-mail"
+                        inputMode="email"
+                        editable={!loadingPreferencesData}
+                    />
+                    <Input
+                        name="phone-number" 
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber} 
+                        autoCapitalize="none"
+                        placeholder="Celular"
+                        inputMode="numeric"
+                        editable={!loadingPreferencesData}
+                    />
+                    <Input
+                        name="city" 
+                        value={city}
+                        onChangeText={setCity} 
+                        autoCapitalize="none"
+                        placeholder="Cidade"
+                        editable={!loadingPreferencesData}
+                    />
+                    <PasswordInput
+                        name="password" 
+                        value={password}
+                        onChangeText={setPassword} 
+                        placeholder="Senha"
+                    />
+                    <PasswordInput
+                        name="confirm-password" 
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword} 
+                        placeholder="Confirmar senha"
+                    />
+                </View>
 
                 <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangeUserData}/>
             </View>

@@ -2,17 +2,18 @@ import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, 
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
+import { Mode } from "../helpers/Enums";
 
 const { height, width } = Dimensions.get('window');
 
-export default function EducationalContentList({educationalContents, setModalVisible }) {
+export default function EducationalContentList({educationalContents, setModalVisible, setMode }) {
     const HomeHeader = () => (
         <View style={[styles.div, {flexDirection: 'column'}]}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={base.title}>Eco News</Text>
                 <Image source={require('../assets/images/news.png')} style = {styles.logo} />
             </View>
-            <Button onPress={()=> setModalVisible(true) } title="Criar conteúdo educacional"/>
+            <Button onPress={()=> {setModalVisible(true); setMode(Mode.create)} } title="Criar conteúdo educacional"/>
         </View>
     );
     return (
@@ -27,6 +28,8 @@ export default function EducationalContentList({educationalContents, setModalVis
                 username={item.username} 
                 user_id={item.user_id}
                 content_picture={item.content_picture}
+                setModalVisible={setModalVisible}
+                setMode={setMode}
             />}
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <HomeHeader />}
@@ -53,7 +56,8 @@ const styles = StyleSheet.create({
     div:{
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 14
+        gap: 14,
+        marginBottom: 10
     }
     
   });

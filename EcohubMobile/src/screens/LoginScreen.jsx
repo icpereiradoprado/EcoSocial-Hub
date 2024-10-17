@@ -89,20 +89,21 @@ const LoginScreen = () => {
 			<Logo />
 			<Title />
 
-			<Input 
-				name="userIdentification" 
-				value={userIdentification}
-				onChangeText={setUserIdentification} 
-				autoCapitalize="none"
-				placeholder="Usuário ou e-mail"
-			/>
-
-			<PasswordInput 
-				name="password"
-				value={password}
-				onChangeText={setPassword}
-				placeholder="Senha"
-			/>
+			<View style={{width: '100%'}}>
+				<Input
+					name="userIdentification"
+					value={userIdentification}
+					onChangeText={setUserIdentification}
+					autoCapitalize="none"
+					placeholder="Usuário ou e-mail"
+				/>
+				<PasswordInput
+					name="password"
+					value={password}
+					onChangeText={setPassword}
+					placeholder="Senha"
+				/>
+			</View>
 
 			<Button 
 				loading={loading}

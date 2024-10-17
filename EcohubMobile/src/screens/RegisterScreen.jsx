@@ -97,56 +97,56 @@ export default function RegisterScreen(){
             <View style={styles.container}>
                 <Logo />
                 < Title />
-                <Input 
-                    name="name"
-                    style={styles.input}
-                    value={name}
-                    placeholder="Usuário"
-                    onChangeText={setName}
-                    autoCapitalize="none"
-                />
-          
-                <Input 
-                    name="email"
-                    style={styles.input}
-                    value={email}
-                    placeholder="E-mail"
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    inputMode='email'
-                />
-            
-                <Input 
-                    name="phone_number"
-                    style={styles.input}
-                    value={phoneNumber}
-                    placeholder="Celular"
-                    onChangeText={setPhoneNumber}
-                    autoCapitalize="none"
-                    inputMode="numeric"
-                />
-                <Input 
-                    name="city"
-                    style={styles.input}
-                    value={city}
-                    placeholder="Cidade"
-                    onChangeText={setCity}
-                    autoCapitalize="none"
-                />
-                <PasswordInput 
-                    name="password"
-                    style={styles.input}
-                    placeholder="Senha"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <PasswordInput 
-                    name="confirm_password"
-                    style={styles.input}
-                    placeholder="Confirmar senha"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                />
+                <View style={{width: '100%'}}>
+                    <Input
+                        name="name"
+                        style={styles.input}
+                        value={name}
+                        placeholder="Usuário"
+                        onChangeText={setName}
+                        autoCapitalize="none"
+                    />
+                    <Input
+                        name="email"
+                        style={styles.input}
+                        value={email}
+                        placeholder="E-mail"
+                        onChangeText={setEmail}
+                        autoCapitalize="none"
+                        inputMode='email'
+                    />
+                    <Input
+                        name="phone_number"
+                        style={styles.input}
+                        value={phoneNumber}
+                        placeholder="Celular"
+                        onChangeText={setPhoneNumber}
+                        autoCapitalize="none"
+                        inputMode="numeric"
+                    />
+                    <Input
+                        name="city"
+                        style={styles.input}
+                        value={city}
+                        placeholder="Cidade"
+                        onChangeText={setCity}
+                        autoCapitalize="none"
+                    />
+                    <PasswordInput
+                        name="password"
+                        style={styles.input}
+                        placeholder="Senha"
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                    <PasswordInput
+                        name="confirm_password"
+                        style={styles.input}
+                        placeholder="Confirmar senha"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                    />
+                </View>
 
                 <Button onPress={handleRegister} loading={loading} loadingText='Cadastrando...' buttonText='Cadastrar'/>
 
