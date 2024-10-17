@@ -6,7 +6,7 @@ export const base = StyleSheet.create({
         marginVertical: 12,
         borderWidth: 1,
         padding: 10,
-        //width:'100%',
+        //width:'800%',
         textAlign:'left',
         borderRadius: 10,
     },
@@ -45,7 +45,8 @@ export const base = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: '#424242',
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     title: {
         fontSize: 24,

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { Button } from '../components/Button';
+import { base, colors } from "../css/base";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Mode } from '../helpers/Enums';
 import { Input } from './Input';
@@ -36,7 +38,7 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode }) =>
                 <KeyboardAwareScrollView>
                     <View style={styles.modalView}>
                         <View style={styles.modalBodyForm}>
-                            <Text>{mode === Mode.create ? 'Novo conteúdo' : 'Editar conteúdo'}</Text>
+                            <Text style={base.title} >{mode === Mode.create ? 'Novo conteúdo' : 'Editar conteúdo'}</Text>
                             <View style={{width: '100%', height: '100%'}}>
                                 <Input
                                     name="title"
@@ -62,6 +64,9 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode }) =>
                                 <TouchableOpacity onPress={handlePickImage}>
                                     <MaterialIcons name='add-photo-alternate' size={40}/>
                                 </TouchableOpacity>
+                                <View style={styles.sendButton} >
+                                    <Button  buttonText='Criar Conteúdo'  />
+                                </View>
                             </View>
                         </View>
                         <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
@@ -88,6 +93,12 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
     },
+    sendButton:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        
+    }
+    ,
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
@@ -98,6 +109,7 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         flexDirection: 'column',
+        justifyContent: 'center',
     },
     closeButton: {
         position: 'absolute',
