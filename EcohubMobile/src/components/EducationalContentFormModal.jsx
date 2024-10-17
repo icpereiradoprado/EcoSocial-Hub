@@ -32,43 +32,47 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode }) =>
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => setModalVisible(false)}
-        > 
-                <KeyboardAwareScrollView>
-                    <View style={styles.modalView}>
-                        <View style={styles.modalBodyForm}>
-                            <Text>{mode === Mode.create ? 'Novo conteúdo' : 'Editar conteúdo'}</Text>
-                            <View style={{width: '100%', height: '100%'}}>
-                                <Input
-                                    name="title"
-                                    placeholder="Título"
-                                    autoCapitalize="none"
-                                />
-                                <TextArea
-                                    name="content"
-                                    placeholder="Conteúdo"
-                                    autoCapitalize="none"
-                                    multiline={true}
-                                    numberOfLines={5}
-                                    maxLength={900}
-                                />
-                                <Input
-                                    name="tag"
-                                    placeholder="Tags"
-                                    autoCapitalize="none"
-                                />
-                                {image &&
-                                    <Image source={{uri: image}} style={{width: 250, height: 250}}/>
-                                }
-                                <TouchableOpacity onPress={handlePickImage}>
-                                    <MaterialIcons name='add-photo-alternate' size={40}/>
-                                </TouchableOpacity>
+        >
+                {/* <KeyboardAwareScrollView> */}
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <View style={styles.modalView}>
+                            <View style={styles.modalBodyForm}>
+                                <View style={{width: '100%'}}>
+                                    <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                                        <MaterialIcons name='close' size={25}/>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text>{mode === Mode.create ? 'Novo conteúdo' : 'Editar conteúdo'}</Text>
+                                <View style={{width: '100%', height: '100%'}}>
+                                    <Input
+                                        name="title"
+                                        placeholder="Título"
+                                        autoCapitalize="none"
+                                    />
+                                    <TextArea
+                                        name="content"
+                                        placeholder="Conteúdo"
+                                        autoCapitalize="none"
+                                        multiline={true}
+                                        numberOfLines={5}
+                                        maxLength={900}
+                                    />
+                                    <Input
+                                        name="tag"
+                                        placeholder="Tags"
+                                        autoCapitalize="none"
+                                    />
+                                    {image &&
+                                        <Image source={{uri: image}} style={{width: '100%', height: '50%'}}/>
+                                    }
+                                    <TouchableOpacity onPress={handlePickImage}>
+                                        <MaterialIcons name='add-photo-alternate' size={40}/>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                            <MaterialIcons name='close' size={25}/>
-                        </TouchableOpacity>
-                    </View>
-                </KeyboardAwareScrollView>
+                    </ScrollView>
+                {/* </KeyboardAwareScrollView> */}
         </Modal> 
     )
 }
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         height: height,
-        marginTop: 'auto',
+        //marginTop: 'auto',
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -93,16 +97,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalBodyForm: {
-        marginTop: 48,
+        //marginTop: 48,
         width: '100%',
-        height: '100%',
+        //height: '100%',
         alignItems: 'center',
         flexDirection: 'column',
     },
     closeButton: {
-        position: 'absolute',
-        left: 10,
-        top: 15
+        width: 30,
+        height: 30
+        //position: 'absolute',
+        //left: 10,
+        //top: 15
     },
 });
 
