@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput} from "react-native";
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
@@ -10,18 +10,22 @@ export default function EducationalContentList({educationalContents, setModalVis
     const HomeHeader = () => (
         <View>
             {/* Sticky header at the top */}
-            <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12, width: '100%'}]}>
+            <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
                 <View style={[base.flexRow]}>
                     <Text style={[base.title,{paddingTop:13}]}>Eco News</Text>
                     <Image source={require('../assets/images/news.png')} style = {styles.logo} />
                 </View>
                 <TouchableOpacity style={styles.criarContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
-                    <Image
-                        source={require('../assets/images/criar.png')}// URL ou caminho local da imagem
-                        style={styles.logoBtn}
-                    />
-                    <Text>+</Text>
+                   
+                     <TextInput 
+                     style={[
+                        styles.input,
+                      ]}
+                     placeholder="Criar publicação"
+                     onFocus={() => {setModalVisible(true); setMode(Mode.create)}}                     
+                     /> 
                 </TouchableOpacity>
+
             </View>
         </View>
         
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: colors.white_default,
-        paddingVertical: 20,
+        paddingVertical: 10,
     },
     logo:{
         width:50,
@@ -68,11 +72,16 @@ const styles = StyleSheet.create({
         gap: 14,
         marginBottom: 10,
     },
-    logoBtn: {
-        width: 30,
-        height: 30,
-    },
     criarContent:{
-        flexDirection: 'row',
+        paddingTop:13
+    },
+
+    input:{
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    width:'120%',
+    textAlign:'center',
+    
     }
 });
