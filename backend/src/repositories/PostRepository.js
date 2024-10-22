@@ -124,7 +124,10 @@ export default class PostRepository{
             }else if(find && find.type != 1){
                 console.log('ATUALIZAR O TYPE PARA UPVOTE')
             }else{
-                console.log('CRIAR REGISTRO NA TABELA VOTE');
+                const query = `INSERT INTO ${TABLE_VOTE} (POST_ID, USER_ID, TYPE) VALUES($1, $2, $3) RETURNING *`;
+                const values = [postId, userId, 1];
+                await client.query(query, values);
+                await client.query('COMMIT');
             }
 
         }catch(err){
