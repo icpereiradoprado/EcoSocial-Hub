@@ -120,9 +120,15 @@ export default class PostRepository{
             const findAction = await client.query(queryToVerifyAction, valuesToVerifyAction);
             const find = findAction.rows[0];
             if(find && find.type == 1){
-                console.log('RETIRAR UPVOTE');
-            }else if(find && find.type != 1){
-                console.log('ATUALIZAR O TYPE PARA UPVOTE')
+                const queryToDelete = `DELETE FROM ${TABLE_VOTE} WHERE USER_ID = $1 AND POST_ID = $2`;
+                const valuesToDelete = [userId, postId];
+                await client.query(queryToDelete, valuesToDelete);
+                await client.query('COMMIT');
+            }else if(find && find.type == 2){
+                const queryToUpdate = `UPDATE ${TABLE_VOTE} SET TYPE = 1 WHERE USER_ID = $1 AND POST_ID = $2`;
+                const valuesToUpdate = [userId, postId];
+                await client.query(queryToUpdate, valuesToUpdate);
+                await client.query('COMMIT');
             }else{
                 const query = `INSERT INTO ${TABLE_VOTE} (POST_ID, USER_ID, TYPE) VALUES($1, $2, $3) RETURNING *`;
                 const values = [postId, userId, 1];
@@ -146,12 +152,21 @@ export default class PostRepository{
 
             const findAction = await client.query(queryToVerifyAction, valuesToVerifyAction);
             const find = findAction.rows[0];
-            if(find && find.type == 0){
-                console.log('RETIRAR DOWNVOTE');
-            }else if(find && find.type != 0){
-                console.log('ATUALIZAR O TYPE PARA DOWNVOTE')
+            if(find && find.type == 2){
+                const queryToDelete = `DELETE FROM ${TABLE_VOTE} WHERE USER_ID = $1 AND POST_ID = $2`;
+                const valuesToDelete = [userId, postId];
+                await client.query(queryToDelete, valuesToDelete);
+                await client.query('COMMIT');
+            }else if(find && find.type == 1){
+                const queryToUpdate = `UPDATE ${TABLE_VOTE} SET TYPE = 2 WHERE USER_ID = $1 AND POST_ID = $2`;
+                const valuesToUpdate = [userId, postId];
+                await client.query(queryToUpdate, valuesToUpdate);
+                await client.query('COMMIT');
             }else{
-                console.log('CRIAR REGISTRO NA TABELA VOTE');
+                const query = `INSERT INTO ${TABLE_VOTE} (POST_ID, USER_ID, TYPE) VALUES($1, $2, $3) RETURNING *`;
+                const values = [postId, userId, 2];
+                await client.query(query, values);
+                await client.query('COMMIT');
             }
 
         }catch(err){
