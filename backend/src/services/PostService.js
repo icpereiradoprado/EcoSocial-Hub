@@ -59,9 +59,10 @@ export default class PostService{
         }
     }
 
-    static async getAll(){
+    static async getAll(postData){
         try{
-            const posts = await PostRepository.findAll();
+            const { offset } = postData;
+            const posts = await PostRepository.findAll(offset);
             
             return posts;
             

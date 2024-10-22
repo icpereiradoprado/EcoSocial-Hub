@@ -65,7 +65,7 @@ export default class PostController{
 
     static async getAllPost(req, res){
         try {
-            const posts = await PostService.getAll();
+            const posts = await PostService.getAll(req.params);
             res.status(200).json(posts);
         } catch (err) {
             res.status(422).json({ message: err.message});

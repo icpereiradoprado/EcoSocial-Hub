@@ -109,14 +109,14 @@ export default class CommentRepository{
     }
 
     static async findAll(postId, offset = 0, commentParent = 0){
-        const query = `SELECT C.ID, C.CONTENT, C.POST_ID, C.USER_ID, C.CREATE_DATE, C.UPDATE_DATE, UA.NAME AS USERNAME,
+        const query = `SELECT C.ID, C.CONTENT, C.POST_ID, C.USER_ID, C.CREATE_DATE, C.UPDATE_DATE, C.COMMENT_PARENT, UA.NAME AS USERNAME
                         FROM ${TABLE_NAME} C
                         INNER JOIN USER_ACCOUNT UA
-                        ON UA.ID = P.USER_ID
-                        WHERE C.POST_ID = $1 AND (CASE WHEN $3 = 0 THEN C.COMMENT_PARENT IS NULL ELSE COMMENT_PARENT = $3 END)
-                        ORDER BY P.CREATE_DATE DESC
+                        ON UA.ID = C.USER_ID
+                        WHERE C.POST_ID = $1 AND (CASE WHEN $3 = 0 THEN C.COMMENT_PARENT IS NULL ELSE C.COMMENT_PARENT = $3 END)
+                        ORDER BY C.CREATE_DATE DESC
                         LIMIT 10 OFFSET $2`;
-        const values = [postId, offset];
+        const values = [postId, offset, commentParent];
         const result = await pool.query(query, values);
 
         return result.rows;

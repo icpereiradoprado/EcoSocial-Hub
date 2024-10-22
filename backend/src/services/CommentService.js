@@ -59,13 +59,13 @@ export default class CommentService{
 
     static async getAll(commentData){
         try{
-            const { postId } = commentData;
-            const posts = await CommentRepository.findAll(postId);
+            const { postId, offset, commentParent } = commentData;
+            const posts = await CommentRepository.findAll(postId, offset, commentParent);
             
             return posts;
             
         }catch(err){
-            throw new Error(`Não foi possivel carregar os posts: ${err.message}`);
+            throw new Error(`Não foi possivel carregar os comentários: ${err.message}`);
         }
     }
 }

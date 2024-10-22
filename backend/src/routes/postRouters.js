@@ -5,7 +5,7 @@ import AuthService from "../services/AuthService.js";
 const router = Router();
 
 //GET
-router.get('/', AuthService.checkToken, PostController.getAllPost);
+router.get('/:offset', AuthService.checkToken, PostController.getAllPost);
 
 //POST
 router.post('/register', AuthService.checkToken, PostController.registerPost);

@@ -14,6 +14,6 @@ router.patch('/edit/:id', AuthService.checkToken, CommentCotroller.editComment);
 router.delete('/delete/:id', AuthService.checkToken, CommentCotroller.deleteComment);
 
 //GET
-router.get('/:postId', AuthService.checkToken, CommentCotroller.getAllComment);
+router.get('/:postId/:offset/:commentParent', AuthService.checkToken, CommentCotroller.getAllComment);
 
 export { router }
