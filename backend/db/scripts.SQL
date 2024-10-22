@@ -19,14 +19,14 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 CREATE TABLE USER_ACCOUNT
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-  , NAME                 VARCHAR(255)                            NOT NULL
+  , NAME                 VARCHAR(255)                             NOT NULL
   , EMAIL                VARCHAR(255) 						          NULL
   , PASSWORD             VARCHAR(255)				              NOT NULL
-  , IS_ADMIN             NUMERIC(1)				   DEFAULT 0  NOT NULL
-  , PHONE_NUMBER         VARCHAR(15)                                 NULL
-  , PROFILE_PICTURE      BYTEA                                       NULL
-  , PROFILE_PICTURE_EXT  VARCHAR(10)                                 NULL
-  , CITY                 VARCHAR(255)                            NOT NULL
+  , IS_ADMIN             NUMERIC(1)				   DEFAULT 0      NOT NULL
+  , PHONE_NUMBER         VARCHAR(15)                                  NULL
+  , PROFILE_PICTURE      BYTEA                                        NULL
+  , PROFILE_PICTURE_EXT  VARCHAR(10)                                  NULL
+  , CITY                 VARCHAR(255)                             NOT NULL
 );
 
 -- ===========================================================================
@@ -49,7 +49,7 @@ CREATE TABLE POST
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
   , TITLE                VARCHAR(255)                               NOT NULL
   , CONTENT              TEXT                   				     NOT NULL
-  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)        NOT NULL
+  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID) ON DELETE CASCADE  NOT NULL
   , INACTIVE             NUMERIC(1)			       DEFAULT 0     NOT NULL
   , UPVOTES              INTEGER                      DEFAULT 0         NULL             
   , DOWNVOTES            INTEGER                      DEFAULT 0         NULL
@@ -67,18 +67,20 @@ CREATE TABLE POST
 -- ID                   | ID DO COMENTÁRIO
 -- POST_ID              | ID DO POST
 -- USER_ID              | ID DO USUÁRIO
--- CONTENT              | CONTEÚDO DO COMENTÁRIO     
+-- CONTENT              | CONTEÚDO DO COMENTÁRIO
+-- COMMENT_PARENT       | ID DO COMETÁRIO PAI  
 -- CREATE_DATE          | DATA DE CRIAÇÃO DO COMENTÁRIO
 -- UPDATE_DATE          | DATA DE ATUALIZAÇÃO DO COMENTÁRIO
 -- ===========================================================================
 CREATE TABLE COMMENT
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-  , POST_ID              INTEGER REFERENCES POST(ID)             NOT NULL
-  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
-  , CONTENT              VARCHAR(255)                            NOT NULL
-  , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
-  , UPDATE_DATE          TIMESTAMP(3)                                NULL
+  , POST_ID              INTEGER REFERENCES POST(ID)             ON DELETE CASCADE  NOT NULL
+  , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID)     ON DELETE CASCADE  NOT NULL
+  , CONTENT              VARCHAR(255)                                               NOT NULL
+  , COMMENT_PARENT       INTEGER                                                        NULL
+  , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW()                    NOT NULL
+  , UPDATE_DATE          TIMESTAMP(3)                                                   NULL
 );
 
 -- ===========================================================================
@@ -143,8 +145,8 @@ CREATE TABLE RECYCLING_CENTER
 CREATE TABLE VOTE
 (
     ID                     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY 
-  , POST_ID                INTEGER REFERENCES POST(ID)             NOT NULL
-  , USER_ID                INTEGER REFERENCES USER_ACCOUNT(ID)     NOT NULL
+  , POST_ID                INTEGER REFERENCES POST(ID)          ON DELETE CASCADE NOT NULL
+  , USER_ID                INTEGER REFERENCES USER_ACCOUNT(ID)  ON DELETE CASCADE NOT NULL
   , TYPE                   INTEGER                                 NOT NULL
 );
 

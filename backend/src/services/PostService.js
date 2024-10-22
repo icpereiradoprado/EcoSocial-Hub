@@ -8,9 +8,9 @@ export default class PostService{
             PostModel.validateTitle(postData.title);
             PostModel.validateContent(postData.content);
 
-            const content = await PostRepository.create(postData);
+            const post = await PostRepository.create(postData);
 
-            return content;
+            return post;
 
         } catch (err) {
             throw new Error(`Não foi possível registrar o conteúdo: ${err.message}`);

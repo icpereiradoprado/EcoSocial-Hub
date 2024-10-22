@@ -70,7 +70,7 @@ export default class PostRepository{
 
             }catch(err){
                 await client.query('ROLLBACK');
-                console.error('Não foi possível deletar o conteúdo! ', err.message);
+                throw new Error(err.message);
             }finally{
                 client.release();
             }
@@ -177,16 +177,18 @@ export default class PostRepository{
         }
     }
 
-    static async findAll(){
+    static async findAll(offset = 0){
         const query = `SELECT P.ID, P.TITLE, P.CONTENT, ENCODE(P.POST_PICTURE, 'escape') as POST_PICTURE, 
                         P.CREATE_DATE, P.UPDATE_DATE, P.UPVOTES, P.DOWNVOTES, LAST_ACTIVITY_AT,
-                        UA.NAME AS USERNAME, P.USER_ID
+                        UA.NAME AS USERNAME, P.USER_ID,
                         FROM ${TABLE_NAME} P
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = P.USER_ID
-                        ORDER BY P.CREATE_DATE DESC`;
+                        ORDER BY P.CREATE_DATE DESC
+                        LIMIT 10 OFFSET $1`;
+        const value = [offset];
         
-        const result = await pool.query(query);
+        const result = await pool.query(query, value);
 
         return result.rows;
 

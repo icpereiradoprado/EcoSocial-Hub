@@ -3,6 +3,7 @@ import { router as userRouters } from "./src/routes/userRouters.js"
 import { router as educationalContentsRouter } from './src/routes/educationalContentsRouters.js'
 import { router as recyclingCenterRouters} from './src/routes/recyclingCenterRouters.js'
 import { router as postRouters} from './src/routes/postRouters.js'
+import { router as commentRouters } from "./src/routes/commentRouters.js"
 
 //Routas para usuários
 app.use('/users', userRouters);
@@ -16,6 +17,8 @@ app.use('/recyclingcenters', recyclingCenterRouters);
 //Rotas para post
 app.use('/posts', postRouters);
 
+//Rotas para comments
+app.use('/comments', commentRouters);
 
 
 const port = process.env.PORT || 5000;
