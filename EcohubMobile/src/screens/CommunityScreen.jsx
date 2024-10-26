@@ -6,7 +6,6 @@ import Constants from 'expo-constants';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { getSocket } from '../helpers/socket';
 import { Snackbar } from 'react-native-paper';
-import EducationalContentFormModal from '../components/EducationalContentFormModal';
 
 export function CommunityScreen(){
     const { height, width } = useWindowDimensions();
@@ -14,14 +13,13 @@ export function CommunityScreen(){
 
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [CommunityContentData, setCommunityContentData] = useState(null);
+    const [offset, setOffset] = useState(0);
+    const [posts, setposts] = useState(null);
 	const onDismissSnackBar = () => setVisible(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mode, setMode] = useState(null);
 
     const fetchPosts = async () => {
-        const [offset, setOffset] = useState(0);
-        const [posts, setPost] = useState(null);
 
         const { token, userId } = await getTokenAndUserId();
 
@@ -35,7 +33,7 @@ export function CommunityScreen(){
 
         if(response.ok){
             const data = await response.json();
-            setPost(data);
+            setposts(data);
         }else{
             console.error('Não foi possível carregar os posts!');
         }
@@ -69,7 +67,7 @@ export function CommunityScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<CommunityContentList CommunityContents={CommunityContentData} setModalVisible={setModalVisible} setMode={setMode}/>
+					<CommunityContentList CommunityContents={posts} setModalVisible={setModalVisible} setMode={setMode}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
 						Conteúdo educacional deletado com sucesso!
 					</Snackbar>
