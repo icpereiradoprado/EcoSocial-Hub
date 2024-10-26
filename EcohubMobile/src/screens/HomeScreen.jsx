@@ -35,11 +35,12 @@ export function HomeScreen(){
             setEducationalContentData(data);
 			setLoading(false);
         }else{
-            console.error('Não foi possível carregar os conteúdos educacionais!')
+            console.error('Não foi possível carregar os conteúdos educacionais!');
         }
     }
     useEffect(()=>{
 		const listenEvent = async () => {
+			//Carrega os conteúdos educacionais do banco de dados
 			await fetchEducationalContents();
 			const socketIo = getSocket();
 
