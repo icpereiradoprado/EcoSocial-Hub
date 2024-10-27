@@ -11,8 +11,8 @@ export default function CommunityContentList({CommunityContents, setModalVisible
           <View>
              <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
                 <View style={[base.flexRow]}>
-                    <Text style={[base.title,{paddingTop:13}]}>Comunidade</Text>
-                    <Image source={require('../assets/images/community.png')} style = {styles.logo} />
+                    <Text style={[base.title,{paddingTop:13}]}>Comunidade  </Text>
+                    <Image source={require('../assets/images/community.png')} style={styles.logo} />
                 </View>
                 <TouchableOpacity style={styles.criarContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
                     <TextInput
@@ -37,8 +37,11 @@ export default function CommunityContentList({CommunityContents, setModalVisible
                 username={item.username} 
                 user_id={item.user_id}
                 post_picture={item.post_picture}
+                upvotes={item.upvotes}
+                downvotes={item.downvotes}
                 setModalVisible={setModalVisible}
                 setMode={setMode}
+                
             />}
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <CommunityHeader />}
@@ -60,6 +63,7 @@ const styles = StyleSheet.create({
     logo:{
         width:50,
         height:50,
+        marginTop:10
     },
     div:{
         flexDirection: 'row',

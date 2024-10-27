@@ -6,6 +6,8 @@ import Constants from 'expo-constants';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { getSocket } from '../helpers/socket';
 import { Snackbar } from 'react-native-paper';
+import CommunityContentFormModal from '../components/EducationalContentFormModal';
+
 
 export function CommunityScreen(){
     const { height, width } = useWindowDimensions();
@@ -45,11 +47,11 @@ export function CommunityScreen(){
 			const socketIo = getSocket();
 
 			socketIo.on('postcreate', (newContent)=>{
-				setPost((prevPost) => [newContent, ...prevPost]);
+				setposts((prevPost) => [newContent, ...prevPost]);
 			});
 
 			socketIo.on('postdeleted', (contentId) => {
-				setPost((prevPost) => {
+				setposts((prevPost) => {
 					if (!prevPost) {
 						return prevPost;
 					}
@@ -68,6 +70,7 @@ export function CommunityScreen(){
 			{!loading ? (
 				<>
 					<CommunityContentList CommunityContents={posts} setModalVisible={setModalVisible} setMode={setMode}/>
+                    <CommunityContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
 						Conteúdo educacional deletado com sucesso!
 					</Snackbar>
