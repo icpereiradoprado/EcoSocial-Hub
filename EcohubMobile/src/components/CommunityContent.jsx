@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons, AntDesign,  } from '@expo/vector-icons'
 import { format } from 'date-fns'
 import Constants from 'expo-constants'
 import { useCallback, useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import { Mode } from '../helpers/Enums';
 
 const { height, width } = Dimensions.get('window');
 
-const CommunityContent = ({id, title, content, create_date: createDate, username, user_id: userId, post_picture:postPicutre, setModalVisible, setMode }) => {
+const CommunityContent = ({id, title, content, create_date: createDate, username, user_id: userId, post_picture:postPicutre,upvotes:upvotes,downvotes:downvotes, setModalVisible, setMode }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectPost, setSelectPost] = useState(null);
@@ -76,7 +76,7 @@ const CommunityContent = ({id, title, content, create_date: createDate, username
                     <Image source={{ uri:`data:image/jpeg;base64,${userPicture}`}} style={styles.userImage} />
                     <View>
                         <Text style={styles.userName}>{username}</Text>
-                        <Text style={styles.postUserRole}>Administrador</Text>
+                        <Text style={styles.postUserRole}>Cidade Fixa</Text>
                     </View>
                 </View>
                 {(isAdmin == 1) && (
@@ -100,9 +100,36 @@ const CommunityContent = ({id, title, content, create_date: createDate, username
             <Text style={styles.postTitle}>{title}</Text>
             <Text style={styles.postDescription}>{content}</Text>
 
-            {/* Imagem postada */}
-            {postPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${postPicutre}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
-            <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
+                        {/* Imagem postada */}
+                {postPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${postPicutre}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
+                <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
+
+            <View style={styles.footer}>           
+                        <View style={ {flexDirection:'row', gap:5, alignItems:'center', fontSize:'20'}}>
+                            <TouchableOpacity>
+                                <AntDesign name='like2' size={22}/>
+                            </TouchableOpacity>
+                            <Text style={{ fontSize:16, fontWeight:'500'}}>  {upvotes}  </Text>
+                        </View>
+
+                        <View style={ {flexDirection:'row', gap:5, alignItems:'center'}}>                     
+                            <TouchableOpacity >
+                                <AntDesign name='dislike2' size={22} /> 
+                            </TouchableOpacity>
+                            <Text  style={{ fontSize:16, fontWeight:'500'}}>  {downvotes}  </Text>
+                        </View>
+
+                        <View style={ {flexDirection:'row', gap:5 ,alignItems:'center'}}>
+                            <TouchableOpacity>
+                                 <AntDesign name='message1' size={22}/>
+                            </TouchableOpacity>
+                            <Text  style={{ fontSize:16, fontWeight:'500'}}>  {upvotes}  </Text>
+                        </View>
+
+      
+            </View>
+           
+
 
         </View>
     )
@@ -183,5 +210,11 @@ const styles = StyleSheet.create({
     buttonTooltip:{
         padding: 4,
         fontWeight: '700'
+    },
+    footer:{
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop:10,
+
     }
 });
