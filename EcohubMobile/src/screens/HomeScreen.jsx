@@ -14,6 +14,7 @@ export function HomeScreen(){
 
 	const [loading, setLoading] = useState(false);
     const [educationalContentData, setEducationalContentData] = useState(null);
+	const [educationalContentToEdit, setEducationalContentToEdit] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mode, setMode] = useState(null);
@@ -58,6 +59,19 @@ export function HomeScreen(){
 					return contents;
 				});
 			});
+
+			socketIo.on('educationalcontentedit', (updatedContent) => {
+				setEducationalContentData((prevEducationContents) => {
+					if (!prevEducationContents) {
+						return prevEducationContents;
+					}
+					// Mapeia a lista, substituindo o item pelo novo conteúdo se o ID for correspondente
+					const contents = prevEducationContents.map((content) =>
+						content.id === updatedContent.id ? updatedContent : content
+					);
+					return contents;
+				});
+			});
 		}
 		listenEvent();
 
@@ -69,8 +83,8 @@ export function HomeScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<EducationalContentList educationalContents={educationalContentData} setModalVisible={setModalVisible} setMode={setMode}/>
-					<EducationalContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode}/>
+					<EducationalContentList educationalContents={educationalContentData} setModalVisible={setModalVisible} setMode={setMode} setEducationalContentToEdit={setEducationalContentToEdit}/>
+					<EducationalContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} educationalContentToEdit={educationalContentToEdit}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
 						Conteúdo educacional deletado com sucesso!
 					</Snackbar>

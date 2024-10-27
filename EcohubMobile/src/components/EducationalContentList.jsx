@@ -6,7 +6,7 @@ import { Mode } from "../helpers/Enums";
 
 const { height, width } = Dimensions.get('window');
 
-export default function EducationalContentList({educationalContents, setModalVisible, setMode }) {
+export default function EducationalContentList({educationalContents, setModalVisible, setMode, setEducationalContentToEdit }) {
     const HomeHeader = () => (
         <View>
             {/* Sticky header at the top */}
@@ -17,13 +17,13 @@ export default function EducationalContentList({educationalContents, setModalVis
                 </View>
                 <TouchableOpacity style={styles.criarContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
                    
-                     <TextInput 
-                     style={[
-                        styles.input,
-                      ]}
-                     placeholder="Criar publicação"
-                     onFocus={() => {setModalVisible(true); setMode(Mode.create)}}                     
-                     /> 
+                    <TextInput 
+                        style={[
+                            styles.input,
+                        ]}
+                        placeholder="Criar publicação"
+                        onFocus={() => {setModalVisible(true); setMode(Mode.create)}}                     
+                    />
                 </TouchableOpacity>
 
             </View>
@@ -38,12 +38,14 @@ export default function EducationalContentList({educationalContents, setModalVis
                 id={item.id}
                 title={item.title}
                 content={item.content}
+                tag={item.tag}
                 create_date={item.create_date}
                 username={item.username} 
                 user_id={item.user_id}
                 content_picture={item.content_picture}
                 setModalVisible={setModalVisible}
                 setMode={setMode}
+                setEducationalContentToEdit={setEducationalContentToEdit}
             />}
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <HomeHeader />}

@@ -88,7 +88,7 @@ export default class EducationalContentRepository{
             if(find){
                 const setQuery = columns.map((col, idx) => `${col} = $${idx + 1}`).join(', ');
 
-                const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1} RETURNING ID, TITLE, CONTENT, USER_ID, TAG, ENCODE(CONTENT_PICTURE,'escape') as CONTENT_PICTURE, CREATE_DATE, UPDATE_DATE`;
+                const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1} RETURNING ID, TITLE, CONTENT, TAG, ENCODE(CONTENT_PICTURE,'escape') as CONTENT_PICTURE, CREATE_DATE, UPDATE_DATE`;
 
                 const result = await client.query(query, [...values, contentId]);
 

@@ -7,7 +7,7 @@ export default class EducationalContentService{
         try {
             EducationalContentModel.validateTitle(contentData.title);
             EducationalContentModel.validateContent(contentData.content);
-            if(contentData.tag){
+            if(contentData.tag && Array.isArray(contentData.tag)){
                 const tags = contentData.tag;
                 tags.forEach((tag)=>{ 
                     EducationalContentModel.validateTag(tag);
@@ -55,7 +55,7 @@ export default class EducationalContentService{
             EducationalContentModel.validateTitle(title);
             EducationalContentModel.validateContent(content);
 
-            if(tag){
+            if(tag && Array.isArray(tag)){
                 const tags = contentData.tag;
                 tags.forEach((tag)=>{ 
                     EducationalContentModel.validateTag(tag);

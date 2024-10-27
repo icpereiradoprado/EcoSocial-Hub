@@ -11,7 +11,7 @@ import { Mode } from '../helpers/Enums';
 
 const { height, width } = Dimensions.get('window');
 
-const EducationalContent = ({id, title, content, create_date: createDate, username, user_id: userId, content_picture:contentPicutre, setModalVisible, setMode }) => {
+const EducationalContent = ({id, title, content, tag, create_date: createDate, username, user_id: userId, content_picture:contentPicture, setModalVisible, setMode, setEducationalContentToEdit }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectEducationalContent, setSelectEducationalContent] = useState(null);
@@ -54,6 +54,16 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
             { text: 'Sim', style: 'default', onPress: () => handleDeleteContent(id) }
         ])
     }
+    const handleToSetEducationalContentToEdit = () => {
+        const educationalContent = {
+            id,
+            title,
+            content,
+            contentPicture,
+            tag
+        }
+        setEducationalContentToEdit(educationalContent);
+    }
     useEffect(() => {
         const getUserInfo = async () => {
             const { userId: loggedUserId, isAdmin, token } = await getTokenAndUserId();
@@ -86,7 +96,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
                 )}
                 {selectEducationalContent === id && (
                     <View style={styles.editTooltip}>
-                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update)}}>
+                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update); handleToSetEducationalContentToEdit();}}>
                             <Text style={styles.buttonTooltip}>Editar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => handleDeleteContentMesssage(title, id)}>
@@ -101,7 +111,7 @@ const EducationalContent = ({id, title, content, create_date: createDate, userna
             <Text style={styles.postDescription}>{content}</Text>
 
             {/* Imagem postada */}
-            {contentPicutre ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicutre}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
+            {contentPicture ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicture}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
             <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
 
         </View>
