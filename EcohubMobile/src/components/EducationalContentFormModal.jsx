@@ -19,6 +19,7 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tag, setTag] = useState(null);
+    const [text, setText] = useState(null);
 
     const handlePickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -34,6 +35,10 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
             setImage(`${result.assets[0].base64}`);
         }
     };
+
+    const handleDeleteImage = () => {
+        setImage(null);
+    }
 
     /**
      * Método handler para salvar os dados do conteúdo educacional
@@ -144,17 +149,27 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
                                 value={content}
                                 onChangeText={setContent}
                             />
-                            <Input
-                                name="tag"
-                                placeholder="Tags"
-                                autoCapitalize="none"
-                                value={tag}
-                                onChangeText={handleTagChange}
-                            />
+                            <View>
+                                <Input
+                                    name="tag"
+                                    placeholder="Tags"
+                                    autoCapitalize="none"
+                                    value={tag}
+                                    blurOnSubmit={handleTagChange}
+                                />
+                                <View>
+                                    {}
+                                </View>
+                            </View>
                             {image &&
-                                <Image source={{uri: `data:image/jpeg;base64,${image}`}} style={{width: '100%', height: 250}}/>
+                                <View>
+                                    <TouchableOpacity style={styles.deleteImage} onPress={handleDeleteImage}>
+                                        <MaterialIcons name='delete' size={25} color='#FFFFFF' />
+                                    </TouchableOpacity>
+                                    <Image source={{uri: `data:image/jpeg;base64,${image}`}} style={{width: '100%', height: 250}}/>
+                                </View>
                             }
-                            <TouchableOpacity onPress={handlePickImage}>
+                            <TouchableOpacity onPress={handlePickImage} style={{width: 40}}>
                                 <MaterialIcons name='add-photo-alternate' size={40}/>
                             </TouchableOpacity>
                             <View style={styles.sendButton} >
@@ -203,6 +218,19 @@ const styles = StyleSheet.create({
         //left: 10,
         //top: 15
     },
+    deleteImage : {
+        backgroundColor: '#3f3f46', 
+        width: 30,
+        height: 30, 
+        borderRadius: 100, 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        zIndex: 4,
+        position: 'absolute',
+        top: 10,
+        right: 10
+
+    }
 });
 
 export default EducationalContentFormModal;

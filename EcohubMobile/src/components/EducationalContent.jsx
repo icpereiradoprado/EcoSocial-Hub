@@ -96,10 +96,10 @@ const EducationalContent = ({id, title, content, tag, create_date: createDate, u
                 )}
                 {selectEducationalContent === id && (
                     <View style={styles.editTooltip}>
-                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update); handleToSetEducationalContentToEdit();}}>
+                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update); handleToSetEducationalContentToEdit(); setSelectEducationalContent(null)}}>
                             <Text style={styles.buttonTooltip}>Editar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleDeleteContentMesssage(title, id)}>
+                        <TouchableOpacity onPress={() => {handleDeleteContentMesssage(title, id); setSelectEducationalContent(null)}}>
                             <Text style={[styles.buttonTooltip, {color: 'red'}]}>Deletar</Text>
                         </TouchableOpacity>
                     </View>
