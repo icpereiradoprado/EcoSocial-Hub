@@ -17,6 +17,7 @@ const EducationalContent = ({id, title, content, tag, create_date: createDate, u
     const [selectEducationalContent, setSelectEducationalContent] = useState(null);
     const [isAdmin, setIsAdmin] = useState(0);
     const [userToken, setUserToken] = useState(null);
+    const tags = tag ? tag.split(';') : null;
 
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
@@ -112,6 +113,11 @@ const EducationalContent = ({id, title, content, tag, create_date: createDate, u
 
             {/* Imagem postada */}
             {contentPicture ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicture}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
+            {tags && 
+                <View style={styles.tags}>
+                    {Array.isArray(tags) ? tags.map((tag, index) => <Text key={index} style={styles.textTag}>#{tag}</Text>) : <Text style={styles.textTag}>#{tags}</Text>}
+                </View>
+            }
             <Text style={styles.date}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
 
         </View>
@@ -193,5 +199,13 @@ const styles = StyleSheet.create({
     buttonTooltip:{
         padding: 4,
         fontWeight: '700'
+    },
+    tags: {
+        flexDirection: 'row',
+        marginBottom: 8,
+        gap: 4
+    },
+    textTag : {
+        color: '#52525b'
     }
 });

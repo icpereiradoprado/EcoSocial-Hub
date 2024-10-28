@@ -94,7 +94,17 @@ export default class EducationalContentRepository{
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                const selectQuery = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+                        FROM ${TABLE_NAME} EC
+                        INNER JOIN USER_ACCOUNT UA
+                        ON UA.ID = EC.USER_ID
+                        WHERE EC.ID = $1`;
+                const selectValue = [result.rows[0].id];
+
+                const contentUpdated = await client.query(selectQuery, selectValue);
+
+                return contentUpdated.rows[0];
+
             }else{
                 throw new Error(`O conteúdo não existe ou você não tem permissão para editá-lo!`);
             }

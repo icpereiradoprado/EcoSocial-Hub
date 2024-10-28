@@ -18,8 +18,8 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
     const [image, setImage] = useState(null);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [tag, setTag] = useState(null);
-    const [text, setText] = useState(null);
+    const [textTag, setTextTag] = useState(null);
+    const [tags, setTags] = useState(null);
 
     const handlePickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -51,7 +51,7 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
                 title,
                 content,
                 content_picture : image,
-                tag
+                tag : tags
             });
             const response = await fetch(`${url}/educationalcontents/register`, {
                 method: 'POST',
@@ -74,7 +74,7 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
                 title,
                 content,
                 content_picture : image,
-                tag
+                tag : tags
             });
             const response = await fetch(`${url}/educationalcontents/edit/${educationalContentToEdit.id}`, {
                 method: 'PATCH',
@@ -96,15 +96,22 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
     }
 
     const handleTagChange = (newTag) => {
-        const newTags = [newTag];
-        setTag(newTags);
+        setTags((prevTags) => {
+            if(!prevTags) return [newTag];
+
+            return [newTag, ...prevTags];
+        });
     }
+
+    const handleRemoveTag = (indexToRemove) => {
+        setTags((prevTags) => prevTags.filter((tag, index) => index !== indexToRemove));
+    };
 
     const handleResetInputs = () => {
         setTitle('');
         setContent('');
         setImage(null);
-        setTag([]);
+        setTags(null);
     }
 
 
@@ -113,7 +120,8 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
             setTitle(educationalContentToEdit.title);
             setContent(educationalContentToEdit.content);
             setImage(educationalContentToEdit.contentPicture);
-            setTag(educationalContentToEdit.tag)
+            const tags = educationalContentToEdit.tag ? educationalContentToEdit.tag.split(';') : null;
+            setTags(tags);
         }
     }, [educationalContentToEdit]);
     return(
@@ -149,16 +157,30 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
                                 value={content}
                                 onChangeText={setContent}
                             />
-                            <View>
+                            <View style={{marginBottom: 12}}>
                                 <Input
-                                    name="tag"
+                                    name="textTag"
                                     placeholder="Tags"
                                     autoCapitalize="none"
-                                    value={tag}
-                                    blurOnSubmit={handleTagChange}
+                                    value={textTag}
+                                    onChangeText={setTextTag}
+                                    onSubmitEditing={() => {
+                                        if (textTag) {
+                                            handleTagChange(textTag); // Passa o valor atual da tag
+                                            setTextTag(''); // Limpa o campo de entrada
+                                        }
+                                    }}
                                 />
-                                <View>
-                                    {}
+                                <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 4}}>
+                                    {Array.isArray(tags) && 
+                                        tags.map((tag, index) => 
+                                            <View key={index} style={styles.tag}>
+                                                <Text style={{fontSize: 16, color: '#f8fafc', fontWeight: '600'}}>{tag}</Text>
+                                                <TouchableOpacity style={styles.deleteTag} onPress={() => handleRemoveTag(index)}>
+                                                    <MaterialIcons name="clear" size={15} color='#FFFFFF'/>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
                                 </View>
                             </View>
                             {image &&
@@ -230,6 +252,23 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10
 
+    },
+    tag: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: 8,
+        backgroundColor: '#64748b',
+        borderRadius: 8,
+        paddingStart: 8,
+        paddingEnd: 4,
+        paddingVertical: 4,
+        marginEnd: 4
+    },
+    deleteTag : {
+        backgroundColor: '#0f172a', 
+        borderRadius: 100, 
+        padding: 2
     }
 });
 
