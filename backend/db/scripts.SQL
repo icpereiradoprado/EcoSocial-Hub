@@ -125,11 +125,11 @@ CREATE TABLE RECYCLING_CENTER
   , STREET               VARCHAR(255)                            NOT NULL
   , NUMBER               VARCHAR(10)                                 NULL
   , COMPLEMENT           VARCHAR(255)                                NULL
-  , POSTAL_CODE          CHAR(8)                                     NULL
+  , POSTAL_CODE          CHAR(9)                                     NULL
   , STATE                CHAR(2)                                 NOT NULL
   , CITY                 VARCHAR(50)                             NOT NULL
   , OPENING_HOUR         VARCHAR(50)                             NOT NULL
-  , PHONE_NUMBER         VARCHAR(15)                                 NULL
+  , PHONE_NUMBER         VARCHAR(20)                                 NULL
   , CREATE_DATE          TIMESTAMP(3)              DEFAULT NOW() NOT NULL
   , UPDATE_DATE          TIMESTAMP(3)                                NULL
   , UNIQUE(NAME)

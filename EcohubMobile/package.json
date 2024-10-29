@@ -17,16 +17,19 @@
     "expo-constants": "^16.0.2",
     "expo-image-picker": "~15.0.7",
     "expo-status-bar": "~1.12.1",
+    "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-masked-text": "^1.13.0",
     "react-native-paper": "^5.12.5",
     "react-native-reanimated": "~3.10.1",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "15.2.0",
     "rn-wave-bottom-bar": "^2.2.36",
-    "socket.io-client": "^4.8.0"
+    "socket.io-client": "^4.8.0",
+    "expo-clipboard": "~6.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

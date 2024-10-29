@@ -100,9 +100,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalBodyForm: {
-        //marginTop: 48,
         width: '100%',
-        //height: '100%',
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -110,9 +108,6 @@ const styles = StyleSheet.create({
     closeButton: {
         width: 30,
         height: 30
-        //position: 'absolute',
-        //left: 10,
-        //top: 15
     },
 });
 

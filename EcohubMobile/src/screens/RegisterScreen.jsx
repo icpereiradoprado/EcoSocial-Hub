@@ -9,6 +9,8 @@ import { ButtonLink } from '../components/ButtonLink';
 import { PasswordInput } from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { TextInputMask } from 'react-native-masked-text';
+import { base } from '../css/base';
 
 /**
  * Tela de cadastro de Usuário
@@ -115,14 +117,15 @@ export default function RegisterScreen(){
                         autoCapitalize="none"
                         inputMode='email'
                     />
-                    <Input
-                        name="phone_number"
-                        style={styles.input}
+                    <TextInputMask
+                        type={'custom'}
+                        name='phone_number'
+                        options={{mask: '(99) 99999-9999'}}
                         value={phoneNumber}
-                        placeholder="Celular"
                         onChangeText={setPhoneNumber}
-                        autoCapitalize="none"
-                        inputMode="numeric"
+                        placeholder='Celular'
+                        style={base.input}
+                        inputMode='numeric'
                     />
                     <Input
                         name="city"

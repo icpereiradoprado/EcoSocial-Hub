@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { CommunityScreen } from '../screens/CommunityScreen';
-import { PlacesScreen } from '../screens/PlacesScreen';
-import { MaterialIcons } from '@expo/vector-icons';
+import { RecyclingCentersScreen } from '../screens/RecyclingCentersScreen';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { BottomFabBar } from 'rn-wave-bottom-bar';
 import { base, colors } from '../css/base';
 
@@ -77,10 +77,10 @@ export default function MainTabNavigator(){
                 }}
             />
             <Tab.Screen 
-                name='PlacesScreen'
-                component={PlacesScreen}
+                name='RecyclingCentersScreen'
+                component={RecyclingCentersScreen}
                 options={{
-                    tabBarIcon: () => <MaterialIcons name='location-on' size={25} color={colors.black_default}/>,
+                    tabBarIcon: () => <MaterialCommunityIcons name='recycle' size={25} color={colors.black_default}/>,
                     tabBarLabel: ''
                 }}
             />

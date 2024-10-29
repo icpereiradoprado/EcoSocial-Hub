@@ -50,7 +50,7 @@ const EducationalContent = ({id, title, content, tag, create_date: createDate, u
         }
     }
     const handleDeleteContentMesssage = (title, id) => {
-        Alert.alert('Deletar conteúdo educativo', `Você realmente deseja deltar o conteúdo '${title}'?`,[
+        Alert.alert('Deletar conteúdo educativo', `Você realmente deseja deletar o conteúdo '${title}'?`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteContent(id) }
         ])

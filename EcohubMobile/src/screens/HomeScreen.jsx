@@ -11,7 +11,6 @@ import EducationalContentFormModal from '../components/EducationalContentFormMod
 export function HomeScreen(){
     const { height, width } = useWindowDimensions();
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
-
 	const [loading, setLoading] = useState(false);
     const [educationalContentData, setEducationalContentData] = useState(null);
 	const [educationalContentToEdit, setEducationalContentToEdit] = useState(null);
@@ -22,8 +21,8 @@ export function HomeScreen(){
 	const onDismissSnackBar = () => setVisible(false);
 
     const fetchEducationalContents = async () => {
+		const { token } = await getTokenAndUserId();
 		setLoading(true);
-        const { token, userId } = await getTokenAndUserId();
         const response = await fetch(`${url}/educationalcontents`,{
             method: 'GET',
             headers: {
@@ -39,6 +38,7 @@ export function HomeScreen(){
             console.error('Não foi possível carregar os conteúdos educacionais!');
         }
     }
+
     useEffect(()=>{
 		const listenEvent = async () => {
 			//Carrega os conteúdos educacionais do banco de dados

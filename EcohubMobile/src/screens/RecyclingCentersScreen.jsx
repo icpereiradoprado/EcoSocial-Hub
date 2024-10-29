@@ -1,10 +1,24 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput} from "react-native";
+import Constants from 'expo-constants';
+import { View, StyleSheet, useWindowDimensions, ActivityIndicator} from "react-native";
 import { useEffect, useState } from 'react';
 import { base, colors } from "../css/base";
+import RecyclingCenterList from "../components/RecyclingCenterList";
+import { getTokenAndUserId } from "../helpers/Auth";
+import { getSocket } from '../helpers/socket';
+import RecyclingCenterFormModal from '../components/RecyclingCenterFormModal';
+import { Snackbar } from 'react-native-paper';
 
-export function PlacesScreen(){
+export function RecyclingCentersScreen(){
+	const { height, width } = useWindowDimensions();
+	const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [loading, setLoading] = useState(false);
     const [recyclingCenterData, setRecyclingCenterData] = useState(null);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [mode, setMode] = useState(null);
+	const [visible, setVisible] = useState(false);
+	const [recyclingCenterToEdit, setRecyclingCenterToEdit] = useState(null);
+
+	const onDismissSnackBar = () => setVisible(false);
 
     const fetchRecyclingCenters = async () => {
 		setLoading(true);
@@ -41,7 +55,7 @@ export function PlacesScreen(){
 						return prevRecyclingCenter;
 					}
 					const recyclingCenters = prevRecyclingCenter.filter((recyclingCenter) => recyclingCenter.id != recyclingCenterId);
-					//setVisible(true);
+					setVisible(true);
 					return recyclingCenters;
 				});
 			});
@@ -70,10 +84,10 @@ export function PlacesScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<EducationalContentList educationalContents={educationalContentData} setModalVisible={setModalVisible} setMode={setMode} setEducationalContentToEdit={setEducationalContentToEdit}/>
-					<EducationalContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} educationalContentToEdit={educationalContentToEdit}/>
+					<RecyclingCenterList recyclingCenterData={recyclingCenterData} setModalVisible={setModalVisible} setMode={setMode} setRecyclingCenterToEdit={setRecyclingCenterToEdit}/>
+					<RecyclingCenterFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} recyclingCenterToEdit={recyclingCenterToEdit}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
-						Conteúdo educacional deletado com sucesso!
+						Ponto de coleta deletado com sucesso!
 					</Snackbar>
 				</>
 			) : (
@@ -92,11 +106,10 @@ const styles = StyleSheet.create({
         height:45,
     },
     input:{
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    width:'120%',
-    textAlign:'center',
-    
+    	borderColor: 'gray',
+    	borderWidth: 1,
+    	borderRadius: 10,
+    	width:'120%',
+    	textAlign:'center',
     }
 });

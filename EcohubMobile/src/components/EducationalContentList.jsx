@@ -3,29 +3,38 @@ import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
 import { Mode } from "../helpers/Enums";
+import { getTokenAndUserId } from "../helpers/Auth";
+import { useState, useEffect } from 'react'
 
 const { height, width } = Dimensions.get('window');
 
 export default function EducationalContentList({educationalContents, setModalVisible, setMode, setEducationalContentToEdit }) {
+    const [isAdmin, setIsAdmin] = useState()
+    useEffect(()=>{
+        const getUserInfo = async () => {
+            const { isAdmin } = await getTokenAndUserId();
+            setIsAdmin(isAdmin);
+        }
+        getUserInfo();
+    },[]);
     const HomeHeader = () => (
         <View>
-            {/* Sticky header at the top */}
             <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
                 <View style={[base.flexRow]}>
                     <Text style={[base.title,{paddingTop:13}]}>Eco News</Text>
                     <Image source={require('../assets/images/news.png')} style = {styles.logo} />
                 </View>
-                <TouchableOpacity style={styles.criarContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
-                   
-                    <TextInput 
-                        style={[
-                            styles.input,
-                        ]}
-                        placeholder="Criar publicação"
-                        onFocus={() => {setModalVisible(true); setMode(Mode.create)}}                     
-                    />
-                </TouchableOpacity>
-
+                { isAdmin == '1' && 
+                    <TouchableOpacity style={styles.createContent} onPress={()=> {setModalVisible(true); setMode(Mode.create)}}>
+                        <TextInput 
+                            style={[
+                                styles.input,
+                            ]}
+                            placeholder="Criar publicação"
+                            onFocus={() => {setModalVisible(true); setMode(Mode.create)}}                     
+                        />
+                    </TouchableOpacity>
+                }
             </View>
         </View>
         
@@ -74,16 +83,14 @@ const styles = StyleSheet.create({
         gap: 14,
         marginBottom: 10,
     },
-    criarContent:{
+    createContent:{
         paddingTop:13
     },
-
     input:{
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    width:'120%',
-    textAlign:'center',
-    
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 10,
+        width:'120%',
+        textAlign:'center',
     }
 });

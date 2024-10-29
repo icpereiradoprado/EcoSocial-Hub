@@ -10,6 +10,7 @@ import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../components/Loading';
 import { getSocket } from '../helpers/socket';
+import { TextInputMask } from 'react-native-masked-text';
 
 const { height } = Dimensions.get('window');
 
@@ -236,13 +237,15 @@ export function SettingsScreen(){
                         inputMode="email"
                         editable={!loadingPreferencesData}
                     />
-                    <Input
-                        name="phone-number" 
+                    <TextInputMask
+                        type={'custom'}
+                        name='phone_number'
+                        options={{mask: '(99) 99999-9999'}}
                         value={phoneNumber}
-                        onChangeText={setPhoneNumber} 
-                        autoCapitalize="none"
-                        placeholder="Celular"
-                        inputMode="numeric"
+                        onChangeText={setPhoneNumber}
+                        placeholder='Celular'
+                        style={base.input}
+                        inputMode='numeric'
                         editable={!loadingPreferencesData}
                     />
                     <Input
