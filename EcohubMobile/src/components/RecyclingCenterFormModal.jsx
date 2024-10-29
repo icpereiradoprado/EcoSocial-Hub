@@ -173,6 +173,7 @@ const RecyclingCenterFormModal = ({modalVisible, setModalVisible, mode, recyclin
                                     onChangeText={setState}
                                     placeholder='Estado'
                                     autoCapitalize="none"
+                                    maxLength={2}
                                 />
                                 <Input 
                                     name="city"
