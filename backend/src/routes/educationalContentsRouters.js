@@ -6,7 +6,7 @@ import AuthService from '../services/AuthService.js';
 const router = Router();
 
 //Rotas GET
-router.get('/', AuthService.checkToken, EducationalContentsController.getAllEducationalContent);
+router.get('/:offset', AuthService.checkToken, EducationalContentsController.getAllEducationalContent);
 
 //Rotas POST
 router.post('/register', AuthService.checkToken, EducationalContentsController.registerEducationalContent);

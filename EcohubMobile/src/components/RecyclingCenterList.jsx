@@ -6,10 +6,11 @@ import { Mode } from "../helpers/Enums";
 import { useState, useEffect } from 'react';
 import { colors } from "../css/base";
 import { getTokenAndUserId } from "../helpers/Auth";
+import { Button } from "./Button";
 
 const { height, width } = Dimensions.get('window');
 
-const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, setRecyclingCenterToEdit}) => {
+const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, setRecyclingCenterToEdit, reloadList}) => {
     const [isAdmin, setIsAdmin ] = useState(null);
 
     useEffect(()=> {
@@ -35,9 +36,17 @@ const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, set
             </View>
         </View>
     )
+
+    const RecyclingCenterEmptyList = () => (
+        <View style={{alignItems: 'center', marginTop: 40}}>
+            <Text>Não há nenhum ponto de coleta cadastrado na sua cidade!</Text>
+            <Button buttonText='Recarregar' onPress={reloadList}/>
+        </View>
+    )
     return(
         <FlatList 
             data={recyclingCenterData}
+            ListEmptyComponent={() => <RecyclingCenterEmptyList />}
             renderItem ={({item}) => <RecyclingCenter 
                 id={item.id}
                 name={item.name}

@@ -17,13 +17,15 @@ export function HomeScreen(){
 	const [visible, setVisible] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mode, setMode] = useState(null);
+	const [offset, setOffset] = useState(0);
+	const [hasMoreData, setHasMoreData] = useState(true);
 	
 	const onDismissSnackBar = () => setVisible(false);
 
-    const fetchEducationalContents = async () => {
+    const fetchEducationalContents = async (offset) => {
 		const { token } = await getTokenAndUserId();
 		setLoading(true);
-        const response = await fetch(`${url}/educationalcontents`,{
+        const response = await fetch(`${url}/educationalcontents/${offset}`,{
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -32,17 +34,40 @@ export function HomeScreen(){
         });
         if(response.ok){
             const data = await response.json();
-            setEducationalContentData(data);
+			if(data.length > 0){
+				setEducationalContentData(data);
+			}
 			setLoading(false);
         }else{
             console.error('Não foi possível carregar os conteúdos educacionais!');
         }
     }
+	
+	const fetchMoreEducationalContents = async () => {
+		const { token } = await getTokenAndUserId();
+		const updatedOffset = offset + 10;
+		const response = await fetch(`${url}/educationalcontents/${updatedOffset}`,{
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+		if(response.ok){
+			const moreEducationContents = await response.json();
+			if(moreEducationContents.length === 0){
+				setHasMoreData(false);
+				return;
+			};
+			setEducationalContentData((prevEducationContents) => [...prevEducationContents, ...moreEducationContents]);
+			setOffset(updatedOffset);
+		}
+	}
 
     useEffect(()=>{
 		const listenEvent = async () => {
 			//Carrega os conteúdos educacionais do banco de dados
-			await fetchEducationalContents();
+			await fetchEducationalContents(offset);
 			const socketIo = getSocket();
 
 			socketIo.on('educationalcontentcreate', (newContent)=>{
@@ -83,9 +108,26 @@ export function HomeScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<EducationalContentList educationalContents={educationalContentData} setModalVisible={setModalVisible} setMode={setMode} setEducationalContentToEdit={setEducationalContentToEdit}/>
-					<EducationalContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} educationalContentToEdit={educationalContentToEdit}/>
-					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
+					<EducationalContentList 
+						educationalContents={educationalContentData} 
+						setModalVisible={setModalVisible} 
+						setMode={setMode} 
+						setEducationalContentToEdit={setEducationalContentToEdit} 
+						loadMoreData={fetchMoreEducationalContents} 
+						hasMoreData={hasMoreData}
+					/>
+					<EducationalContentFormModal 
+						modalVisible={modalVisible} 
+						setModalVisible={setModalVisible} 
+						mode={mode} 
+						educationalContentToEdit={educationalContentToEdit}
+					/>
+					<Snackbar 
+						style={{width: width - 10, position: 'absolute', bottom: 80}}
+						visible={visible}
+						duration={2000}
+						onDismiss={onDismissSnackBar}
+					>
 						Conteúdo educacional deletado com sucesso!
 					</Snackbar>
 				</>

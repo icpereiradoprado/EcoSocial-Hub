@@ -84,7 +84,7 @@ export function RecyclingCentersScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<RecyclingCenterList recyclingCenterData={recyclingCenterData} setModalVisible={setModalVisible} setMode={setMode} setRecyclingCenterToEdit={setRecyclingCenterToEdit}/>
+					<RecyclingCenterList recyclingCenterData={recyclingCenterData} setModalVisible={setModalVisible} setMode={setMode} setRecyclingCenterToEdit={setRecyclingCenterToEdit} reloadList={fetchRecyclingCenters}/>
 					<RecyclingCenterFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} recyclingCenterToEdit={recyclingCenterToEdit}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
 						Ponto de coleta deletado com sucesso!

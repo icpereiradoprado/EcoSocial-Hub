@@ -66,7 +66,7 @@ const RecyclingCenterFormModal = ({modalVisible, setModalVisible, mode, recyclin
                 opening_hour: openingHour,
                 phone_number: phoneNumber
             });
-            const response = await fetch(`${url}/ecyclingcenters/edit/${recyclingCenterToEdit.id}`,{
+            const response = await fetch(`${url}/recyclingcenters/edit/${recyclingCenterToEdit.id}`,{
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [isAdmin, setIsAdmin] = useState(null);
     const handleDeleteMessage = () => {
-        Alert.alert('Deletar ponto de coleta', `Você realmente deseja deletar o ponto de coloeta '${name}'`, [{
+        Alert.alert('Deletar ponto de coleta', `Você realmente deseja deletar o ponto de coleta '${name}'`, [{
             text: 'Não',
             style: 'cancel'
         },{
@@ -87,7 +87,7 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
                 </View>
             
 
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 16}}>
                 <Text style={styles.recyclingName}>{name}</Text>
             </View>
             <View style={styles.textInfo}>

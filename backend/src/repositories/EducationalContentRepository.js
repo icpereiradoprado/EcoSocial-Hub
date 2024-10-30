@@ -63,14 +63,16 @@ export default class EducationalContentRepository{
         }
     }
 
-    static async findAll(){
+    static async findAll(offset = 0){
         const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
                         FROM ${TABLE_NAME} EC
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = EC.USER_ID
-                        ORDER BY EC.CREATE_DATE DESC`;
+                        ORDER BY EC.CREATE_DATE DESC
+                        LIMIT 10 OFFSET $1`;
+        const value = [offset];
         
-        const result = await pool.query(query);
+        const result = await pool.query(query, value);
 
         return result.rows;
 

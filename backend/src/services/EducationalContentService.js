@@ -37,9 +37,10 @@ export default class EducationalContentService{
         }
     }
 
-    static async getAll(){
+    static async getAll(contentData){
         try{
-            const contents = await EducationalContentRepository.findAll();
+            const { offset } = contentData;
+            const contents = await EducationalContentRepository.findAll(offset);
             
             return contents;
             

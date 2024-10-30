@@ -59,7 +59,7 @@ export default class EducationalContentsController{
 
     static async getAllEducationalContent(req, res){
         try {
-            const contents = await EducationalContentService.getAll();
+            const contents = await EducationalContentService.getAll(req.params);
             res.status(200).json(contents);
         } catch (err) {
             res.status(422).json({ message: err.message});

@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput, ActivityIndicator} from "react-native";
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
@@ -8,8 +8,16 @@ import { useState, useEffect } from 'react'
 
 const { height, width } = Dimensions.get('window');
 
-export default function EducationalContentList({educationalContents, setModalVisible, setMode, setEducationalContentToEdit }) {
-    const [isAdmin, setIsAdmin] = useState()
+export default function EducationalContentList({educationalContents, setModalVisible, setMode, setEducationalContentToEdit, loadMoreData, hasMoreData }) {
+    const [isAdmin, setIsAdmin] = useState(null);
+    const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
+    const handleLoadMoreData = async () => {
+        if(hasMoreData){
+            setIsLoadingMoreData(true);
+            await loadMoreData();
+            setIsLoadingMoreData(false);
+        }
+    }
     useEffect(()=>{
         const getUserInfo = async () => {
             const { isAdmin } = await getTokenAndUserId();
@@ -39,10 +47,22 @@ export default function EducationalContentList({educationalContents, setModalVis
         </View>
         
     );
+
+    const HomeFooter = () => (
+        <View>
+            {isLoadingMoreData && (
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 16}}>Carregando mais conteúdo...</Text>
+                    <ActivityIndicator size="small" color="#000000"/>
+                </View>
+            )}
+        </View>
+    )
     return (
         <FlatList 
             data={educationalContents}
             ListEmptyComponent={() => <View style={{alignItems: 'center', marginTop: 40}}><Text>Não há nenhum conteúdo postado!</Text></View>}
+            keyExtractor={item => item.id}
             renderItem={({item}) => <EducationalContent 
                 id={item.id}
                 title={item.title}
@@ -56,11 +76,12 @@ export default function EducationalContentList({educationalContents, setModalVis
                 setMode={setMode}
                 setEducationalContentToEdit={setEducationalContentToEdit}
             />}
-            keyExtractor={item => item.id}
             ListHeaderComponent={()=> <HomeHeader />}
             ListHeaderComponentStyle={styles.headerComponent}
-            ListFooterComponent={()=> <View></View>}
-            ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}
+            onEndReached={handleLoadMoreData}
+            onEndReachedThreshold={0.02}
+            ListFooterComponent={()=> <HomeFooter />}
+            ListFooterComponentStyle={{paddingBottom: hasMoreData ? 130 : 80}}
             style={{width: width, paddingHorizontal: 10}}
         />
     )
