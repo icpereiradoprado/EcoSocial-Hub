@@ -1,13 +1,18 @@
 import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput} from "react-native";
 import { Entypo, AntDesign } from '@expo/vector-icons';
-import CommunityContent from "./CommunityContent";
+import Post from "./Post";
 import { base, colors } from "../css/base";
 import { Mode } from "../helpers/Enums";
 
 const { height, width } = Dimensions.get('window');
 
-export default function CommunityContentList({CommunityContents, setModalVisible, setMode }) {
-    const CommunityHeader = () => (
+export default function PostList({
+    posts, 
+    setModalVisible, 
+    setMode,
+    setPostToEdit
+}) {
+    const PostHeader = () => (
           <View>
              <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
                 <View style={[base.flexRow]}>
@@ -27,9 +32,9 @@ export default function CommunityContentList({CommunityContents, setModalVisible
     );
     return (
         <FlatList 
-            data={CommunityContents}
+            data={posts}
             ListEmptyComponent={() => <View style={{alignItems: 'center', marginTop: 40}}><Text>Não há nenhum conteúdo postado!</Text></View>}
-            renderItem={({item}) => <CommunityContent 
+            renderItem={({item}) => <Post 
                 id={item.id}
                 title={item.title}
                 content={item.content}
@@ -39,12 +44,13 @@ export default function CommunityContentList({CommunityContents, setModalVisible
                 post_picture={item.post_picture}
                 upvotes={item.upvotes}
                 downvotes={item.downvotes}
+                city={item.city}
                 setModalVisible={setModalVisible}
                 setMode={setMode}
-                
+                setPostToEdit={setPostToEdit}
             />}
             keyExtractor={item => item.id}
-            ListHeaderComponent={()=> <CommunityHeader />}
+            ListHeaderComponent={()=> <PostHeader />}
             ListHeaderComponentStyle={styles.headerComponent}
             ListFooterComponent={()=> <View></View>}
             ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}

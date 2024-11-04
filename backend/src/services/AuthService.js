@@ -32,7 +32,7 @@ export default class AuthService{
         UserModel.validateLoginData(userData);
         
         //Verifica se existe um usuário cadastrado com o nome ou e-mail passado. Caso exista, retorna o usuário
-        const user = await this.checkNameOrEmail(userData.userIdentification);
+        const user = await this.checkNameOrEmail(userData.userIdentification.trim());
 
         //Se o usuário já estiver cadastrado para a requisição e sobe erro
         if(!user){
@@ -40,7 +40,7 @@ export default class AuthService{
         }
 
         //Verifica se a senha do usuário é válida
-        await this.checkUserPassword(userData.password, user.password);
+        await this.checkUserPassword(userData.password.trim(), user.password);
 
         const token = await this.createUserToken(user);
         return {user, token};

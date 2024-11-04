@@ -2,7 +2,7 @@ import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'rea
 import { MaterialIcons } from '@expo/vector-icons'
 import { format } from 'date-fns'
 import Constants from 'expo-constants'
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../css/base';
 import { getTokenAndUserId } from '../helpers/Auth';
@@ -11,7 +11,19 @@ import { Mode } from '../helpers/Enums';
 
 const { height, width } = Dimensions.get('window');
 
-const EducationalContent = ({id, title, content, tag, create_date: createDate, username, user_id: userId, content_picture:contentPicture, setModalVisible, setMode, setEducationalContentToEdit }) => {
+const EducationalContent = ({
+    id, 
+    title, 
+    content, 
+    tag, 
+    create_date: createDate, 
+    username, 
+    user_id: userId, 
+    content_picture:contentPicture, 
+    setModalVisible, 
+    setMode, 
+    setEducationalContentToEdit 
+}) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectEducationalContent, setSelectEducationalContent] = useState(null);
@@ -122,9 +134,9 @@ const EducationalContent = ({id, title, content, tag, create_date: createDate, u
 
         </View>
     )
-}
+};
 
-export default EducationalContent;
+export default React.memo(EducationalContent);
 
 const styles = StyleSheet.create({
     postContainer: {

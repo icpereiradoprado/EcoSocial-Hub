@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { View, StyleSheet, Image , Text, useWindowDimensions, ActivityIndicator } from 'react-native';
-import CommunityContentList from '../components/CommunityContentList';
+import PostList from '../components/PostList';
 import { useEffect, useState } from 'react';
 import Constants from 'expo-constants';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { getSocket } from '../helpers/socket';
 import { Snackbar } from 'react-native-paper';
-import CommunityContentFormModal from '../components/EducationalContentFormModal';
-
+import PostFormModal from '../components/PostFormModal';
 
 export function CommunityScreen(){
     const { height, width } = useWindowDimensions();
@@ -16,10 +15,11 @@ export function CommunityScreen(){
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [offset, setOffset] = useState(0);
-    const [posts, setposts] = useState(null);
+    const [posts, setPosts] = useState(null);
 	const onDismissSnackBar = () => setVisible(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mode, setMode] = useState(null);
+    const [postToEdit, setPostToEdit] = useState(null);
 
     const fetchPosts = async () => {
 
@@ -35,7 +35,7 @@ export function CommunityScreen(){
 
         if(response.ok){
             const data = await response.json();
-            setposts(data);
+            setPosts(data);
         }else{
             console.error('Não foi possível carregar os posts!');
         }
@@ -47,16 +47,29 @@ export function CommunityScreen(){
 			const socketIo = getSocket();
 
 			socketIo.on('postcreate', (newContent)=>{
-				setposts((prevPost) => [newContent, ...prevPost]);
+				setPosts((prevPosts) => [newContent, ...prevPosts]);
 			});
 
 			socketIo.on('postdeleted', (contentId) => {
-				setposts((prevPost) => {
-					if (!prevPost) {
-						return prevPost;
+				setPosts((prevPosts) => {
+					if (!prevPosts) {
+						return prevPosts;
 					}
-					const contents = prevPost.filter((content) => content.id != contentId);
-					//setVisible(true);
+					const contents = prevPosts.filter((content) => content.id != contentId);
+					setVisible(true);
+					return contents;
+				});
+			});
+
+            socketIo.on('postedit', (updatedPost) => {
+				setPosts((prevPosts) => {
+					if (!prevPosts) {
+						return prevPosts;
+					}
+					// Mapeia a lista, substituindo o item pelo novo conteúdo se o ID for correspondente
+					const contents = prevPosts.map((content) =>
+						content.id === updatedPost.id ? updatedPost : content
+					);
 					return contents;
 				});
 			});
@@ -69,10 +82,10 @@ export function CommunityScreen(){
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<CommunityContentList CommunityContents={posts} setModalVisible={setModalVisible} setMode={setMode}/>
-                    <CommunityContentFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode}/>
+					<PostList posts={posts} setModalVisible={setModalVisible} setMode={setMode} setPostToEdit={setPostToEdit}/>
+                    <PostFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} postToEdit={postToEdit}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
-						Conteúdo educacional deletado com sucesso!
+						Post deletado com sucesso!
 					</Snackbar>
 				</>
 			) : (

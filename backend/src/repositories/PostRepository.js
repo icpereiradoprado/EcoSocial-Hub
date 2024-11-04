@@ -19,7 +19,9 @@ export default class PostRepository{
 
             const { id } = result.rows[0];
 
-            const selectQuery = `SELECT P.ID, P.TITLE, P.CONTENT, ENCODE(P.POST_PICTURE, 'escape') as POST_PICTURE, P.CREATE_DATE, P.UPDATE_DATE, P.USER_ID
+            const selectQuery = `SELECT P.ID, P.TITLE, P.CONTENT, 
+                        ENCODE(P.POST_PICTURE, 'escape') as POST_PICTURE, P.CREATE_DATE, 
+                        P.UPDATE_DATE, P.USER_ID, UA.NAME AS USERNAME, UA.CITY
                         FROM ${TABLE_NAME} P
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = P.USER_ID
@@ -92,13 +94,23 @@ export default class PostRepository{
                 const setQuery = columns.map((col, idx) => `${col} = $${idx + 1}`).join(', ');
 
                 const query = `UPDATE ${TABLE_NAME} SET ${setQuery} WHERE id = $${columns.length + 1} 
-                RETURNING ID, TITLE, CONTENT, ENCODE(POST_PICTURE, 'escape') as POST_PICUTRE`;
+                RETURNING ID, TITLE, CONTENT, ENCODE(POST_PICTURE, 'escape') as POST_PICUTRE, CREATE_DATE`;
 
                 const result = await client.query(query, [...values, id]);
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                const selectQuery = `SELECT P.ID, P.TITLE, P.CONTENT, ENCODE(P.POST_PICTURE,'escape') as POST_PICTURE, 
+                        P.CREATE_DATE, UA.NAME AS USERNAME, P.USER_ID, UA.CITY
+                        FROM ${TABLE_NAME} P
+                        INNER JOIN USER_ACCOUNT UA
+                        ON UA.ID = P.USER_ID
+                        WHERE P.ID = $1`;
+                const selectValue = [result.rows[0].id];
+
+                const postUpdated = await client.query(selectQuery, selectValue);
+
+                return postUpdated.rows[0];
             }else{
                 throw new Error(`O post não existe!`);
             }
@@ -180,7 +192,7 @@ export default class PostRepository{
     static async findAll(offset = 0){
         const query = `SELECT P.ID, P.TITLE, P.CONTENT, ENCODE(P.POST_PICTURE, 'escape') as POST_PICTURE, 
                         P.CREATE_DATE, P.UPDATE_DATE, P.UPVOTES, P.DOWNVOTES, LAST_ACTIVITY_AT,
-                        UA.NAME AS USERNAME, P.USER_ID
+                        UA.NAME AS USERNAME, UA.CITY, P.USER_ID
                         FROM ${TABLE_NAME} P
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = P.USER_ID
@@ -192,5 +204,14 @@ export default class PostRepository{
 
         return result.rows;
 
+    }
+
+    static async postsVoted(userId, postId){
+        const query = `SELECT * FROM ${TABLE_VOTE} WHERE USER_ID = $1 AND POST_ID = $2`;
+        const value = [userId, postId];
+        
+        const result = await pool.query(query, value);
+
+        return result.rows;
     }
 }

@@ -18,7 +18,7 @@ export default class UserService{
 
         //Cria uma senha criptografada
         const salt = await bcrypt.genSalt(12);
-        const passwordHash = await bcrypt.hash(userData.password, salt);
+        const passwordHash = await bcrypt.hash(userData.password.trim(), salt);
 
         //Chama o método para inserir um novo usuário.
         const user = await UserRepository.create(userData, passwordHash);

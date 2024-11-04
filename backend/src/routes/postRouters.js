@@ -6,6 +6,7 @@ const router = Router();
 
 //GET
 router.get('/:offset', AuthService.checkToken, PostController.getAllPost);
+router.get('/postsvoted/:userId/:postId', AuthService.checkToken, PostController.postsVoted);
 
 //POST
 router.post('/register', AuthService.checkToken, PostController.registerPost);

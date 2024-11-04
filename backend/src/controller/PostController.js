@@ -89,4 +89,13 @@ export default class PostController{
             res.status(422).json({ message: err.message})
         }
     }
+
+    static async postsVoted(req, res){
+        try {
+            const postsVoted = await PostService.postsVoted(req.params.userId, req.params.postId);
+            res.status(200).json({message: 'Requisição realizada com sucesso!', postsVoted: postsVoted});
+        } catch (err) {
+            res.status(422).json({ message: err.message})
+        }
+    }
 }

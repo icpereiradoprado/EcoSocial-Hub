@@ -89,4 +89,12 @@ export default class PostService{
         }
     }
 
+    static async postsVoted(userId, postId){
+        try {
+            return await PostRepository.postsVoted(userId, postId);
+        } catch (err) {
+            throw new Error(`Não concluir a requisição!: ${err.message}`);
+        }
+    }
+
 }

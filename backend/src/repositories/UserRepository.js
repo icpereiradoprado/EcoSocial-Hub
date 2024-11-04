@@ -29,7 +29,7 @@ export default class UserRepository{
 
             //Query para inserir um novo usuário
             const query = `INSERT INTO ${TABLE_NAME} (NAME, EMAIL, PHONE_NUMBER, CITY, PASSWORD) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-            const values = [name, email, phoneNumber, city, passwordHash];
+            const values = [name.trim(), email.trim(), phoneNumber.trim(), city.trim(), passwordHash];
 
             //Insere um novo usuário no BD e retorna as colunas desta operação
             const result = await client.query(query, values);

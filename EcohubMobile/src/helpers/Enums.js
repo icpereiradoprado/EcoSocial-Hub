@@ -3,4 +3,9 @@ const Mode = {
     "update": 2
 }
 
-export { Mode };
+const VoteType = {
+    "up": 1,
+    "down": 2
+}
+
+export { Mode, VoteType };
