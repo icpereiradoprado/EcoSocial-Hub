@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Alert
 import { base, colors } from '../css/base';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { Input } from '../components/Input';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useContext } from 'react';
 import { PasswordInput } from '../components/PasswordInput';
 import { Button } from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import Loading from '../components/Loading';
 import { getSocket } from '../helpers/socket';
 import { TextInputMask } from 'react-native-masked-text';
+import { SettingsContext } from '../context/SettingsContext';
 
 const { height } = Dimensions.get('window');
 
@@ -39,6 +40,8 @@ export function SettingsScreen(){
     const [originalEmail, setOriginalEmail] = useState('');
     const [originalPhoneNumber, setOriginalPhoneNumber] = useState('');
     const [originalCity, setOriginalCity] = useState('');
+
+    const { setUserCity } = useContext(SettingsContext);
 
     /**
      * Método handler para exibir a mensage de confirmação de Logout
@@ -193,6 +196,7 @@ export function SettingsScreen(){
 
                 if (response.ok) {
                     Alert.alert('Sucesso', data.message);
+                    setUserCity(city);
                     fetchPreferences();
                     setPassword('');
                     setConfirmPassword('');

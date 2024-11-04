@@ -10,7 +10,7 @@ import { Button } from "./Button";
 
 const { height, width } = Dimensions.get('window');
 
-const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, setRecyclingCenterToEdit, reloadList}) => {
+const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, setRecyclingCenterToEdit}) => {
     const [isAdmin, setIsAdmin ] = useState(null);
 
     useEffect(()=> {
@@ -40,7 +40,6 @@ const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, set
     const RecyclingCenterEmptyList = () => (
         <View style={{alignItems: 'center', marginTop: 40}}>
             <Text>Não há nenhum ponto de coleta cadastrado na sua cidade!</Text>
-            <Button buttonText='Recarregar' onPress={reloadList}/>
         </View>
     )
     return(

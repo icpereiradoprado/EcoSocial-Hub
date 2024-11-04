@@ -1,12 +1,13 @@
 import Constants from 'expo-constants';
 import { View, StyleSheet, useWindowDimensions, ActivityIndicator} from "react-native";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { base, colors } from "../css/base";
 import RecyclingCenterList from "../components/RecyclingCenterList";
 import { getTokenAndUserId } from "../helpers/Auth";
 import { getSocket } from '../helpers/socket';
 import RecyclingCenterFormModal from '../components/RecyclingCenterFormModal';
 import { Snackbar } from 'react-native-paper';
+import { SettingsContext } from '../context/SettingsContext';
 
 export function RecyclingCentersScreen(){
 	const { height, width } = useWindowDimensions();
@@ -17,6 +18,7 @@ export function RecyclingCentersScreen(){
 	const [mode, setMode] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [recyclingCenterToEdit, setRecyclingCenterToEdit] = useState(null);
+	const { userCity } = useContext(SettingsContext);
 
 	const onDismissSnackBar = () => setVisible(false);
 
@@ -77,14 +79,14 @@ export function RecyclingCentersScreen(){
 
 		return () => {}
 		
-    }, []);
+    }, [userCity]);
 
 
     return(
         <View style = {styles.container}>
 			{!loading ? (
 				<>
-					<RecyclingCenterList recyclingCenterData={recyclingCenterData} setModalVisible={setModalVisible} setMode={setMode} setRecyclingCenterToEdit={setRecyclingCenterToEdit} reloadList={fetchRecyclingCenters}/>
+					<RecyclingCenterList recyclingCenterData={recyclingCenterData} setModalVisible={setModalVisible} setMode={setMode} setRecyclingCenterToEdit={setRecyclingCenterToEdit}/>
 					<RecyclingCenterFormModal modalVisible={modalVisible} setModalVisible={setModalVisible} mode={mode} recyclingCenterToEdit={recyclingCenterToEdit}/>
 					<Snackbar style={{width: width - 10, position: 'absolute', bottom: 80}} visible={visible} duration={2000} onDismiss={onDismissSnackBar}>
 						Ponto de coleta deletado com sucesso!

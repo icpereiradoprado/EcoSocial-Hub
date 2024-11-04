@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import MainTabNavigator from './MainTabNavigator';
+import { SettingsProvider } from '../context/SettingsContext';
 
 const Stack = createStackNavigator();
 
@@ -13,13 +14,15 @@ const Stack = createStackNavigator();
  */
 export default function RootStack(){
    return(
-        <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
-                <Stack.Screen name="MainTabNavigator" component={MainTabNavigator}/>
-                <Stack.Screen name="LoginScreen" component={LoginScreen} />
-                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <SettingsProvider>
+            <NavigationContainer>
+                <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
+                    <Stack.Screen name="MainTabNavigator" component={MainTabNavigator}/>
+                    <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                    <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </SettingsProvider>
    ) 
 }
 //alterado initialRouteName de loginscreen para maintab, assim n preciso do banco de dados para ver as views
