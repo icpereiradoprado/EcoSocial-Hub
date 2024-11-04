@@ -15,7 +15,7 @@
       ]
     ],
     "extra":{
-      "apiUrl": "http://192.168.15.11:5000"
+      "apiUrl": "http://192.168.10.18:5000"
     },
     "splash": {
       "image": "./src/assets/images/logo.png",

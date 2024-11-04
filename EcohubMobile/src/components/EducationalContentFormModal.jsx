@@ -128,12 +128,12 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
         <Modal
             animationType="slide"
             visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
+            onRequestClose={() => {setModalVisible(false); handleResetInputs()}}
         > 
             <KeyboardAwareScrollView>
                 <View style={styles.modalView}>
                     <View style={{width: '100%'}}>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                        <TouchableOpacity style={styles.closeButton} onPress={() => {setModalVisible(false); handleResetInputs()}}>
                             <MaterialIcons name='close' size={25}/>
                         </TouchableOpacity>
                     </View>
