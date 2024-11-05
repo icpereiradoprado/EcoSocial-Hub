@@ -7,6 +7,7 @@ export default class CommentCotroller{
 
     static async registerComment(req, res){
         try {
+            console.log('CONTROLLER')
             const post = await CommentService.register(req.body);
             io.emit('commentcreate', post);
             res.status(201).json({

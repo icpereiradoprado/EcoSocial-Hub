@@ -18,7 +18,7 @@ export default class CommentRepository{
 
             const { id } = result.rows[0];
 
-            const selectQuery = `SELECT C.ID, C.CONTENT, C.CREATE_DATE, C.UPDATE_DATE, C.USER_ID
+            const selectQuery = `SELECT C.ID, C.CONTENT, C.CREATE_DATE, C.UPDATE_DATE, C.USER_ID, UA.NAME AS USERNAME
                         FROM ${TABLE_NAME} C
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = C.USER_ID

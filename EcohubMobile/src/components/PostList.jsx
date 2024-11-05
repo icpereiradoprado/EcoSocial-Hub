@@ -1,8 +1,9 @@
-import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput} from "react-native";
-import { Entypo, AntDesign } from '@expo/vector-icons';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, TextInput} from "react-native";
+import {useState} from 'react';
 import Post from "./Post";
 import { base, colors } from "../css/base";
 import { Mode } from "../helpers/Enums";
+import CommentsModal from "./CommetsModal";
 
 const { height, width } = Dimensions.get('window');
 
@@ -12,6 +13,8 @@ export default function PostList({
     setMode,
     setPostToEdit
 }) {
+    const [commentModalVisible, setCommentModalVisible] = useState(false);
+    const [postId, setPostId] = useState(null);
     const PostHeader = () => (
           <View>
              <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
@@ -31,9 +34,10 @@ export default function PostList({
         
     );
     return (
+        <View>
         <FlatList 
             data={posts}
-            ListEmptyComponent={() => <View style={{alignItems: 'center', marginTop: 40}}><Text>Não há nenhum conteúdo postado!</Text></View>}
+            ListEmptyComponent={() => <View style={{alignItems: 'center'}}><Text style={{textAlign: 'center'}}>Não há nenhum conteúdo postado!</Text></View>}
             renderItem={({item}) => <Post 
                 id={item.id}
                 title={item.title}
@@ -45,9 +49,12 @@ export default function PostList({
                 upvotes={item.upvotes}
                 downvotes={item.downvotes}
                 city={item.city}
+                commentCount={item.comment_count}
                 setModalVisible={setModalVisible}
                 setMode={setMode}
                 setPostToEdit={setPostToEdit}
+                setCommentModalVisible={setCommentModalVisible}
+                setPostId={setPostId}
             />}
             keyExtractor={item => item.id}
             ListHeaderComponent={()=> <PostHeader />}
@@ -56,6 +63,8 @@ export default function PostList({
             ListFooterComponentStyle={{backgroundColor: 'transparent', padding: 35}}
             style={{width: width, paddingHorizontal: 10}}
         />
+        <CommentsModal modalVisible={commentModalVisible} setModalVisible={setCommentModalVisible} postId={postId}/>
+        </View>
     )
 }
 

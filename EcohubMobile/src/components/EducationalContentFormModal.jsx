@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Image, Alert } from 'react-native';
 import { Button } from '../components/Button';
 import { base, colors } from "../css/base";
 import { MaterialIcons } from '@expo/vector-icons';
@@ -226,9 +226,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalBodyForm: {
-        //marginTop: 48,
         width: '100%',
-        //height: '100%',
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -236,9 +234,6 @@ const styles = StyleSheet.create({
     closeButton: {
         width: 30,
         height: 30
-        //position: 'absolute',
-        //left: 10,
-        //top: 15
     },
     deleteImage : {
         backgroundColor: '#3f3f46', 

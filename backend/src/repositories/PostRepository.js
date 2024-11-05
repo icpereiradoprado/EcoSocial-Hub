@@ -192,7 +192,7 @@ export default class PostRepository{
     static async findAll(offset = 0){
         const query = `SELECT P.ID, P.TITLE, P.CONTENT, ENCODE(P.POST_PICTURE, 'escape') as POST_PICTURE, 
                         P.CREATE_DATE, P.UPDATE_DATE, P.UPVOTES, P.DOWNVOTES, LAST_ACTIVITY_AT,
-                        UA.NAME AS USERNAME, UA.CITY, P.USER_ID
+                        UA.NAME AS USERNAME, UA.CITY, P.USER_ID, P.COMMENT_COUNT
                         FROM ${TABLE_NAME} P
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = P.USER_ID

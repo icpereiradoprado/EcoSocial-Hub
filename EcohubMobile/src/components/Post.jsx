@@ -24,7 +24,10 @@ const Post = ({
     city,
     setModalVisible, 
     setMode,
-    setPostToEdit
+    setPostToEdit,
+    setCommentModalVisible,
+    setPostId,
+    commentCount
 }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
@@ -207,9 +210,9 @@ const Post = ({
             setLoggedUser(loggedUserId);
         }
         getUserInfo();
-
         setUpVotes(upvotes);
         setDownVotes(downvotes);
+        setCommentsCount(commentCount);
 
         fetchPostVoted();
         
@@ -273,7 +276,7 @@ const Post = ({
                 </View>
 
                 <View style={ {flexDirection:'row', gap:5 ,alignItems:'center'}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {setCommentModalVisible(true); setPostId(id)}}>
                             <AntDesign name='message1' size={22}/>
                     </TouchableOpacity>
                     <Text  style={{ fontSize:16, fontWeight:'500'}}>{commentsCount}</Text>
