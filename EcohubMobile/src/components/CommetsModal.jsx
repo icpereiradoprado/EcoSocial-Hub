@@ -9,14 +9,13 @@ import { getSocket } from "../helpers/socket";
 
 const { width } = Dimensions.get('window');
 
-const CommentsModal = ({ modalVisible, setModalVisible, postId, commentParent }) => {
+const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [commentsData, setCommentsData] = useState(null);
     const [offset, setOffset] = useState(0);
     const [commentContent, setCommentContent] = useState(null);
     const [commentParentTest, setCommentParentTest] = useState(null);
     const [hasMoreData, setHasMoreData] = useState(true);
-    const [commentToEdit, setCommentToEdit] = useState(null);
 
     const fetchCommentsData = async (offset) => {
         const { userId, token } = await getTokenAndUserId();
@@ -36,7 +35,6 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId, commentParent })
                     setHasMoreData(true);
                 }
                 setCommentsData(data);
-                //setHasMoreData(true);
                 setOffset(0);
             }
         } catch (err) {
@@ -85,6 +83,9 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId, commentParent })
                 });
                 if(response.ok){
                     setCommentContent(null);
+                }else{
+                    const data = await response.json();
+                    console.log(data);
                 }
             }
         } catch (err) {
@@ -116,8 +117,16 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId, commentParent })
             });
         });
 
-        socketIo.on('commentedit', (newComment)=>{
-            setCommentsData((prevComment) => [newComment, ...prevComment]);
+        socketIo.on('commentedit', (updatedComment)=>{
+            setCommentsData((prevComments) => {
+                if(!prevComments) return prevComments;
+                
+                // Mapeia a lista, substituindo o item pelo novo conteúdo se o ID for correspondente
+                const comments = prevComments.map((comment) =>
+                    comment.id === updatedComment.id ? updatedComment : comment
+                );
+                return comments;
+            });
         });
     }, []);
     return (
@@ -138,25 +147,19 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId, commentParent })
                         commentsData={commentsData}
                         hasMoreData={hasMoreData}
                         loadMoreData={fetchMoreComments}
-                        setCommentToEdit={setCommentToEdit}
                     />
                 </View>
             </View>
             <View style={styles.addCommentContainer}>
                 <View>
-                    {commentParentTest && (
-                        <View style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-                            <MaterialIcons name='close' size={20} onPress={() => setCommentParentTest(null)}/>
-                            <Text style={{color: '#9ca3af'}}>Respondendo @{'Fulano'}</Text>
-                        </View>
-                    )}
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <MaterialCommunityIcons name="comment-processing" size={25}/>
                         <TextInput
-                            value={() => !commentToEdit ? commentContent : commentToEdit}
+                            value={commentContent}
                             onChangeText={setCommentContent}
                             placeholder='Adicione um comentário...'
                             style={styles.addCommentInput}
+                            maxLength={255}
                         />
                     </View>
                 </View>

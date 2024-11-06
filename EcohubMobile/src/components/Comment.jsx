@@ -1,8 +1,10 @@
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, Alert } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, Alert, Modal, TextInput } from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import Constants from 'expo-constants';
 import { getTokenAndUserId } from "../helpers/Auth";
+import { format } from 'date-fns'
+import { colors } from "../css/base";
 
 const { width } = Dimensions.get('window');
 
@@ -13,13 +15,14 @@ const Comment = ({
     userId, 
     createDate, 
     commentParent, 
-    username, 
-    setCommentToEdit
+    username
 }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [isAdmin, setIsAdmin] = useState(false);
     const [loggedUserId, setLoggedUser] = useState(null);
     const [selectComment, setSelectComment] = useState(null);
+    const [contentEdit, setContentEdit] = useState(null);
+    const [showInput, setShowInput] = useState(false);
 
     const showEditTooltip = (id) => {
         if(selectComment === id){
@@ -27,54 +30,73 @@ const Comment = ({
         }else{
             setSelectComment(id);
         }
-        
     }
-    const handleDeleteComment = async (id) => {
+    const handleDeleteComment = async () => {
         const { token } = await getTokenAndUserId();
         try {
-            await fetch(`${url}/comments/delete/${id}`, {
+            const response = await fetch(`${url}/comments/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if(response.ok){
+                setSelectComment(null);
+            }
         } catch (err) {
             console.error(`Erro ao deletar comentário: ${err.message}`);
         }
     }
-    const handleDeleteCommentMessage = (id) => {
-        Alert.alert('Deletar post', `Você realmente deseja o comentário?`,[
+    const handleDeleteCommentMessage = () => {
+        Alert.alert('Deletar post', `Você realmente deseja o comentário? ${id}`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteComment(id) }
         ])
     }
 
-    const handleToSetCommentEdit = () => {
-        const post = {
-            id,
-            content
+    const handleToEditComment = async () => {
+        try {
+            const { token } = await getTokenAndUserId();
+            const body = JSON.stringify({
+                content: contentEdit,
+                update_date: null
+            });
+            const response = await fetch(`${url}/comments/edit/${id}`,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body
+            });
+
+            if(response.ok){
+                setShowInput(false);
+                setSelectComment(null);
+            }
+        } catch (err) {
+            console.error(`Erro ao editar comentário ${err.message}`)
         }
-        setCommentToEdit(post);
+    }
+    const handleToShowInputComment = () => {
+        setShowInput(true);
+        setContentEdit(content);
     }
     return (
         <View style={styles.containter}>
-            <View style={{flexDirection: 'row', gap: 8}}>
+            <View style={{flexDirection: 'row', gap: 8, flex: 1}}>
                 <Image source={{uri: 'https://github.com/icpereiradoprado.png'}} style={styles.userImage}/>
-                <View>
+                <View style={{flex: 1}}>
                     <View>
                         <Text style={styles.username}>{username}</Text>
                     </View>
-                    <View>
+                    <View style={{flex: 1}}>
                         <Text style={styles.content}>{content}</Text>
                     </View>
                     <View>
                         <TouchableOpacity>
-                            <Text style={styles.replyButton}>Responder</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity>
-                            <Text style={styles.viewRepliesButton}>Ver respostas</Text>
+                            <Text style={styles.replyButton}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -85,19 +107,70 @@ const Comment = ({
                     <MaterialIcons name='more-vert' size={25}/>
                 </TouchableOpacity>
             )}
-            {selectComment === id && (
-                <View style={styles.editTooltip}>
-                    {(userId == loggedUserId) && (
-                        <TouchableOpacity onPress={() => {setModalVisible(true); setMode(Mode.update); handleToSetCommentEdit();setSelectComment(null)}}>
-                            <Text style={styles.buttonTooltip}>Editar</Text>
+            {selectComment == id && (
+            <Modal
+                animationType="slide"
+                visible={true}
+                onRequestClose={() => {setSelectComment(null)}}
+            > 
+                
+                <View style={styles.modalView}>
+                    <View style={{width: '100%'}}>
+                        <TouchableOpacity style={styles.closeButton} onPress={() => {setSelectComment(null)}}>
+                            <MaterialIcons name='arrow-back' size={25}/>
                         </TouchableOpacity>
-                    )}
-                    <TouchableOpacity onPress={() => {handleDeleteCommentMessage(id); setSelectComment(null)}}>
-                        <Text style={[styles.buttonTooltip, {color: 'red'}]}>Deletar</Text>
-                    </TouchableOpacity>
+                    </View>
+                    <View style={{flex: 1, gap: 10, width: '100%'}}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Comentário selecionado</Text>
+                        <View style={{flexDirection: 'row', gap: 8, flex: 1}}>
+                            <Image source={{uri: 'https://github.com/icpereiradoprado.png'}} style={styles.userImage}/>
+                            <View style={{flex: 1}}>
+                                <View>
+                                    <Text style={styles.username}>{username}</Text>
+                                </View>
+                                <View style={{flex: 1, gap: 4}}>
+                                    <Text style={styles.content}>{contentEdit ? contentEdit : content}</Text>
+                                    <Text style={styles.replyButton}>{format(new Date(createDate), 'dd/MM/yyyy HH:mm:ss')}</Text>
+                                </View>
+                            </View>
+                        </View>
+                        {showInput && (
+                            <View style={styles.addCommentContainer}>
+                                <View>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <TouchableOpacity onPress={()=> setShowInput(false)} style={{position: 'absolute', top: -10, left: -16, backgroundColor: 'black', borderRadius: 100}}>
+                                            <MaterialCommunityIcons style={{}} name="close" size={18} color='white'/>
+                                        </TouchableOpacity>
+                                        <TextInput
+                                            value={contentEdit}
+                                            onChangeText={setContentEdit}
+                                            placeholder='Adicione um comentário...'
+                                            style={styles.addCommentInput}
+                                            maxLength={255}
+                                        />
+                                    </View>
+                                </View>
+                                <TouchableOpacity onPress={handleToEditComment}>
+                                    <MaterialCommunityIcons name="send" size={25}/>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </View>
+                    
+                    <View style={styles.modalBodyForm}>
+                        <TouchableOpacity disabled={showInput} style={!showInput ? styles.buttonTooltipEdit : [styles.buttonTooltipEdit, {backgroundColor: '#9ca3af', borderColor: '#9ca3af'}]} onPress={
+                            handleToShowInputComment
+                        }>
+                            <Text style={{color: 'black', fontWeight: 'bold', fontSize: 16}}>Editar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonTooltipDelete} onPress={handleDeleteCommentMessage}>
+                            <Text style={{color: 'black', fontWeight: 'bold', fontSize: 16}}>Deletar</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                
+            </Modal>
             )}
-            
         </View>
     )
 }
@@ -133,25 +206,63 @@ const styles = StyleSheet.create({
         marginTop: 6,
         marginStart: 40
     },
-    editTooltip:{
-        width: 150,
-        position: 'absolute',
+    buttonTooltipDelete:{
+        borderWidth: 1,
+        borderColor: 'red',
         borderRadius: 12,
-        backgroundColor: 'white',
-        right: 5,
-        top: 32,
-        padding: 12,
-        zIndex: 1,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
+        paddingHorizontal: 6,
+        paddingVertical: 12,
+        width: '100%',
+        alignItems: 'center',
+        backgroundColor: '#ef4444'
     },
-    buttonTooltip:{
-        padding: 4,
-        fontWeight: '700'
+    buttonTooltipEdit:{
+        borderWidth: 1,
+        borderColor: colors.green_dark,
+        borderRadius: 12,
+        paddingHorizontal: 6,
+        paddingVertical: 12,
+        width: '100%',
+        alignItems: 'center',
+        backgroundColor: colors.green_dark
     },
+    modalView: {
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+        flex: 1
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    modalBodyForm: {
+        width: '100%',
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        flex: 1,
+        gap: 12
+    },
+    closeButton: {
+        width: 30,
+        height: 30
+    },
+    addCommentContainer:{
+        borderWidth: 1,
+        borderColor: colors.black_default,
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 6,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    addCommentInput:{
+        paddingVertical: 8,
+        paddingHorizontal: 6,
+        width: '85%'
+    }
 })
 
-export default Comment;
+export default React.memo(Comment);
