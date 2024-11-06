@@ -15,18 +15,21 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 -- PASSWORD             | SENHA DO USUÁRIO
 -- IS_ADMIN             | ADMIN? [0]:NÃO [1]:SIM
 -- PHONE_NUMBER         | NÚMERO DE TELEFONE DO USUÁRIO
+-- PROFILE_PICTURE      | FOTO DE PERFIL
+-- PROFILE_PICTURE_EXT  | EXTENSÃO DA FOTO DE PPERFIL
+-- CITY                 | CIDADE
 -- ===========================================================================
 CREATE TABLE USER_ACCOUNT
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-  , NAME                 VARCHAR(255)                             NOT NULL
-  , EMAIL                VARCHAR(255) 						          NULL
-  , PASSWORD             VARCHAR(255)				              NOT NULL
-  , IS_ADMIN             NUMERIC(1)				   DEFAULT 0      NOT NULL
-  , PHONE_NUMBER         VARCHAR(15)                                  NULL
-  , PROFILE_PICTURE      BYTEA                                        NULL
-  , PROFILE_PICTURE_EXT  VARCHAR(10)                                  NULL
-  , CITY                 VARCHAR(255)                             NOT NULL
+  , NAME                 VARCHAR(255)                            NOT NULL
+  , EMAIL                VARCHAR(255) 						                   NULL
+  , PASSWORD             VARCHAR(255)				                     NOT NULL
+  , IS_ADMIN             NUMERIC(1)				   DEFAULT 0           NOT NULL
+  , PHONE_NUMBER         VARCHAR(15)                                 NULL
+  , PROFILE_PICTURE      BYTEA                                       NULL
+  , PROFILE_PICTURE_EXT  VARCHAR(10)                                 NULL
+  , CITY                 VARCHAR(255)                            NOT NULL
 );
 
 -- ===========================================================================
@@ -43,12 +46,14 @@ CREATE TABLE USER_ACCOUNT
 -- LAST_ACTIVITY_AT     | DATA DA ÚLTIMA ATIVIDADE NO POST (UPVOTES, DOWNVOTES, COMMENT)
 -- CREATE_DATE          | DATA DE CRIAÇÃO DO POST
 -- UPDATE_DATE          | DATA DE ATUALIZAÇÃO DO POST
+-- POST_PICTURE         | FOTO DE PERFIL
+-- POST_PICTURE_EXT     | EXTENSÃO DA FOTO DE PPERFIL
 -- ===========================================================================
 CREATE TABLE POST
 (
 	ID                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
   , TITLE                VARCHAR(255)                               NOT NULL
-  , CONTENT              TEXT                   				     NOT NULL
+  , CONTENT              TEXT                   				            NOT NULL
   , USER_ID              INTEGER REFERENCES USER_ACCOUNT(ID) ON DELETE CASCADE  NOT NULL
   , INACTIVE             NUMERIC(1)			       DEFAULT 0     NOT NULL
   , UPVOTES              INTEGER                      DEFAULT 0         NULL             
@@ -88,9 +93,12 @@ CREATE TABLE COMMENT
 -- ID                   | ID DO CONTEÚDO EDUCACIONAL
 -- TITLE                | TITULO
 -- CONTENT              | CONTEUDO
--- CREATE_DATE          | DATA DE CRIAÇÃO DO CONTEUDO EDUCACIONAL     
+-- CREATE_DATE          | DATA DE CRIAÇÃO DO CONTEUDO EDUCACIONAL
+-- UPDATE_DATE          | DATA DE ATUALIZAÇÃO
 -- USER_ID              | ID DO USUÁRIO CRIADOR
--- TAG                  | TAGS             
+-- TAG                  | TAGS      
+-- CONTENT_PICTURE      | FOTO DE PERFIL
+-- CONTENT_PICTURE_EXT  | EXTENSÃO DA FOTO DE PPERFIL
 -- ===========================================================================
 CREATE TABLE EDUCATIONAL_CONTENT
 (
@@ -117,6 +125,8 @@ CREATE TABLE EDUCATIONAL_CONTENT
 -- CITY                 | CIDADE
 -- OPENING_HOUR         | HORÁRIO DE FUNCIONAMENTO
 -- PHONE_NUMBER         | NÚMERO DE TELEFONE
+-- CREATE_DATE          | DATA DE CRIAÇÃO DO RECYCLING CENTER
+-- UPDATE_DATE          | DATA DE ATUALIZAÇÃO
 -- ===========================================================================
 CREATE TABLE RECYCLING_CENTER
 (
@@ -203,23 +213,29 @@ BEGIN
   -- INSERT
   IF V_ACTION = 1 THEN
     IF NEW.TYPE = 1 THEN
+	  -- ATUALIZA A TABELA POST SOMANDO MAIS UM AOS UPVOTES
       UPDATE POST SET UPVOTES = (UPVOTES + 1) WHERE ID = NEW.POST_ID;
     ELSIF NEW.TYPE = 2 THEN
+	  -- ATUALIZA A TABELA POST SOMANDO MAIS UM AOS DOWNVOTES
       UPDATE POST SET DOWNVOTES = (DOWNVOTES + 1) WHERE ID = NEW.POST_ID;
     END IF;
   -- DELETE
   ELSIF V_ACTION = 2 THEN
     IF OLD.TYPE = 1 THEN
+	  -- REMOVE UM UPVOTE DA TABELA POST
       UPDATE POST SET UPVOTES = (UPVOTES - 1) WHERE ID = OLD.POST_ID;
     ELSIF OLD.TYPE = 2 THEN
+	  -- REMOVE UM DOWNVOTE DA TABELA POST
       UPDATE POST SET DOWNVOTES = (DOWNVOTES - 1) WHERE ID = OLD.POST_ID;
     END IF;
   -- UPDATE
   ELSIF V_ACTION = 3 THEN
     IF NEW.TYPE = 1 THEN
+	  -- ATUALIZA A TABELA POST TIRANDO UM DOWNVOTE E ACRESENTANDO UM UPVOTE
    	  UPDATE POST SET DOWNVOTES = (DOWNVOTES - 1) WHERE ID = NEW.POST_ID;
       UPDATE POST SET UPVOTES = (UPVOTES + 1) WHERE ID = NEW.POST_ID;
     ELSIF NEW.TYPE = 2 THEN
+	  -- ATUALIZA A TABELA POST TIRANDO UM UPVOTE E ACRESENTANDO UM DOWNVOTE
       UPDATE POST SET UPVOTES = (UPVOTES - 1) WHERE ID = NEW.POST_ID;
       UPDATE POST SET DOWNVOTES = (DOWNVOTES + 1) WHERE ID = NEW.POST_ID;
     END IF;
