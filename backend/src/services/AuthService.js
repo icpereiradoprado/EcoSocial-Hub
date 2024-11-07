@@ -76,7 +76,7 @@ export default class AuthService{
     }
 
     /**
-     * Extrai o token obtido através do header da requisição e retorna o token
+     * Retorna o token do usário
      * @param {string} authorization 
      * @returns Token
      */

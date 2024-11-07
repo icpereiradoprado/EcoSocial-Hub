@@ -1,8 +1,8 @@
-// db.js
-import pg from 'pg'
-import dotenv from 'dotenv';
+import pg from 'pg' //Importa o cliente do PostgreSQL para o Node.js
+import dotenv from 'dotenv'; //Permite carregar o variáveis de ambiente do arquivo `.env`
 
 
+//Traz a classe Pool que permite criar e gerenciar um pool de conexões com o banco de dados
 const { Pool } = pg;
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();

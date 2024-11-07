@@ -7,7 +7,7 @@ export default class UserController {
     /**
      * Controlador para registrar um novo usuário 
      * @param {*} req Request
-     * @param {*} res Resposta
+     * @param {*} res Response
      */
     static async registerUser(req, res){
         try{
