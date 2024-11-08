@@ -85,15 +85,15 @@ export default class UserController {
         const { authorization } = req.headers;
 
         if(authorization){
-        //Retorna uma string do token do usuário sem a palavra `Bearer`
+            //Retorna uma string do token do usuário sem a palavra `Bearer`
             const token = AuthService.getToken(authorization);
-        //Verifica a autenticidade do token e retorna os dados contidos nele.
-        //Caso seja um token inválido, lança um erro.            
+            //Verifica a autenticidade do token e retorna os dados contidos nele.
+            //Caso seja um token inválido, lança um erro.            
             const decoded = jwt.verify(token, process.env.SECRET);
-
+            //Chama o método `getUserById` da classe UserService que retorna um usuário cadastrado pelo ID
             currentUser = await UserService.getUserById(decoded.id);
         }
-
+        //Retorna para o cliente o usuário filtrado pelo ID
         res.status(200).send(currentUser);
     }
 
@@ -105,9 +105,12 @@ export default class UserController {
     static async getUserById(req, res){
         const { id } = req.params;
         try{
+            //Chama o método `getUserById` da classe UserService que retorna um usuário cadastrado pelo ID
             const user = await UserService.getUserById(id);
+            //Retorna para o cliente o usuário filtrado pelo ID
             res.status(200).json(user);
         }catch(err){
+            //Retorna para o cliente uma mensagem de erro caso a leitura dos dados falhe
             res.status(422).json({ message : err.message});
         }
     }
@@ -118,16 +121,20 @@ export default class UserController {
      * @param {*} res Response
      */
     static async editUser(req, res){
+        //Armazena o token do usuário passado através do cabeçalho da requisiçao
+        //Ex.: authorization = "Bearer sda3wbGciOi..."
         const { authorization } = req.headers;
         try{
+            //Retorna uma string do token do usuário sem a palavra `Bearer`
             const user = await AuthService.getUserByToken(authorization);
-            
+            //Chama o método `edit` da classe UserService para realizar a edição do usuário
             await UserService.edit(req.body, user.id);
-
+            //Retorna para o cliente uma mensagem de sucesso
             res.status(200).json({
                 message : 'Informações atualizadas com sucesso!',
             });
         }catch(err){
+            //Retorna para o cliente uma mensagem de erro caso a edição do usuário falhe
             res.status(500).json({
                 message: err.message
             });
