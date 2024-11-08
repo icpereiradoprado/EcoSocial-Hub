@@ -49,7 +49,7 @@ const Comment = ({
         }
     }
     const handleDeleteCommentMessage = () => {
-        Alert.alert('Deletar post', `Você realmente deseja o comentário? ${id}`,[
+        Alert.alert('Deletar post', `Você realmente deseja excluir o comentário?`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteComment(id) }
         ])

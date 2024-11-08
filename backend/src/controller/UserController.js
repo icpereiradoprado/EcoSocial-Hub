@@ -1,5 +1,8 @@
-import AuthService from "../services/AuthService.js";
+//Importa a classe UserService que contém os métodos para tratamento dos dados
 import UserService from "../services/UserService.js";
+//Importa a classe AuthService que contém os métodos de autenticação
+import AuthService from "../services/AuthService.js";
+//Importa jwt que permite a criação de tokens de acesso seguros para autenticação e autorização na aplicação
 import jwt from "jsonwebtoken";
 
 export default class UserController {
@@ -11,11 +14,10 @@ export default class UserController {
      */
     static async registerUser(req, res){
         try{
+            //Armazena o usuario cadastrado na const "user" e registra no banco de dados          
             const user = await UserService.register(req.body);
-
             //Autentica o novo usuário
             const token = await AuthService.createUserToken(user);
-
             //retorna o token no response
             res.status(200).json({
                 message: "Você está autenticado!",
@@ -24,6 +26,7 @@ export default class UserController {
             });
 
         }catch(err){
+            //Retorna para o cliente uma mensagem de erro caso o registro falhe                       
             res.status(400).json({ message : err.message });
         }
     }
@@ -34,11 +37,13 @@ export default class UserController {
      * @param {*} res Response
      */
     static async deleteUser(req, res){
-        //TODO: Criar uma validação para verificar se o usuário é um administrador ou o próprio usuário
         try{
+            //Chama o método `delete` da classe UserService para deletar o usuario no banco de dados
             const message = await UserService.delete(req.params);
+            //Retorna para o cliente uma mensagem de sucesso           
             res.status(200).json({ message });
         }catch(err){
+            //Retorna para o cliente uma mensagem de erro caso a deleção falhe
             res.status(400).json({ message : err.message});
         }
     }
@@ -62,6 +67,7 @@ export default class UserController {
             });
 
         }catch(err){
+            //Retorna para o cliente uma mensagem de erro caso o login falhe
             res.status(422).json({ message : err.message})
         }
     }
@@ -73,9 +79,16 @@ export default class UserController {
      */
     static async checkUser(req, res){
         let currentUser = null;
+        
+        //Armazena o token do usuário passado através do cabeçalho da requisiçao
+        //Ex.: authorization = "Bearer sda3wbGciOi..."
         const { authorization } = req.headers;
+
         if(authorization){
+        //Retorna uma string do token do usuário sem a palavra `Bearer`
             const token = AuthService.getToken(authorization);
+        //Verifica a autenticidade do token e retorna os dados contidos nele.
+        //Caso seja um token inválido, lança um erro.            
             const decoded = jwt.verify(token, process.env.SECRET);
 
             currentUser = await UserService.getUserById(decoded.id);

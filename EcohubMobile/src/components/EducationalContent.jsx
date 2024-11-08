@@ -124,7 +124,7 @@ const EducationalContent = ({
             <Text style={styles.postDescription}>{content}</Text>
 
             {/* Imagem postada */}
-            {contentPicture ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicture}` }} style={[styles.postImage,{width: '100%', height: height-350}]} /> : null}
+            {contentPicture ? <Image source={{ uri:`data:image/jpeg;base64,${contentPicture}` }} style={[styles.postImage,{width: '100%', height: height-450}]} /> : null}
             {tags && 
                 <View style={styles.tags}>
                     {Array.isArray(tags) ? tags.map((tag, index) => <Text key={index} style={styles.textTag}>#{tag}</Text>) : <Text style={styles.textTag}>#{tags}</Text>}
