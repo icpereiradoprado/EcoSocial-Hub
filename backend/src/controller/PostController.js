@@ -161,11 +161,19 @@ export default class PostController{
         }
     }
 
+    /**
+     * Controlador para trazer todos os posts votados por um determinado usuário
+     * @param {*} req Request
+     * @param {*} res Response
+     */
     static async postsVoted(req, res){
         try {
+            //Chama o método `postsVoted` da classe `PostService` para obter os posts votados pelo usuário
             const postsVoted = await PostService.postsVoted(req.params.userId, req.params.postId);
+            //Retorna para o cliente uma mensagem de sucesso e os posts votados
             res.status(200).json({message: 'Requisição realizada com sucesso!', postsVoted: postsVoted});
         } catch (err) {
+            //Retorna para o cliente uma mensagem de erro
             res.status(422).json({ message: err.message})
         }
     }

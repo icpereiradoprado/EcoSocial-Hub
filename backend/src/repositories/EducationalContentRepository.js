@@ -35,7 +35,8 @@ export default class EducationalContentRepository{
             const { id } = result.rows[0];
 
             //Query para buscar o novo Conteúdo Educacional criado
-            const selectQuery = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+            const selectQuery = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, 
+                EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
                         FROM ${TABLE_NAME} EC
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = EC.USER_ID
@@ -117,7 +118,8 @@ export default class EducationalContentRepository{
      */
     static async findAll(offset = 0){
         //Query para buscar os Contúdos Educacionais. Obs.: os parâmetros $1, $2, etc. São utilzados para evitar SQL Injection
-        const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+        const query = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, 
+                        EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
                         FROM ${TABLE_NAME} EC
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = EC.USER_ID
@@ -172,7 +174,8 @@ export default class EducationalContentRepository{
                 await client.query('COMMIT');
 
                 //Query para buscar o Conteúdo Educacional atualizado
-                const selectQuery = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
+                const selectQuery = `SELECT EC.ID, EC.TITLE, EC.CONTENT, ENCODE(EC.CONTENT_PICTURE,'escape') as CONTENT_PICTURE, 
+                        EC.TAG, EC.CREATE_DATE, EC.UPDATE_DATE, UA.NAME AS USERNAME, EC.USER_ID
                         FROM ${TABLE_NAME} EC
                         INNER JOIN USER_ACCOUNT UA
                         ON UA.ID = EC.USER_ID
