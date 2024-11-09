@@ -50,7 +50,7 @@ export default class EducationalContentRepository{
             return contentCreated.rows[0];
             
         } catch (err) {
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a inserção do novo Conteúdo Educacional
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara uma mensagem de Erro
@@ -94,7 +94,7 @@ export default class EducationalContentRepository{
                 await client.query('COMMIT');
 
             }catch(err){
-                //Caso ocorra algum erro durante a inserção do novo comentário
+                //Caso ocorra algum erro durante a remoção do Conteúdo Educacional
                 //Realiza um ROLLBACK da transação do banco de dados
                 await client.query('ROLLBACK');
                 //Exibe mensagem de erro no console
@@ -192,7 +192,7 @@ export default class EducationalContentRepository{
             }
 
         } catch (err) {
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a atualização do Conteúdo Educacional
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara um mensagem de Erro

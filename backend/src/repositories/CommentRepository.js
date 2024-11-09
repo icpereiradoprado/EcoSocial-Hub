@@ -104,7 +104,7 @@ export default class CommentRepository{
                 await client.query('COMMIT');
 
             }catch(err){
-                //Caso ocorra algum erro durante a romoção do comentário
+                //Caso ocorra algum erro durante a remoção do comentário
                 //Realiza um ROLLBACK da transação do banco de dados
                 await client.query('ROLLBACK');
                 //Dispara uma mensagem de Erro

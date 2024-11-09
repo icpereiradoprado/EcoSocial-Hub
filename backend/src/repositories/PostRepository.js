@@ -56,7 +56,7 @@ export default class PostRepository{
             return contentCreated.rows[0];
             
         } catch (err) {
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a inserção do novo Post
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara mensagem de erro
@@ -112,7 +112,7 @@ export default class PostRepository{
                 await client.query('COMMIT');
 
             }catch(err){
-                //Caso ocorra algum erro durante a inserção do novo comentário
+                //Caso ocorra algum erro durante a remoção do Post
                 //Realiza um ROLLBACK da transação do banco de dados
                 await client.query('ROLLBACK');
                 //Dispara uma mensagem de Erro
@@ -184,7 +184,7 @@ export default class PostRepository{
             }
 
         } catch (err) {
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a atualização do Post
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara uma mensagem de erro
@@ -246,7 +246,7 @@ export default class PostRepository{
             }
 
         }catch(err){
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a ação de voto do Post
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara uma mensagem de Erro
@@ -305,7 +305,7 @@ export default class PostRepository{
             }
 
         }catch(err){
-            //Caso ocorra algum erro durante a inserção do novo comentário
+            //Caso ocorra algum erro durante a ação de voto do Post
             //Realiza um ROLLBACK da transação do banco de dados
             await client.query('ROLLBACK');
             //Dispara uma mensagem de Erro
