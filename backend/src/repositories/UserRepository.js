@@ -1,14 +1,20 @@
+//Importa o pool de conexão do banco
 import pool from "../../db/conn.js";
-import UserModel from "../models/UserModel.js"; //Importação apenas para tipagem na documentação das funções
+//Importação apenas para tipagem na documentação das funções
+import UserModel from "../models/UserModel.js"; 
 
+//Armazena o nome da tabela
 const TABLE_NAME = 'USER_ACCOUNT';
 
+/**
+ * Classe repository para os Usuários
+ */
 export default class UserRepository{
     /**
      * Perisiste um novo usuário no banco
      * @param {UserModel} userData Objeto que representa um Usuário
      * @param {string} passwordHash Senha criptografada
-     * @returns 
+     * @returns novo Usuário
      */
     static async create(userData, passwordHash){
         //Valida se a senha criptografada foi passada pelo parâmetro
@@ -24,7 +30,7 @@ export default class UserRepository{
             await client.query('BEGIN');
 
             //Faz a inserção no banco de dados
-            //Desestrutura os dados
+            //Desestrutura os dados do objeto userData
             const { name, email, city, phone_number: phoneNumber } = userData;
 
             //Query para inserir um novo usuário
