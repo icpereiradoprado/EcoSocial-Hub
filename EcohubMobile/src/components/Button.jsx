@@ -10,6 +10,9 @@ import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
  * @returns Componente Botão
  */
 export function Button({buttonText, loading, loadingText, ...props}){
+    /**Retorna um componente que simula um botão contendo algumas particularidades.
+     * Caso a propriedade `loading` seja verdadeira desabilita o botão e altera o seu texto
+    */
     return(
         <>
             <TouchableOpacity {...props} style={[base.button, {opacity: loading && 0.2}]} disabled={loading}>

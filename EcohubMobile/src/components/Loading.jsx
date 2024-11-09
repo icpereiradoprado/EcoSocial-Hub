@@ -7,7 +7,6 @@ import { useEffect } from 'react';
  * @param {boolean} isLoading Estado do load
  * @param {string} loadingText Texto do loading
  */
-
 export default function Loading({ isLoading, loadingText }){
     const { height, width } = useWindowDimensions();
 

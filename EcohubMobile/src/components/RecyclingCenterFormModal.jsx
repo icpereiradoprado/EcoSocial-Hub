@@ -10,7 +10,11 @@ import { useState, useEffect } from 'react';
 import { TextInputMask } from 'react-native-masked-text';
 import Constants from 'expo-constants';
 
-
+/**
+ * Componente de modal para criação e edição de um ponto de coleta de reciclagem
+ * @param {*} param0 
+ * @returns Formulário de cadastro ou edição do Ponto de reciclagem
+ */
 const RecyclingCenterFormModal = ({modalVisible, setModalVisible, mode, recyclingCenterToEdit}) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [name, setName] = useState(null);
@@ -23,6 +27,10 @@ const RecyclingCenterFormModal = ({modalVisible, setModalVisible, mode, recyclin
     const [openingHour, setOpeningHour] = useState(null);
     const [phoneNumber, setPhoneNumber] = useState(null);
 
+    /**
+     * Função responsável por salvar os dados do ponto de coleta
+     * Realiza uma requisição de criação ou edição com base no modo (`Mode.create` ou `Mode.update`)
+     */
     const handleSaveData = async () => {
         const { token, userId } = await getTokenAndUserId(); //Traz o token e o Id do usuário logado
         if(mode == Mode.create){

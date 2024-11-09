@@ -1,5 +1,8 @@
 import { StyleSheet } from "react-native";
 
+/**Estilização base para o projeto
+ * Contém estilizações comuns para os componentes
+ */
 export const base = StyleSheet.create({
     input : {
         height: 40,

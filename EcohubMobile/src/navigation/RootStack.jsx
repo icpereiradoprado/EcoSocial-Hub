@@ -25,4 +25,3 @@ export default function RootStack(){
         </SettingsProvider>
    ) 
 }
-//alterado initialRouteName de loginscreen para maintab, assim n preciso do banco de dados para ver as views

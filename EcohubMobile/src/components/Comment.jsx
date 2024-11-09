@@ -10,20 +10,24 @@ const { width } = Dimensions.get('window');
 
 const Comment = ({
     id, 
-    content, 
-    postId, 
+    content,  
     userId, 
     createDate, 
-    commentParent, 
     username
 }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [loggedUserId, setLoggedUser] = useState(null);
+    const [isAdmin] = useState(false);
+    const [loggedUserId] = useState(null);
     const [selectComment, setSelectComment] = useState(null);
     const [contentEdit, setContentEdit] = useState(null);
     const [showInput, setShowInput] = useState(false);
 
+    /**
+     * Método para exebir o modal de edição do comentário
+     * Caso o cometário já selecionado seja selecionado novamente, fecha o modal, caso contrário,
+     * Exibe o modal
+     * @param {number} id id do cometário
+     */
     const showEditTooltip = (id) => {
         if(selectComment === id){
             setSelectComment(null);
@@ -175,6 +179,9 @@ const Comment = ({
     )
 }
 
+/**
+ * Estilização do compenente Comment
+ */
 const styles = StyleSheet.create({
     containter: {
         flex: 1,
@@ -265,4 +272,8 @@ const styles = StyleSheet.create({
     }
 })
 
+//Exporta o componente com o nome default
+//Utilizado o React.memo para melhor performance, o `memo`, memoriza os componetes
+//E caso as propriedades contida neles não tenha o seu estado alterado, ele não faz a renderização novamente,
+//Caso contrário renderiza o componente novamente
 export default React.memo(Comment);

@@ -14,7 +14,6 @@ const Tab = createBottomTabNavigator();
  * Coponente Barra de navagação
  * @returns Coponente Barra de navagação
  */
-
 export default function MainTabNavigator(){
     return(
         <Tab.Navigator

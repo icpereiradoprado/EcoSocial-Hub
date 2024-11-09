@@ -9,12 +9,12 @@ import { Snackbar } from 'react-native-paper';
 import PostFormModal from '../components/PostFormModal';
 
 export function CommunityScreen(){
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
 
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [offset, setOffset] = useState(0);
+    const [offset] = useState(0);
     const [posts, setPosts] = useState(null);
 	const onDismissSnackBar = () => setVisible(false);
 	const [modalVisible, setModalVisible] = useState(false);

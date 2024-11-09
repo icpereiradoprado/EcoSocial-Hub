@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, TextInput} from "react-native";
 import {useState} from 'react';
 import Post from "./Post";
@@ -5,16 +6,27 @@ import { base, colors } from "../css/base";
 import { Mode } from "../helpers/Enums";
 import CommentsModal from "./CommetsModal";
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
+/**
+ * Componente de Lista de Post
+ * @param {Array} posts Array de Posts
+ * @param {Function} setModalVisible Hook para alterar o estado de modalVisible
+ * @param {Function} setMode Hook para alterar o estado de mode
+ * @param {Function} setPostToEdit Hook para alterar o estado de postToEdit
+ * @returns Componente de Lista de Posts
+ */
 export default function PostList({
     posts, 
     setModalVisible, 
     setMode,
     setPostToEdit
 }) {
+    //Estados do componente
     const [commentModalVisible, setCommentModalVisible] = useState(false);
     const [postId, setPostId] = useState(null);
+
+    //Componente Header para a lista de post
     const PostHeader = () => (
           <View>
              <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
@@ -33,6 +45,10 @@ export default function PostList({
         </View>
         
     );
+    /**
+     * Retorna a Lista do Posts, caso `posts` seja vazio exibe mensagem de conteúdo vazio.
+     * Caso haja items retorna lista o componente `Post.jsx` 
+     */
     return (
         <View>
         <FlatList 
@@ -68,6 +84,7 @@ export default function PostList({
     )
 }
 
+/**Estilização do componente PostList */
 const styles = StyleSheet.create({
     headerComponent: {
         flex: 1,
