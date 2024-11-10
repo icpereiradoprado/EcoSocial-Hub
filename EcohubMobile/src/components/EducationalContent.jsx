@@ -5,7 +5,6 @@ import { format } from 'date-fns'
 import Constants from 'expo-constants'
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { colors } from '../css/base';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { Alert } from 'react-native';
 import { Mode } from '../helpers/Enums';
