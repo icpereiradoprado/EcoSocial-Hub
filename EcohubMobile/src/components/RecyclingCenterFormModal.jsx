@@ -13,9 +13,12 @@ import Constants from 'expo-constants';
 
 /**
  * @param {boolean} modalVisible - Indica se o modal está visível ou não. Se for true, o modal será exibido.
- * @param {function} setModalVisible - Função para alterar o estado de visibilidade do modal. Deve ser chamada com `true` ou `false` para abrir ou fechar o modal.
- * @param {string} mode - Define o modo de operação do formulário. Pode ser `Mode.create` para criação de um novo ponto de coleta ou `Mode.update` para edição de um ponto de coleta existente.
- * @param {object} recyclingCenterToEdit - Contém os dados do ponto de coleta a ser editado. Este parâmetro é utilizado apenas no modo de edição (`Mode.update`). Ele deve incluir informações como nome, endereço, telefone, etc., do ponto de coleta a ser editado.
+ * @param {function} setModalVisible - Função para alterar o estado de visibilidade do modal.
+ *  Deve ser chamada com `true` ou `false` para abrir ou fechar o modal.
+ * @param {string} mode - Define o modo de operação do formulário.
+ *  Pode ser `Mode.create` para criação de um novo ponto de coleta ou `Mode.update` para edição de um ponto de coleta existente.
+ * @param {object} recyclingCenterToEdit - Contém os dados do ponto de coleta a ser editado.
+ *  Este parâmetro é utilizado apenas no modo de edição (`Mode.update`). Ele deve incluir informações como nome, endereço, telefone, etc., do ponto de coleta a ser editado.
  * @returns {JSX.Element} Formulário de cadastro ou edição do Ponto de reciclagem.
  */
 const RecyclingCenterFormModal = ({modalVisible, setModalVisible, mode, recyclingCenterToEdit}) => {
