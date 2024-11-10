@@ -1,6 +1,5 @@
 /**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput, ActivityIndicator} from "react-native";
-import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
 import { base, colors } from "../css/base";
 import { Mode } from "../helpers/Enums";
