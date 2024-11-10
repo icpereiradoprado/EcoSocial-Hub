@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { TextInput } from "react-native"
 import { base } from "../css/base"
 
@@ -7,6 +8,9 @@ import { base } from "../css/base"
  * @returns Componente Input
  */
 export function Input(props){
+    /**
+     * Componente Input
+     */
     return (
         <TextInput
             {...props}

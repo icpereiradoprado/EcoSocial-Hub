@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, Alert, Modal, TextInput } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
@@ -8,6 +9,15 @@ import { colors } from "../css/base";
 
 const { width } = Dimensions.get('window');
 
+/**
+ * Componente de Comentário
+ * @param {number} id ID do comentário
+ * @param {string} content Conteúdo do comentário
+ * @param {number} userId ID do usuário que postou o comentário
+ * @param {string} createDate Data de criação do comentário
+ * @param {string} username Nome de usuário do autor do comentário
+ * @returns Componente de comentário
+ */
 const Comment = ({
     id, 
     content,  
@@ -15,6 +25,7 @@ const Comment = ({
     createDate, 
     username
 }) => {
+    //Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [isAdmin] = useState(false);
     const [loggedUserId] = useState(null);
@@ -35,6 +46,11 @@ const Comment = ({
             setSelectComment(id);
         }
     }
+
+    /**
+     * Método para deletar o comentário
+     * Realiza a requisição DELETE para excluir o comentário
+     */
     const handleDeleteComment = async () => {
         const { token } = await getTokenAndUserId();
         try {
@@ -52,13 +68,21 @@ const Comment = ({
             console.error(`Erro ao deletar comentário: ${err.message}`);
         }
     }
+
+    /**
+     * Exibe uma mensagem de confirmação antes de deletar o comentário
+     */
     const handleDeleteCommentMessage = () => {
         Alert.alert('Deletar post', `Você realmente deseja excluir o comentário?`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteComment(id) }
         ])
     }
-
+     
+    /**
+     * Método para editar o comentário
+     * Realiza a requisição PATCH para atualizar o conteúdo do comentário
+     */
     const handleToEditComment = async () => {
         try {
             const { token } = await getTokenAndUserId();
@@ -83,10 +107,18 @@ const Comment = ({
             console.error(`Erro ao editar comentário ${err.message}`)
         }
     }
+
+    /**
+     * Exibe o campo de edição para o comentário
+     */
     const handleToShowInputComment = () => {
         setShowInput(true);
         setContentEdit(content);
     }
+
+    /**
+     * Retorna um comentário, caso o usuário logado seja o proprietário do comentário ou admin e visível opções a mais.
+     */
     return (
         <View style={styles.containter}>
             <View style={{flexDirection: 'row', gap: 8, flex: 1}}>
@@ -178,7 +210,6 @@ const Comment = ({
         </View>
     )
 }
-
 /**
  * Estilização do compenente Comment
  */

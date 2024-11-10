@@ -1,16 +1,36 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'react-native'
 import { MaterialIcons, AntDesign,  } from '@expo/vector-icons'
 import { format } from 'date-fns'
 import Constants from 'expo-constants'
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { colors } from '../css/base';
 import { getTokenAndUserId } from '../helpers/Auth';
 import { Alert } from 'react-native';
 import { Mode, VoteType } from '../helpers/Enums';
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
+/**
+ * Componente para exibir um post
+ * @param {string} id ID do post.
+ * @param {string} title Título do post.
+ * @param {string} content Conteúdo do post.
+ * @param {string} createDate Data de criação do post.
+ * @param {string} username Nome de usuário do autor.
+ * @param {string} userId ID do usuário.
+ * @param {string} postPicture URL da imagem do post.
+ * @param {number} upvotes Quantidade de upvotes no post.
+ * @param {number} downvotes Quantidade de downvotes no post.
+ * @param {string} city Cidade do autor do post.
+ * @param {function} setModalVisible Função para mostrar o modal.
+ * @param {function} setMode Função para definir o modo do modal (criação/edição).
+ * @param {function} setPostToEdit Função para definir o post a ser editado.
+ * @param {function} setCommentModalVisible Função para mostrar o modal de comentários.
+ * @param {function} setPostId Função para definir o ID do post ao qual os comentários se referem.
+ * @param {number} commentCount Contagem de comentários no post.
+ * @returns Componente que exibe as informações e interações do post.
+ */
 const Post = ({
     id, 
     title, 
@@ -29,6 +49,8 @@ const Post = ({
     setPostId,
     commentCount
 }) => {
+
+    // Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectPost, setSelectPost] = useState(null);
@@ -41,6 +63,7 @@ const Post = ({
     const [hasPostDownVoted, setHasPostDownVoted] = useState(false);
     const [commentsCount, setCommentsCount] = useState(0);
 
+    // Função para buscar a imagem do usuário
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
 
@@ -51,6 +74,7 @@ const Post = ({
         }
     }
 
+    // Função para verificar se o usuário votou no post
     const fetchPostVoted = async () => {
         const { userId, token } = await getTokenAndUserId();
         try {
@@ -77,6 +101,7 @@ const Post = ({
         }
     }
 
+    // Função que alterna a exibição do tooltip para editar ou excluir o post
     const showEditTooltip = (id) => {
         if(selectPost === id){
             setSelectPost(null);
@@ -85,6 +110,8 @@ const Post = ({
         }
         
     }
+
+    // Método handler para deletar o post
     const handleDeleteContent = async (id) => {
         try {
             await fetch(`${url}/posts/delete/${id}`, {
@@ -97,13 +124,16 @@ const Post = ({
             console.error(`Erro ao deletar post: ${err.message}`);
         }
     }
+
+    // Método handler para exibir mensagem antes de excluir o post
     const handleDeleteContentMesssage = (title, id) => {
         Alert.alert('Deletar post', `Você realmente deseja deletar o post '${title}'?`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteContent(id) }
         ])
     }
-
+ 
+    // Função para editar post
     const handleToSetPostToEdit = () => {
         const post = {
             id,
@@ -113,7 +143,8 @@ const Post = ({
         }
         setPostToEdit(post);
     }
-
+    
+    // Método handler para aplicar upvote
     const handleToUpVote = async () => {
         try {
             const { userId, token } = await getTokenAndUserId();
@@ -157,6 +188,7 @@ const Post = ({
             console.error(`Erro ao realizar esta ação: ${err.message}`);
         }
     }
+    // Método handler para aplicar downvote
     const handleToDownVote = async () => {
         try {
             const { userId, token } = await getTokenAndUserId();
@@ -202,6 +234,7 @@ const Post = ({
         }
     }
 
+    // Obtém as informações do usuário
     useEffect(() => {
         const getUserInfo = async () => {
             const { userId: loggedUserId, isAdmin, token } = await getTokenAndUserId();
@@ -223,6 +256,9 @@ const Post = ({
             fetchUserImage();
         },[])
     );
+    /**
+     * Retorna informações do post, caso o usuário logado seja o proprietário do post mais opções são visíveis (editar, deletar)
+     */
     return (
         <View style={styles.postContainer}>
             {/* Informações do usuário */}
@@ -286,8 +322,15 @@ const Post = ({
     )
 }
 
+//Exporta o componente com o nome default
+//Utilizado o React.memo para melhor performance, o `memo`, memoriza os componetes
+//E caso as propriedades contida neles não tenha o seu estado alterado, ele não faz a renderização novamente,
+//Caso contrário renderiza o componente novamente
 export default React.memo(Post);
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     postContainer: {
         padding: 16,

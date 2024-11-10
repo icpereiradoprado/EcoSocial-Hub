@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { TouchableOpacity, Text } from "react-native";
 
 /**
@@ -8,6 +9,9 @@ import { TouchableOpacity, Text } from "react-native";
  * @returns Componente Botão Link
  */
 export function ButtonLink({ linkText, additionalText, ...props }){
+    /**
+     * Retorna um componente de botão estilo link, exibindo `linkText` e opcionalmente `additionalText`.
+    */
     return(
         <TouchableOpacity style={{flexDirection: 'row', gap: 4}} {...props}>
             { additionalText && <Text>{additionalText}</Text> }
@@ -17,4 +21,3 @@ export function ButtonLink({ linkText, additionalText, ...props }){
         </TouchableOpacity>
     )
 }
-

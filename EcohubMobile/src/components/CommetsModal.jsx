@@ -1,4 +1,5 @@
-import { Modal, View, StyleSheet, TouchableOpacity, TextInput, Dimensions, Text } from "react-native";
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
+import { Modal, View, StyleSheet, TouchableOpacity, TextInput, Dimensions } from "react-native";
 import { useState, useEffect } from 'react';
 import CommentList from "./CommentList";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -9,6 +10,13 @@ import { getSocket } from "../helpers/socket";
 
 const { width } = Dimensions.get('window');
 
+/**
+ * Componente Modal de Comentários
+ * @param {boolean} modalVisible Controla a visibilidade do modal.
+ * @param {function} setModalVisible Função para controlar a visibilidade do modal.
+ * @param {number} postId ID do post para o qual os comentários serão exibidos.
+ * @returns JSX com o modal de comentários.
+ */
 const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [commentsData, setCommentsData] = useState(null);
@@ -17,6 +25,10 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
     const [commentParentTest, setCommentParentTest] = useState(null);
     const [hasMoreData, setHasMoreData] = useState(true);
 
+    /**
+     * Função para buscar os comentários do post inicial
+     * @param {number} offset O valor de offset para controlar a páginação.
+     */
     const fetchCommentsData = async (offset) => {
         const { userId, token } = await getTokenAndUserId();
         const initialOffSet = offset > 0 ? 0 : offset;
@@ -42,6 +54,9 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
         }
     }
 
+    /**
+     * Função para buscar mais comentários à medida que o usuário rola a lista
+     */
     const fetchMoreComments = async () => {
 		const { token } = await getTokenAndUserId();
 		const updatedOffset = offset + 10;
@@ -63,6 +78,10 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
 		}
 	}
 
+    /**
+     * Função para salvar um novo comentário
+     * @param {number} commentParent ID do comentário pai (se houver) para criar uma resposta.
+     */
     const handleSaveNewComment = async (commentParent = null) => {
         const { userId, token } = await getTokenAndUserId();
         try {
@@ -95,17 +114,20 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
     
     useEffect(()=> {
         if(modalVisible){
-            fetchCommentsData(offset);
+            fetchCommentsData(offset); // Carregar comentários ao abrir o modal
         }
     }, [modalVisible])
 
     useEffect(()=>{
+        // Estabelece a conexão com o servidor via socket
         const socketIo = getSocket();
-
+ 
+        // Atualiza a lista de comentários quando um novo comentário for criado
         socketIo.on('commentcreate', (newComment)=>{
             setCommentsData((prevComment) => [newComment, ...prevComment]);
         });
 
+        // Remove o comentário quando ele for deletado
         socketIo.on('commentdeleted', (commentId)=>{
             setCommentsData((prevComments) => {
                 if (!prevComments) {
@@ -117,6 +139,7 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
             });
         });
 
+        // Atualiza um comentário na lista quando ele for editado
         socketIo.on('commentedit', (updatedComment)=>{
             setCommentsData((prevComments) => {
                 if(!prevComments) return prevComments;
@@ -129,6 +152,9 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
             });
         });
     }, []);
+    /**
+     * Retorna a modal de comentários
+     */
     return (
         <Modal
                 animationType="slide"
@@ -174,6 +200,9 @@ const CommentsModal = ({ modalVisible, setModalVisible, postId }) => {
 
 export default CommentsModal;
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     modalView: {
         borderTopLeftRadius: 20,

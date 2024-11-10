@@ -1,7 +1,8 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { useState, useEffect } from 'react';
 import { View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Image, Alert } from 'react-native';
 import { Button } from '../components/Button';
-import { base, colors } from "../css/base";
+import { base } from "../css/base";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Mode } from '../helpers/Enums';
 import { Input } from './Input';
@@ -13,7 +14,16 @@ import Constants from 'expo-constants';
 
 const { height } = Dimensions.get('window');
 
+/**
+ * Componente Modal para criação e edição de conteúdo educacional
+ * @param {boolean} modalVisible Controla a visibilidade do modal.
+ * @param {function} setModalVisible Função para controlar a visibilidade do modal.
+ * @param {Mode} mode Define se o modal está em modo de criação ou edição.
+ * @param {object} educationalContentToEdit Contém os dados do conteúdo a ser editado.
+ * @returns Componente de Conteúdo educacional
+ */
 const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educationalContentToEdit }) => {
+    //Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [image, setImage] = useState(null);
     const [title, setTitle] = useState('');
@@ -21,6 +31,9 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
     const [textTag, setTextTag] = useState(null);
     const [tags, setTags] = useState(null);
 
+    /**
+     * Método handler para selecionar uma imagem da galeria
+     */
     const handlePickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,6 +49,9 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
         }
     };
 
+    /**
+     * Método handler para remover a imagem selecionada
+     */
     const handleDeleteImage = () => {
         setImage(null);
     }
@@ -95,6 +111,10 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
         }
     }
 
+    /**
+     * Método handler para adicionar uma nova tag à lista de tags
+     * @param {string} newTag A nova tag a ser adicionada.
+     */
     const handleTagChange = (newTag) => {
         setTags((prevTags) => {
             if(!prevTags) return [newTag];
@@ -103,10 +123,17 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
         });
     }
 
+    /**
+     * Método handler para remover uma tag da lista de tags
+     * @param {number} indexToRemove O índice da tag a ser removida.
+     */
     const handleRemoveTag = (indexToRemove) => {
         setTags((prevTags) => prevTags.filter((tag, index) => index !== indexToRemove));
     };
 
+    /**
+     * Método handler para resetar os campos do formulário
+     */
     const handleResetInputs = () => {
         setTitle('');
         setContent('');
@@ -114,7 +141,9 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
         setTags(null);
     }
 
-
+    /**
+     * Efetua a atualização dos campos com os dados do conteúdo a ser editado, se necessário
+     */
     useEffect(()=>{
         if(mode == Mode.update && educationalContentToEdit){
             setTitle(educationalContentToEdit.title);
@@ -124,6 +153,10 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
             setTags(tags);
         }
     }, [educationalContentToEdit]);
+
+    /**
+     * Retorna a modal para criar ou editar o conteúdo educacional
+     */
     return(
         <Modal
             animationType="slide"
@@ -205,6 +238,9 @@ const EducationalContentFormModal = ({ modalVisible, setModalVisible, mode, educ
     )
 }
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     container: {
         flex: 1,

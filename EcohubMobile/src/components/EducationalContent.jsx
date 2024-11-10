@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions, Text } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { format } from 'date-fns'
@@ -11,6 +12,21 @@ import { Mode } from '../helpers/Enums';
 
 const { height, width } = Dimensions.get('window');
 
+/** 
+ * Componente que exibe o conteúdo educativo 
+ * @param {number} id ID do conteúdo educativo.
+ * @param {string} title Título do conteúdo educativo.
+ * @param {string} content Descrição do conteúdo educativo.
+ * @param {string} tag Tags associadas ao conteúdo.
+ * @param {string} create_date Data de criação do conteúdo.
+ * @param {string} username Nome do usuário que postou o conteúdo.
+ * @param {string} user_id ID do usuário que postou o conteúdo.
+ * @param {string} content_picture Imagem associada ao conteúdo educativo.
+ * @param {function} setModalVisible Função para controlar a visibilidade do modal de edição.
+ * @param {function} setMode Função para definir o modo (editar ou adicionar).
+ * @param {function} setEducationalContentToEdit Função para definir o conteúdo a ser editado.
+ * @returns JSX com o modal de comentários.
+ */
 const EducationalContent = ({
     id, 
     title, 
@@ -24,6 +40,7 @@ const EducationalContent = ({
     setMode, 
     setEducationalContentToEdit 
 }) => {
+    //Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [userPicture, setUserPicture] = useState(null);
     const [selectEducationalContent, setSelectEducationalContent] = useState(null);
@@ -31,6 +48,10 @@ const EducationalContent = ({
     const [userToken, setUserToken] = useState(null);
     const tags = tag ? tag.split(';') : null;
 
+    /** 
+     * Função para buscar a imagem de perfil do usuário
+     * @returns {void}
+     */
     const fetchUserImage = async () => {
         const response = await fetch(`${url}/users/${userId}`);
 
@@ -41,6 +62,11 @@ const EducationalContent = ({
         }
     }
 
+    /** 
+     * Função para mostrar ou esconder as opções de editar e excluir 
+     * @param {number} id ID do conteúdo educativo.
+     * @returns {void}
+     */
     const showEditTooltip = (id) => {
         if(selectEducationalContent === id){
             setSelectEducationalContent(null);
@@ -49,6 +75,12 @@ const EducationalContent = ({
         }
         
     }
+
+    /** 
+     * Função para excluir o conteúdo educativo
+     * @param {number} id ID do conteúdo a ser excluído.
+     * @returns {void}
+     */
     const handleDeleteContent = async (id) => {
         try {
             await fetch(`${url}/educationalcontents/delete/${id}`, {
@@ -61,12 +93,24 @@ const EducationalContent = ({
             console.error(`Erro ao deletar conteúdo: ${err.message}`);
         }
     }
+
+    /** 
+     * Função para exibir uma mensagem de confirmação para deletar o conteúdo educativo
+     * @param {string} title Título do conteúdo a ser deletado.
+     * @param {number} id ID do conteúdo a ser deletado.
+     * @returns {void}
+     */
     const handleDeleteContentMesssage = (title, id) => {
         Alert.alert('Deletar conteúdo educativo', `Você realmente deseja deletar o conteúdo '${title}'?`,[
             { text: 'Não', style: 'cancel'},
             { text: 'Sim', style: 'default', onPress: () => handleDeleteContent(id) }
         ])
     }
+
+    /** 
+     * Função para configurar o conteúdo educativo a ser editado
+     * @returns {void}
+     */
     const handleToSetEducationalContentToEdit = () => {
         const educationalContent = {
             id,
@@ -77,6 +121,11 @@ const EducationalContent = ({
         }
         setEducationalContentToEdit(educationalContent);
     }
+
+    /** 
+     * Efeito que busca informações do usuário (ID, admin e token) ao carregar o componente
+     * @returns {void}
+     */
     useEffect(() => {
         const getUserInfo = async () => {
             const { userId: loggedUserId, isAdmin, token } = await getTokenAndUserId();
@@ -86,11 +135,18 @@ const EducationalContent = ({
         getUserInfo();
     }, []);
 
+    /** 
+     * Efeito que é executado sempre que o componente recebe foco
+     * @returns {void}
+     */
     useFocusEffect(
         useCallback(()=>{
             fetchUserImage();
         },[])
     );
+    /**
+     * Retorna um contéudo educacional, caso o usuário logado seja um admin e visível opções a mais.
+     */
     return (
         <View style={styles.postContainer}>
             {/* Informações do usuário */}
@@ -138,6 +194,9 @@ const EducationalContent = ({
 
 export default React.memo(EducationalContent);
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     postContainer: {
         padding: 16,

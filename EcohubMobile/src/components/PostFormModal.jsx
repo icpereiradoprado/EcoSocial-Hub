@@ -1,7 +1,8 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { useState, useEffect } from 'react';
 import { View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Image, Alert } from 'react-native';
 import { Button } from './Button';
-import { base, colors } from "../css/base";
+import { base } from "../css/base";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Mode } from '../helpers/Enums';
 import { Input } from './Input';
@@ -13,12 +14,24 @@ import { getTokenAndUserId } from '../helpers/Auth';
 
 const { height } = Dimensions.get('window');
 
+/**
+ * Componente que exibe um formulário para criar ou editar um post.
+ * @param {boolean} modalVisible - Controla a visibilidade da modal.
+ * @param {function} setModalVisible - Função para atualizar o estado da visibilidade da modal.
+ * @param {string} mode - Modo do formulário (criação ou edição).
+ * @param {object} postToEdit - Dados do post a ser editado (se estiver no modo de edição).
+ * @returns Componente de modal para criação ou edição de posts.
+ */
 const PostFormModal = ({ modalVisible, setModalVisible, mode, postToEdit }) => {
+    // Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [image, setImage] = useState(null);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
+    /**
+     * Método handler para tirar foto
+     */
     const handlePickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -34,6 +47,9 @@ const PostFormModal = ({ modalVisible, setModalVisible, mode, postToEdit }) => {
         }
     };
 
+    /**
+     * Método handler para deletar imagem do post
+     */
     const handleDeleteImage = () => {
         setImage(null);
     }
@@ -91,12 +107,16 @@ const PostFormModal = ({ modalVisible, setModalVisible, mode, postToEdit }) => {
         }
     }
 
+    /**
+     * Método handler para resetar inputs
+     */
     const handleResetInputs = () => {
         setTitle('');
         setContent('');
         setImage(null);
     }
 
+    // Função para carregar dados do post
     useEffect(()=>{
         if(mode == Mode.update && postToEdit){
             setTitle(postToEdit.title);
@@ -105,6 +125,9 @@ const PostFormModal = ({ modalVisible, setModalVisible, mode, postToEdit }) => {
         }
     }, [postToEdit]);
 
+    /**
+     * Retorna a modal de posts
+     */
     return(
         <Modal
             animationType="slide"
@@ -160,6 +183,9 @@ const PostFormModal = ({ modalVisible, setModalVisible, mode, postToEdit }) => {
     )
 }
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -205,4 +231,5 @@ const styles = StyleSheet.create({
     },
 });
 
+//Exporta o componente com o nome default
 export default PostFormModal;

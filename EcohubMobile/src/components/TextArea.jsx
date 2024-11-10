@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { TextInput } from "react-native"
 import { base } from "../css/base"
 

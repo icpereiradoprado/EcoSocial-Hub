@@ -1,6 +1,5 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, Text, ActivityIndicator, StyleSheet, useWindowDimensions } from 'react-native'
-import { colors } from '../css/base'
-import { useEffect } from 'react';
 
 /**
  * Componente de Loading
@@ -9,7 +8,9 @@ import { useEffect } from 'react';
  */
 export default function Loading({ isLoading, loadingText }){
     const { height, width } = useWindowDimensions();
-
+    /**
+     * Componente de carregamento com texto e indicador de carregamento
+     */
     return(
         <View style={[style.container, {display: isLoading ? 'flex' : 'none'}, {width: width, height: height}]}>
             <Text style={style.loadingText}>{loadingText}</Text>
@@ -18,7 +19,9 @@ export default function Loading({ isLoading, loadingText }){
     )
 }
 
-
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const style = StyleSheet.create({
     container: {
         backgroundColor: '#42424254',

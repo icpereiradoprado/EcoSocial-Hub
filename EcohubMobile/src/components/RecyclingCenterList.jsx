@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import { base } from "../css/base";
@@ -8,11 +9,21 @@ import { colors } from "../css/base";
 import { getTokenAndUserId } from "../helpers/Auth";
 import { Button } from "./Button";
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
+/**
+ * Componente que exibe a lista de pontos de coleta de reciclagem.
+ * @param {Array} recyclingCenterData - Dados dos pontos de coleta para exibição.
+ * @param {Function} setModalVisible - Função para exibir ou ocultar o modal de criação/edição de ponto de coleta.
+ * @param {Function} setMode - Função para definir o modo do formulário (criação ou edição).
+ * @param {Function} setRecyclingCenterToEdit - Função para definir o ponto de coleta a ser editado.
+ * @returns {JSX.Element} Lista de pontos de coleta ou mensagem caso não haja pontos cadastrados.
+ */
 const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, setRecyclingCenterToEdit}) => {
+    // Estados do componete
     const [isAdmin, setIsAdmin ] = useState(null);
 
+    // Hook useEffect que verifica se o usuário é admin
     useEffect(()=> {
         const getUserInfo = async () => {
             const { isAdmin } = await getTokenAndUserId();
@@ -21,6 +32,7 @@ const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, set
         getUserInfo();
     }, []);
 
+    // Cabeçalho da lista de pontos de coleta
     const RecyclingCenterListHeader = () => (
         <View>
             <View style={[base.flexRow, {gap: 12, alignItems: 'center', paddingHorizontal: 24, justifyContent: "space-between", width: '100%'}]}>
@@ -37,12 +49,16 @@ const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, set
         </View>
     )
 
+    // Componente a ser exibido quando não houver pontos de coleta
     const RecyclingCenterEmptyList = () => (
         <View style={{alignItems: 'center', marginTop: 40}}>
             <Text>Não há nenhum ponto de coleta cadastrado na sua cidade!</Text>
         </View>
     )
     return(
+        /**
+         * Lista de pontos de coleta ou mensagem caso não haja pontos cadastrados.
+         */
         <FlatList 
             data={recyclingCenterData}
             ListEmptyComponent={() => <RecyclingCenterEmptyList />}
@@ -71,8 +87,12 @@ const RecyclingCenterList = ({recyclingCenterData, setModalVisible, setMode, set
     )
 }
 
+//Exporta o componente com o nome default
 export default RecyclingCenterList;
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     logo:{
         width:45,

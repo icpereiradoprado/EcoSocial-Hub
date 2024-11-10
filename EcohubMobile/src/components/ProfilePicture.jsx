@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { useEffect, useId, useState } from 'react';
 import { View, TouchableOpacity, Alert, Image, StyleSheet, Text, Pressable, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -217,6 +218,9 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
         }
     }, [modalVisible, modalVisibleOptionPicture, isLoading]);
 
+    /**
+     * Modal de foto de perfil do usuário
+     */
     return (
         <>
             <Loading isLoading={isLoading} loadingText={loadingText} />
@@ -288,6 +292,9 @@ export function ProfilePicture({ token, userId, imageUri, setImageUri, name, set
     )
 }
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     picture: {
         borderWidth: 1,

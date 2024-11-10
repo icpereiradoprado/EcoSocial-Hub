@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions, FlatList, Button, TextInput, ActivityIndicator} from "react-native";
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import EducationalContent from "./EducationalContent";
@@ -8,9 +9,20 @@ import { useState, useEffect } from 'react'
 
 const { height, width } = Dimensions.get('window');
 
+/**
+ * Componente Modal para criação e edição de conteúdo educacional
+ * @param {boolean} modalVisible Controla a visibilidade do modal.
+ * @param {function} setModalVisible Função para controlar a visibilidade do modal.
+ * @param {Mode} mode Define se o modal está em modo de criação ou edição.
+ * @param {object} educationalContentToEdit Contém os dados do conteúdo a ser editado.
+ * @returns Componente de Conteúdo educacional
+ */
 export default function EducationalContentList({educationalContents, setModalVisible, setMode, setEducationalContentToEdit, loadMoreData, hasMoreData }) {
+    // Estados do componente
     const [isAdmin, setIsAdmin] = useState(null);
     const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
+
+    //Componente handler ppara carregar mais itens da lista
     const handleLoadMoreData = async () => {
         if(hasMoreData){
             setIsLoadingMoreData(true);
@@ -18,6 +30,7 @@ export default function EducationalContentList({educationalContents, setModalVis
             setIsLoadingMoreData(false);
         }
     }
+    // UseEffect para pegar as informações do usuário (se é admin ou não) assim que o componente é montado
     useEffect(()=>{
         const getUserInfo = async () => {
             const { isAdmin } = await getTokenAndUserId();
@@ -25,6 +38,8 @@ export default function EducationalContentList({educationalContents, setModalVis
         }
         getUserInfo();
     },[]);
+
+    // Componente de Header da página de conteúdo eduucacional
     const HomeHeader = () => (
         <View>
             <View style={[base.flexRow, {justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, width: '100%'}]}>
@@ -47,7 +62,8 @@ export default function EducationalContentList({educationalContents, setModalVis
         </View>
         
     );
-
+ 
+    //Componente Footer da página de conteúdo eduucacional
     const HomeFooter = () => (
         <View>
             {isLoadingMoreData && (
@@ -58,6 +74,10 @@ export default function EducationalContentList({educationalContents, setModalVis
             )}
         </View>
     )
+    /**
+     * Retorna a Lista do conteúdos educacionais, caso `educationalContents` seja vazio exibe mensagem de conteúdo vazio.
+     * Caso haja items retorna lista o componente `EducationalContent.jsx` 
+     */
     return (
         <FlatList 
             data={educationalContents}
@@ -87,6 +107,9 @@ export default function EducationalContentList({educationalContents, setModalVis
     )
 }
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     headerComponent: {
         flex: 1,

@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { Image } from 'react-native';
 import { base } from '../css/base';
 
@@ -6,6 +7,9 @@ import { base } from '../css/base';
  * @returns Componente Logo
  */
 export default function Logo(){
+    /**
+     * Retorna logo
+     */
     return(
         <Image  source={require('../assets/images/logo.png')} style={base.logo}/>
     )

@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { colors } from "../css/base";
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
@@ -7,9 +8,32 @@ import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { Mode } from "../helpers/Enums";
 
+
+/**
+ * Componente que exibe as informações de um ponto de coleta (recycling center).
+ * @param {object} props - Propriedades do componente.
+ * @param {string} props.id - ID do ponto de coleta.
+ * @param {string} props.name - Nome do ponto de coleta.
+ * @param {string} props.street - Rua do ponto de coleta.
+ * @param {string} props.number - Número do ponto de coleta.
+ * @param {string} props.complement - Complemento do endereço.
+ * @param {string} props.postalCode - Código postal do ponto de coleta.
+ * @param {string} props.state - Estado onde o ponto de coleta está localizado.
+ * @param {string} props.city - Cidade onde o ponto de coleta está localizado.
+ * @param {string} props.openingHour - Horário de funcionamento do ponto de coleta.
+ * @param {string} props.phoneNumber - Número de telefone do ponto de coleta.
+ * @param {function} props.setModalVisible - Função para mostrar ou esconder o modal de edição.
+ * @param {function} props.setMode - Função para definir o modo (criação ou edição).
+ * @param {function} props.setRecyclingCenterToEdit - Função para definir os dados do ponto de coleta a ser editado.
+ * @returns Componente de exibição do ponto de coleta.
+ */
 const RecyclingCenter = ({id, name, street, number, complement, postalCode, state, city, openingHour, phoneNumber, setModalVisible, setMode, setRecyclingCenterToEdit}) =>{
+    // Estados do componente
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const [isAdmin, setIsAdmin] = useState(null);
+    /**
+     * Método handler para exibir uma mensagem de confirmação para deletar um ponto de coleta.
+     */
     const handleDeleteMessage = () => {
         Alert.alert('Deletar ponto de coleta', `Você realmente deseja deletar o ponto de coleta '${name}'`, [{
             text: 'Não',
@@ -21,6 +45,10 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
         }])
     };
 
+    /**
+     * Função para deletar o ponto de coleta do banco de dados.
+     * @param {string} id - ID do ponto de coleta a ser deletado.
+     */
     const handleDelete = async (id) => {
         const { token } = await getTokenAndUserId();
         const response = await fetch(`${url}/recyclingcenters/delete/${id}`, {
@@ -37,11 +65,18 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
         }
     }
 
+    /**
+     * Método handler para copiar o endereço do ponto de coleta para a área de transferência.
+     */
     const handleClipBoard = async () => {
         const address = `${street}, ${number}, ${city}-${state}`;
         await Clipboard.setStringAsync(address);
     };
 
+    /**
+     * Função para abrir o modal de edição do ponto de coleta.
+     * Define o modo para edição e os dados do ponto a ser editado.
+     */
     const handleToEditRecyclingCenter = () => {
         setMode(Mode.update);
         setModalVisible(true);
@@ -59,6 +94,7 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
         }
         setRecyclingCenterToEdit(recyclingToEditData);
     }
+    // Efeito para obter as informações do usuário (se é admin ou não) ao carregar o componente
     useEffect(() => {
         const getUserInfo = async () => {
             const { isAdmin } = await getTokenAndUserId();
@@ -67,6 +103,9 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
 
         getUserInfo();
     }, []);
+    /**
+     * Componente de exibição do ponto de coleta.
+     */
     return (
         <View style={styles.container}>
             
@@ -114,8 +153,12 @@ const RecyclingCenter = ({id, name, street, number, complement, postalCode, stat
     )
 }
 
+//Exporta o componente com o nome default
 export default RecyclingCenter;
 
+/**
+ * Estilização do cabeçalho da lista de comentários
+ */
 const styles = StyleSheet.create({
     container:{
         borderRadius: 8,

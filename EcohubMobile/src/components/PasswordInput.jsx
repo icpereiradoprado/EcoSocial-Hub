@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { View, TouchableOpacity, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -14,7 +15,9 @@ export function PasswordInput(props){
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-
+    /**
+     * Retorna input de senha
+     */
     return(
         <View style={[base.flexRow, base.passwordInput]}>
             <TextInput {...props}
