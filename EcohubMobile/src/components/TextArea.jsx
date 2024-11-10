@@ -3,7 +3,7 @@ import { TextInput } from "react-native"
 import { base } from "../css/base"
 
 /**
- * Componente Input
+ * Componente TextArea
  * @param {TextInput} props Propriedades do componente nativo `TextInput` 
  * @returns Componente Input
  */
