@@ -1,38 +1,38 @@
 {
   "expo": {
-    "name": "EcohubMobile",
-    "slug": "EcohubMobile",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./src/assets/images/logo.png",
-    "userInterfaceStyle": "light",
+    "name": "EcohubMobile", // Nome do aplicativo
+    "slug": "EcohubMobile", // Identificador do aplicativo no projeto Expo
+    "version": "1.0.0", // Versão do aplicativo
+    "orientation": "portrait", // Orientação fixa do aplicativo (retrato)
+    "icon": "./src/assets/images/logo.png", // Caminho para o ícone do aplicativo
+    "userInterfaceStyle": "light", // Estilo de interface do usuário (tema claro)
     "plugins": [
       [
-        "expo-image-picker",
+        "expo-image-picker", // Plugin para acessar a galeria de imagens do dispositivo
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "The app accesses your photos to let you share them with your friends." // Permissão para acesso à galeria
         }
       ]
     ],
-    "extra":{
-      "apiUrl": "http://192.168.18.4:5000"
+    "extra": {
+      "apiUrl": "http://endereçoip:5000" // URL da API utilizada no aplicativo (substituir 'endereçoip' pelo IP do servidor)
     },
     "splash": {
-      "image": "./src/assets/images/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./src/assets/images/logo.png", // Caminho para a imagem da tela de splash
+      "resizeMode": "contain", // Modo de redimensionamento da imagem de splash
+      "backgroundColor": "#ffffff" // Cor de fundo da tela de splash
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true // Habilita suporte para iPads
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/adaptive-icon.png", // Imagem de ícone adaptativo para Android
+        "backgroundColor": "#ffffff" // Cor de fundo do ícone adaptativo
       }
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/favicon.png" // Caminho para o favicon no navegador
     }
   }
 }

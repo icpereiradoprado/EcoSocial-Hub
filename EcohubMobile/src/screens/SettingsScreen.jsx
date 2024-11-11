@@ -1,3 +1,4 @@
+// Importa os componentes e módulos necessários do React Native e outras bibliotecas externas
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { base, colors } from '../css/base';
 import { ProfilePicture } from '../components/ProfilePicture';
@@ -13,13 +14,15 @@ import { getSocket } from '../helpers/socket';
 import { TextInputMask } from 'react-native-masked-text';
 import { SettingsContext } from '../context/SettingsContext';
 
+// Obtém a altura da janela do dispositivo
 const { height } = Dimensions.get('window');
 
 /**
  * Tela de Configurações do usuário
  * @returns Tela de Configurações do usuário
  */
-export function SettingsScreen(){
+export function SettingsScreen() {
+    // Configurações iniciais e hooks de estado
     const url = Constants.manifest2.extra.expoClient.extra.apiUrl;
     const navigator = useNavigation();
     const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -41,10 +44,11 @@ export function SettingsScreen(){
     const [originalPhoneNumber, setOriginalPhoneNumber] = useState('');
     const [originalCity, setOriginalCity] = useState('');
 
+    // Contexto para atualizar a cidade do usuário no contexto de configurações
     const { setUserCity } = useContext(SettingsContext);
 
     /**
-     * Método handler para exibir a mensage de confirmação de Logout
+     * Exibe uma mensagem de confirmação de Logout
      */
     const handleLogoutMessage = () => {
         Alert.alert('Logout', 'Deseja sair?', [
@@ -56,11 +60,11 @@ export function SettingsScreen(){
                 text: 'Sim',
                 onPress: handleLogout
             }
-        ])
-    }
+        ]);
+    };
 
     /**
-     * Método handler para efetuar o Logout
+     * Realiza o logout do usuário e limpa o token armazenado
      */
     const handleLogout = async () => {
         try {
@@ -69,40 +73,39 @@ export function SettingsScreen(){
             console.log('disconnect', socket.id);
             socket.disconnect();
             
+            // Navega para a tela de login após o logout
             navigator.reset({
                 index: 0,
-                routes: [{name: 'LoginScreen'}]
+                routes: [{ name: 'LoginScreen' }]
             });
         } catch (err) {
-            console.error('Erro ao fazer logout:', err)
+            console.error('Erro ao fazer logout:', err);
         }
-        
-    }
+    };
 
     /**
-     * Obtem o `token` e o `userId` armazenados no Storage
-     * @returns `token` e `userId`
+     * Recupera o token e o userId do armazenamento assíncrono
+     * @returns `{token, userId}`
      */
     const getTokenAndUserId = async () => {
         try {
             const token = await AsyncStorage.getItem('jwtToken');
             const userId = await AsyncStorage.getItem('userId');
-            return {token, userId};
+            return { token, userId };
         } catch (error) {
             console.error('Erro ao obter o token ou userId:', error);
             return null;
         }
     };
 
-
     /**
-     * Obtem os dados do usuário através da API
+     * Obtém as preferências do usuário através da API e atualiza o estado
      */
     const fetchPreferences = useCallback(async () => {
-        try{
+        try {
             setLoadingPreferencesData(true);
 
-            // Recupera o token e o userId
+            // Recupera o token e o userId do armazenamento
             const { token, userId } = await getTokenAndUserId();
 
             if (!userId || isNaN(userId)) {
@@ -114,15 +117,15 @@ export function SettingsScreen(){
             setUserId(userId);
             setToken(token);
 
+            // Realiza a requisição para obter os dados do usuário
             const response = await fetch(`${url}/users/${userId}`);
             const data = await response.json();
 
-
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error(data.message);
             }
 
-            //Atualiza os campos com os dados recebidos:
+            // Atualiza o estado com os dados do usuário
             setName(data.name || '');
             setOriginalName(data.name || '');
             setEmail(data.email || '');
@@ -134,58 +137,50 @@ export function SettingsScreen(){
             setProfilePicture(data.profile_picture);
             
             setLoadingPreferencesData(false);
-            
-        }catch(err){
+        } catch (err) {
             console.error('Erro ao buscar preferências:', err);
         }
     }, []);
 
-    useEffect(()=>{
+    // Chama `fetchPreferences` ao montar o componente
+    useEffect(() => {
         fetchPreferences();
-    },[fetchPreferences]);
+    }, [fetchPreferences]);
 
-    useEffect(()=>{
-        if(loadingPreferencesData){
-            setScrollEnabled(false);
-        }else{
-            setScrollEnabled(true); 
-        }
+    // Controla o scroll da tela com base no estado de carregamento das preferências
+    useEffect(() => {
+        setScrollEnabled(!loadingPreferencesData);
     }, [loadingPreferencesData]);
 
     /**
-     * Método handler para alterar os dados do usuário
+     * Handler para alteração dos dados do usuário
      */
     const handleChangeUserData = async () => {
-        if(name !== originalName || email !== originalEmail || phoneNumber !== originalPhoneNumber || city !== originalCity || (password && confirmPassword)){
+        // Verifica se houve alterações nos dados para envio
+        if (name !== originalName || email !== originalEmail || phoneNumber !== originalPhoneNumber || city !== originalCity || (password && confirmPassword)) {
             setLoading(true);
-            const {token, userId} = await getTokenAndUserId();
-            if(!token){
+            const { token, userId } = await getTokenAndUserId();
+            if (!token) {
                 Alert.alert('Sessão expirada. Faça o login novamente!');
+                return;
             }
+
+            // Prepara o corpo da requisição com as informações alteradas
             let body = {};
-            if(name !== originalName){
-                body.name = name;
-            }
-
-            if(email !== originalEmail){
-                body.email = email;
-            }
-            if(phoneNumber !== originalPhoneNumber){
-                body.phone_number = phoneNumber;
-            }
-            if(city !== originalCity){
-                body.city = city;
-            }
-
-            if(password && confirmPassword){
+            if (name !== originalName) body.name = name;
+            if (email !== originalEmail) body.email = email;
+            if (phoneNumber !== originalPhoneNumber) body.phone_number = phoneNumber;
+            if (city !== originalCity) body.city = city;
+            if (password && confirmPassword) {
                 body.password = password;
                 body.confirm_password = confirmPassword;
             }
 
-            try{
-                const response = await fetch(`${url}/users/edit/${userId}`,{
+            try {
+                // Envia a requisição para atualizar os dados do usuário
+                const response = await fetch(`${url}/users/edit/${userId}`, {
                     method: 'PATCH',
-                    headers:{
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
@@ -194,9 +189,10 @@ export function SettingsScreen(){
 
                 const data = await response.json();
 
+                // Exibe mensagem de sucesso ou erro com base na resposta da API
                 if (response.ok) {
                     Alert.alert('Sucesso', data.message);
-                    setUserCity(city);
+                    setUserCity(city); // Atualiza a cidade no contexto de configurações
                     fetchPreferences();
                     setPassword('');
                     setConfirmPassword('');
@@ -204,84 +200,50 @@ export function SettingsScreen(){
                     Alert.alert('Erro', data.message);
                 }
 
-            }catch(err){
-                console.error('Erro ao atualizar o usuário:', err)
-            }finally{
+            } catch (err) {
+                console.error('Erro ao atualizar o usuário:', err);
+            } finally {
                 setLoading(false);
             }
         }
-    }
+    };
 
-    return(
-        <ScrollView style={{flex: 1 }} scrollEnabled={scrollEnabled}>
-            <Loading isLoading={loadingPreferencesData} loadingText='Carregando dados do usuário...'/>
+    return (
+        <ScrollView style={{ flex: 1 }} scrollEnabled={scrollEnabled}>
+            {/* Exibe o componente de loading enquanto os dados estão sendo carregados */}
+            <Loading isLoading={loadingPreferencesData} loadingText='Carregando dados do usuário...' />
             <View style={style.container}>
-                <Text style={[base.title, {marginBottom: 40}]}>Preferências</Text>
-                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture} setScrollEnabled={setScrollEnabled}/>
-                <View style={{marginBottom: 40, marginTop: 10}}>
+                <Text style={[base.title, { marginBottom: 40 }]}>Preferências</Text>
+                {/* Componente de foto de perfil do usuário */}
+                <ProfilePicture token={token} userId={userId} imageUri={profilePicture} name={name} setImageUri={setProfilePicture} setScrollEnabled={setScrollEnabled} />
+                
+                <View style={{ marginBottom: 40, marginTop: 10 }}>
+                    {/* Botão para logout */}
                     <TouchableOpacity onPress={handleLogoutMessage}>
-                        <Text style={{textDecorationLine:'underline', color: '#F5392B'}}>Sair</Text>
+                        <Text style={{ textDecorationLine: 'underline', color: '#F5392B' }}>Sair</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{width: '100%'}}>
-                    <Input
-                        name="name"
-                        value={name}
-                        onChangeText={setName}
-                        autoCapitalize="none"
-                        placeholder="Usuário"
-                        editable={!loadingPreferencesData}
-                    />
-                    <Input
-                        name="email" 
-                        value={email}
-                        onChangeText={setEmail} 
-                        autoCapitalize="none"
-                        placeholder="E-mail"
-                        inputMode="email"
-                        editable={!loadingPreferencesData}
-                    />
-                    <TextInputMask
-                        type={'custom'}
-                        name='phone_number'
-                        options={{mask: '(99) 99999-9999'}}
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                        placeholder='Celular'
-                        style={base.input}
-                        inputMode='numeric'
-                        editable={!loadingPreferencesData}
-                    />
-                    <Input
-                        name="city" 
-                        value={city}
-                        onChangeText={setCity} 
-                        autoCapitalize="none"
-                        placeholder="Cidade"
-                        editable={!loadingPreferencesData}
-                    />
-                    <PasswordInput
-                        name="password" 
-                        value={password}
-                        onChangeText={setPassword} 
-                        placeholder="Senha"
-                    />
-                    <PasswordInput
-                        name="confirm-password" 
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword} 
-                        placeholder="Confirmar senha"
-                    />
+                
+                <View style={{ width: '100%' }}>
+                    {/* Inputs para os dados do usuário */}
+                    <Input name="name" value={name} onChangeText={setName} autoCapitalize="none" placeholder="Usuário" editable={!loadingPreferencesData} />
+                    <Input name="email" value={email} onChangeText={setEmail} autoCapitalize="none" placeholder="E-mail" inputMode="email" editable={!loadingPreferencesData} />
+                    <TextInputMask type={'custom'} name='phone_number' options={{ mask: '(99) 99999-9999' }} value={phoneNumber} onChangeText={setPhoneNumber} placeholder='Celular' style={base.input} inputMode='numeric' editable={!loadingPreferencesData} />
+                    <Input name="city" value={city} onChangeText={setCity} autoCapitalize="none" placeholder="Cidade" editable={!loadingPreferencesData} />
+                    <PasswordInput name="password" value={password} onChangeText={setPassword} placeholder="Senha" />
+                    <PasswordInput name="confirm-password" value={confirmPassword} onChangeText={setConfirmPassword} placeholder="Confirmar senha" />
                 </View>
 
-                <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangeUserData}/>
+                {/* Botão para salvar as alterações */}
+                <Button buttonText='Salvar' loading={loading} loadingText="Salvando..." onPress={handleChangeUserData} />
             </View>
         </ScrollView>
-    )
+    );
 }
 
+// Estilos para a tela de configurações
 const style = StyleSheet.create({
-    container : {
+    container: {
         flex: 1,
         backgroundColor: colors.white_default,
         alignItems: 'center',
@@ -290,4 +252,4 @@ const style = StyleSheet.create({
         padding: 30,
         paddingBottom: 70
     }
-})
+});

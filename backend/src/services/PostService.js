@@ -155,7 +155,7 @@ export default class PostService{
      */
     static async postsVoted(userId, postId){
         try {
-            // Retorna a lista de posts votados do repositório
+            // Retorna a lista de posts votados pelo usuário
             return await PostRepository.postsVoted(userId, postId);
         } catch (err) {
             // Lança um erro detalhado em caso de falha
