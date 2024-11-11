@@ -1,3 +1,4 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import { StyleSheet } from "react-native";
 
 /**Estilização base para o projeto

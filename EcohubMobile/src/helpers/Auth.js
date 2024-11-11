@@ -1,5 +1,9 @@
+/**IMPORTS NECESSÁRIOS PARA O COMPONENTE */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/**
+ * Retorna um objeto contendo o token, userId e isAdmin, ou null em caso de erro.
+ */
 const getTokenAndUserId = async () => {
     try {
         const token = await AsyncStorage.getItem('jwtToken');
@@ -12,8 +16,9 @@ const getTokenAndUserId = async () => {
     }
 }
 
-
-
+/** 
+ * Exporta a função getTokenAndUserId para que possa ser utilizada em outros módulos.
+ */
 export {
     getTokenAndUserId
 }
